@@ -246,7 +246,6 @@ void TrayIcon::Activated(QSystemTrayIcon::ActivationReason reason)
 {
     switch (reason)
     {
-
     case QSystemTrayIcon::Trigger:
         if (!dialog)
             this->ShowDialog();
@@ -372,14 +371,6 @@ void TrayIcon::ShowView()
     text.replace("%break", QString::number(pauseContinuous/1000) + " " + tr("sec"));
 
     view->ShowRefreshment(pic_path, clock, text, isDebug, imageAspectMode);
-
-
-    //QLabel *l = new QLabel("Test");
-
-   // l->setGeometry(QRect( 0, 0,3840,1080));
-   // l->show();
-//    Qt::FramelessWindowHint
-
 }
 
 
