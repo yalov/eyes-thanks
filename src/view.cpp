@@ -122,7 +122,7 @@ inline QString Tostr(QRect r)
 void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool isDebug, QString AspectMode)
 {
     picture_path = pic_path;
-
+    //qDebug() << "isDebug " << isDebug;
     QPixmap pic = QPixmap(picture_path);
     QRect pic_rect = pic.rect();
     QRect desktop = QApplication::desktop()->geometry();
@@ -131,12 +131,15 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
     myscene->setSceneRect(desktop);
     myscene->setBackgroundBrush(QBrush(Qt::black));
 
+    QString ratio_case = "No image";
+    double ratio_pic = 0.0;
+    double ratio_desk = (double)desktop.width()/desktop.height();
+    double ratio_default_screen = (double)default_screen.width()/default_screen.height();
+
     if (!pic.isNull())
     {
-        QString ratio_case;
-        double ratio_desk = (double)desktop.width()/desktop.height();
         double ratio_pic = (double)pic.width()/pic.height();
-        double ratio_default_screen = (double)default_screen.width()/default_screen.height();
+
         QGraphicsPixmapItem * pic_item;
 
         if (AspectMode == tr("Outside"))                                 ratio_case = "Full_desktop Outside";
@@ -179,64 +182,68 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
         pic_item->setZValue(-1);
         myscene->addItem( pic_item);
 
-        if (isDebug)
-        {
-            QString debug_str = pic_path + "\n";
-            debug_str += QString("image              %1  %2\n"
-                                 "full desktop       %3  %4\n"
-                                 )
-                    .arg(ratio_pic,4,'f',2)           .arg(Tostr(pic_rect))
-                    .arg(ratio_desk,4,'f',2)          .arg(Tostr(desktop));
-
-
-
-            for (int i = 0; i< QApplication::desktop()->screenCount(); i++)
-            {
-                if (QApplication::desktop()->primaryScreen() == i)
-                {
-                    debug_str += QString("default screen #%1  %2  %3\n").arg(i)
-                            .arg(ratio_default_screen,4,'f',2)
-                            .arg(Tostr (default_screen));
-                }
-                else
-                {
-                    QWidget * scr_i = QApplication::desktop()->screen(i);
-                    debug_str += QString("        screen #%1  %2  %3\n").arg(i)
-                            .arg((double)scr_i->width()/scr_i->height(),4,'f',2)
-                            .arg(Tostr (scr_i->rect()));
-                }
-            }
-
-            debug_str += QString("Ratio case = %1").arg(ratio_case);
-
-            //qDebug() <<  QString("pic   %1  %2").arg(ratio_pic,4,'f',2).arg(Tostr(pic.rect()));
-            //qDebug() <<  QString("desk  %1  %2").arg(ratio_desk,4,'f',2).arg(Tostr(desktop));
-            //qDebug() <<  QString("def   %1  %2").arg(ratio_default_screen,4,'f',2).arg(Tostr(QApplication::desktop()->screenGeometry(-1)));
-
-            QGraphicsTextItem * DebugItem = new QGraphicsTextItem();
-            DebugItem->setPlainText(debug_str);
-            DebugItem->setPos(default_screen.topLeft() + QPoint(50, default_screen.height()/2));
-            DebugItem->setZValue(-1);
-
-            QFont font("Monospace");
-            font.setStyleHint(QFont::TypeWriter);
-
-            DebugItem->setFont(font);
-            DebugItem->setDefaultTextColor(QColor(Qt::white));
-            DebugItem->setOpacity(0.5);
-
-            QGraphicsRectItem * DebugItemRect = new QGraphicsRectItem();
-            DebugItemRect->setRect(DebugItem->boundingRect());
-            DebugItemRect->setPos(DebugItem->pos());
-            DebugItemRect->setZValue(-1);
-            DebugItemRect->setPen(Qt::NoPen);
-            DebugItemRect->setBrush(Qt::black);
-            DebugItemRect->setOpacity(0.5);
-
-            myscene->addItem( DebugItemRect);
-            myscene->addItem( DebugItem);
-        }
     }
+
+    if (isDebug)
+    {
+        QString debug_str = "";
+
+        if (!pic.isNull())
+        {
+            debug_str += pic_path + "\n";
+            debug_str += QString("image              %1  %2\n").arg(ratio_pic,4,'f',2).arg(Tostr(pic_rect));
+        }
+
+        debug_str += QString("full desktop       %3  %4\n").arg(ratio_desk,4,'f',2).arg(Tostr(desktop));
+
+
+        for (int i = 0; i< QApplication::desktop()->screenCount(); i++)
+        {
+            if (QApplication::desktop()->primaryScreen() == i)
+            {
+                debug_str += QString("default screen #%1  %2  %3\n").arg(i)
+                        .arg(ratio_default_screen,4,'f',2)
+                        .arg(Tostr (default_screen));
+            }
+            else
+            {
+                QWidget * scr_i = QApplication::desktop()->screen(i);
+                debug_str += QString("        screen #%1  %2  %3\n").arg(i)
+                        .arg((double)scr_i->width()/scr_i->height(),4,'f',2)
+                        .arg(Tostr (scr_i->rect()));
+            }
+        }
+
+        debug_str += QString("Ratio case = %1").arg(ratio_case);
+
+        //qDebug() <<  QString("pic   %1  %2").arg(ratio_pic,4,'f',2).arg(Tostr(pic.rect()));
+        //qDebug() <<  QString("desk  %1  %2").arg(ratio_desk,4,'f',2).arg(Tostr(desktop));
+        //qDebug() <<  QString("def   %1  %2").arg(ratio_default_screen,4,'f',2).arg(Tostr(QApplication::desktop()->screenGeometry(-1)));
+
+        QGraphicsTextItem * DebugItem = new QGraphicsTextItem();
+        DebugItem->setPlainText(debug_str);
+        DebugItem->setPos(default_screen.topLeft() + QPoint(50, default_screen.height()/2));
+        DebugItem->setZValue(-1);
+
+        QFont font("Monospace");
+        font.setStyleHint(QFont::TypeWriter);
+
+        DebugItem->setFont(font);
+        DebugItem->setDefaultTextColor(QColor(Qt::white));
+        DebugItem->setOpacity(0.5);
+
+        QGraphicsRectItem * DebugItemRect = new QGraphicsRectItem();
+        DebugItemRect->setRect(DebugItem->boundingRect());
+        DebugItemRect->setPos(DebugItem->pos());
+        DebugItemRect->setZValue(-1);
+        DebugItemRect->setPen(Qt::NoPen);
+        DebugItemRect->setBrush(Qt::black);
+        DebugItemRect->setOpacity(0.5);
+
+        myscene->addItem( DebugItemRect);
+        myscene->addItem( DebugItem);
+    }
+
 
     this->ProgressBarText->setPlainText("0:00");
 

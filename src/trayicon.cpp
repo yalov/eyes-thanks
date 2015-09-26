@@ -21,9 +21,8 @@
 #include <QMenu>
 #include <QMessageBox>
 
-TrayIcon::TrayIcon(QWidget *parent)
-    : QSystemTrayIcon(parent),
-      TrayMessageShowed(false), TimeRemains(""), ActualIconRatio(-1)
+TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
+    dialog(NULL), TrayMessageShowed(false), TimeRemains(""), ActualIconRatio(-1)
 {
 
     QIcon testIcon    = QIcon(":icons/00.png");
@@ -157,6 +156,7 @@ void TrayIcon::CloseDialog()
                                 "choose \"Quit\" in the context menu of the system tray entry."));
 
     ShowSettingAct->setEnabled(true);
+    dialog = NULL;
 }
 
 
@@ -246,14 +246,10 @@ void TrayIcon::Activated(QSystemTrayIcon::ActivationReason reason)
 {
     switch (reason)
     {
-#ifdef __linux__
-    case QSystemTrayIcon::Trigger:
-        this->ShowDialog();
-        break;
-#endif
 
-    case QSystemTrayIcon::DoubleClick:
-        this->ShowDialog();
+    case QSystemTrayIcon::Trigger:
+        if (!dialog)
+            this->ShowDialog();
         break;
 
     case QSystemTrayIcon::MiddleClick:
