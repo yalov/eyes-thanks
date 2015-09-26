@@ -69,6 +69,8 @@ void Dialog::Init()
     line->setFrameShadow(QFrame::Sunken);
     TopLayout->addWidget(line);
 
+    TopLayout->addStretch();
+
 
     Spinbox_RefreshmentInterval   = new QSpinBox();
     Spinbox_RefreshmentContinuous = new QSpinBox();
@@ -95,48 +97,46 @@ void Dialog::Init()
 
 
     TextEdit_Text = new QPlainTextEdit();
-    TextEdit_Text->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    //TextEdit_Text->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     TextEdit_Text->setMaximumHeight(70);
+
     TextEdit_Text->setToolTip(tr("Support params: %interval, %break"));
     TopLayout->addWidget(TextEdit_Text);
 
     QHBoxLayout * Layout_Label_timer = new QHBoxLayout();
     QLabel * Label_Timer_Prefix = new QLabel(tr("Until break") + ": ");
-    Label_Timer = new QLabel();
 
+    Label_Timer = new QLabel();
     QFont font; font.setPointSize(16);
     Label_Timer->setFont(font);
-
     Label_Timer->setAlignment(Qt::AlignCenter);
     Layout_Label_timer->addWidget(Label_Timer_Prefix);
     Layout_Label_timer->addWidget(Label_Timer);
     TopLayout->addLayout(Layout_Label_timer);
+    //Label_Timer_Prefix->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    //Label_Timer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
     QHBoxLayout * layout_buttons = new QHBoxLayout();
 
-    QPushButton * buttonSave = new QPushButton(tr("Save"));
-    buttonSave->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-    layout_buttons->addWidget(buttonSave);
+    //QPushButton * buttonSave = new QPushButton(tr("Save"));
+    //buttonSave->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+    //layout_buttons->addWidget(buttonSave);
 
-
-    QPushButton * buttonMinimizeToSystemTray = new QPushButton(tr("Close to \nnotification area"));
+    QPushButton * buttonMinimizeToSystemTray = new QPushButton(tr("Close to notification area"));
     buttonMinimizeToSystemTray->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     layout_buttons->addWidget(buttonMinimizeToSystemTray);
     TopLayout->addLayout(layout_buttons);
 
 
-
     connect(ButtonPath, SIGNAL(clicked()), this, SLOT(ButtonPath_clicked()));
-
     connect(CheckBox_Text, SIGNAL(clicked(bool)), TextEdit_Text, SLOT(setEnabled(bool)));
-
-    connect(buttonSave, SIGNAL(clicked()), this, SLOT(SaveValues()));
+    //connect(buttonSave, SIGNAL(clicked()), this, SLOT(SaveValues()));
     connect(buttonMinimizeToSystemTray, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 
 void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode,
-                        bool isDebug, bool isText, bool isClock, bool isMessage30sec, QString Text, int counter)
+                        bool isDebug, bool isText, bool isClock, bool isMessage30sec, QString Text)
 {
     Spinbox_RefreshmentInterval->setValue(pauseInterval /1000/60);
     Spinbox_RefreshmentContinuous->setValue(pauseContinuous/1000);
@@ -148,7 +148,18 @@ void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPat
     CheckBox_Message->setChecked(isMessage30sec);
     TextEdit_Text->setEnabled(isText);
     TextEdit_Text->setPlainText(Text);
-    Counter = counter;
+
+
+
+    connect(LineEdit_Path, SIGNAL(textChanged(QString)), this, SLOT(SaveValues()));
+    connect(Combobox_imageAspectMode, SIGNAL(currentIndexChanged(int)), this, SLOT(SaveValues()));
+    connect(Spinbox_RefreshmentInterval, SIGNAL(valueChanged(int)), this, SLOT(SaveValues()));
+    connect(Spinbox_RefreshmentContinuous, SIGNAL(valueChanged(int)), this, SLOT(SaveValues()));
+    connect(CheckBox_Clock, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
+    connect(CheckBox_Debug, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
+    connect(CheckBox_Message, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
+    connect(CheckBox_Text, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
+    connect(TextEdit_Text, SIGNAL(textChanged()), this, SLOT(SaveValues()));
 }
 
 void Dialog::UpdateLabel(QString time)
@@ -158,27 +169,13 @@ void Dialog::UpdateLabel(QString time)
 
 bool Dialog::event(QEvent *event)
 {
-#ifdef _WIN32
-    if (event->type() == QEvent::Close || (event->type() == QEvent::WindowStateChange && isMinimized()))
-    {
-            //hide();
-            //event->ignore();
-            event->accept();
-            //SaveValues();
-            if (Counter < 2)   emit closedialog(false);
-            else                emit closedialog(true);
-            return QDialog::close();
-    }
-#else
+
     if (event->type() == QEvent::Close)
     {
-            event->accept();
-            if (Counter < 2)   emit closedialog(false);
-            else                emit closedialog(true);
-            ;
-            return QDialog::close();
+        event->accept();
+        emit closedialog();
+        return QDialog::close();
     }
-#endif
     else
     {
         //event->accept();

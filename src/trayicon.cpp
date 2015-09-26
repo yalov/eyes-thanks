@@ -132,7 +132,7 @@ void TrayIcon::WriteSettings()
     settings.setIniCodec("utf8");
 
     settings.beginGroup("Settings");
-    settings.setValue("Counter", ++Counter);
+    settings.setValue("Counter", Counter);
     settings.setValue("Interval", pauseInterval);
     settings.setValue("Continuous", pauseContinuous);
     settings.setValue("background_path", ImagesPath);
@@ -148,9 +148,10 @@ void TrayIcon::WriteSettings()
 
 
 
-void TrayIcon::CloseDialog(bool minimized)
+void TrayIcon::CloseDialog()
 {
-    if (!minimized)
+    Counter++;
+    if (Counter < 2)
         showMessage(tr("Eyes' Thanks"),
                              tr("The program will keep running in the system tray. To terminate the program, "
                                 "choose \"Quit\" in the context menu of the system tray entry."));
@@ -171,7 +172,6 @@ void TrayIcon::Save(int pauseinterval, int pausecontinuous, QString Imagespath, 
     isClock = isclock;
     isMessage30sec = ismessage30sec;
     Text = text;
-
 
     WriteSettings();
 
@@ -269,7 +269,7 @@ void TrayIcon::Activated(QSystemTrayIcon::ActivationReason reason)
 void TrayIcon::ShowDialog()
 {
     dialog = new Dialog();
-    connect(dialog, SIGNAL(closedialog(bool)), this, SLOT(CloseDialog(bool)));
+    connect(dialog, SIGNAL(closedialog()), this, SLOT(CloseDialog()));
     connect(dialog, SIGNAL(save(int, int, QString, QString, bool, bool, bool, bool, QString)),
             this, SLOT(Save(int, int, QString, QString, bool, bool, bool, bool, QString)));
 
@@ -278,7 +278,7 @@ void TrayIcon::ShowDialog()
     ShowSettingAct->setEnabled(false);
 
     dialog->SetValues(pauseInterval, pauseContinuous, ImagesPath, imageAspectMode,
-                                 isDebug, isText, isClock, isMessage30sec, Text, Counter);
+                                 isDebug, isText, isClock, isMessage30sec, Text);
 
 #ifdef __linux__
     dialog->showNormal();

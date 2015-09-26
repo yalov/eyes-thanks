@@ -27,7 +27,7 @@
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QSpinBox>
-
+#include <QDebug>
 
 class Dialog : public QDialog
 {
@@ -37,7 +37,7 @@ public:
     void Init();
     bool event(QEvent *event);
     void SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isDebug,
-                   bool isText, bool isClock, bool isMessage30sec, QString Text, int counter);
+                   bool isText, bool isClock, bool isMessage30sec, QString Text);
 
 
 public slots:
@@ -45,7 +45,7 @@ public slots:
 
 
 signals:
-    void closedialog(bool minimized);
+    void closedialog();
     void save(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isDebug,
               bool isText, bool isClock, bool isMessage30sec, QString Text);
 
@@ -55,7 +55,6 @@ private slots:
     void ButtonPath_clicked();
 
 private:
-    int Counter;
     QLineEdit * LineEdit_Path;
     QPlainTextEdit * TextEdit_Text;
     QComboBox * Combobox_imageAspectMode;

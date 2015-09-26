@@ -63,7 +63,7 @@ public slots:
     void Quit();
     void About();
     void ShowDialog();
-    void CloseDialog(bool minimized);
+    void CloseDialog();
     void Save(int pauseinterval, int pausecontinuous, QString Imagespath, QString imageaspectMode,
               bool isdebug, bool istext, bool isclock, bool ismessage30sec, QString text);
 
