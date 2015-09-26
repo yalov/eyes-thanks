@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/00.png</file>
+        <file>icons/25.png</file>
+        <file>icons/50.png</file>
+        <file>icons/75.png</file>
+        <file>icons/87.png</file>
+        <file>icons/95.png</file>
+        <file>icons/icon.ico</file>
+        <file>icons/--.png</file>
+        <file>copying.html</file>
+        <file>icons/application-exit.png</file>
+        <file>icons/configure.png</file>
+        <file>icons/help-about.png</file>
+        <file>icons/media-playback-pause.png</file>
+        <file>icons/media-playback-start.png</file>
+        <file>fonts/TrixiePro-Heavy.otf</file>
+    </qresource>
+</RCC>
