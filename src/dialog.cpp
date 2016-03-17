@@ -80,19 +80,25 @@ void Dialog::Init()
     Spinbox_RefreshmentContinuous->setSuffix(" " + tr("sec"));
 
     CheckBox_Clock    = new QCheckBox(tr("Clock"));
-    CheckBox_Text     = new QCheckBox(tr("Text"));
     CheckBox_Message  = new QCheckBox(tr("30-sec message"));
     CheckBox_Debug    = new QCheckBox(tr("Debug"));
+    CheckBox_PrettyFont   = new QCheckBox(tr("PrettyFont"));
+    CheckBox_Text     = new QCheckBox(tr("Text"));
+
 
     QGridLayout * Layout_TimeIntervalSetting = new QGridLayout();
     Layout_TimeIntervalSetting->addWidget(new QLabel(tr("Until break")), 0,0);
     Layout_TimeIntervalSetting->addWidget(Spinbox_RefreshmentInterval, 0,2);
     Layout_TimeIntervalSetting->addWidget(new QLabel(tr("Break continuous")), 1,0);
     Layout_TimeIntervalSetting->addWidget(Spinbox_RefreshmentContinuous, 1,2);
-    Layout_TimeIntervalSetting->addWidget(CheckBox_Clock, 2,0);
-    Layout_TimeIntervalSetting->addWidget(CheckBox_Text, 3,1);
-    Layout_TimeIntervalSetting->addWidget(CheckBox_Message, 2,1);
-    Layout_TimeIntervalSetting->addWidget(CheckBox_Debug, 2,2);
+
+    Layout_TimeIntervalSetting->addWidget(CheckBox_PrettyFont, 2,0);
+    Layout_TimeIntervalSetting->addWidget(CheckBox_Clock, 3,0);
+    Layout_TimeIntervalSetting->addWidget(CheckBox_Text, 4,0);
+
+    Layout_TimeIntervalSetting->addWidget(CheckBox_Message, 2,2);
+    Layout_TimeIntervalSetting->addWidget(CheckBox_Debug, 3,2);
+
     TopLayout->addLayout(Layout_TimeIntervalSetting);
 
 
@@ -118,25 +124,27 @@ void Dialog::Init()
 
     QHBoxLayout * layout_buttons = new QHBoxLayout();
 
-    //QPushButton * buttonSave = new QPushButton(tr("Save"));
-    //buttonSave->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-    //layout_buttons->addWidget(buttonSave);
+    QPushButton * buttonSave = new QPushButton(tr("Save"));
+    buttonSave->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+    layout_buttons->addWidget(buttonSave);
 
     QPushButton * buttonMinimizeToSystemTray = new QPushButton(tr("Close to notification area"));
     buttonMinimizeToSystemTray->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     layout_buttons->addWidget(buttonMinimizeToSystemTray);
+
+
     TopLayout->addLayout(layout_buttons);
 
 
     connect(ButtonPath, SIGNAL(clicked()), this, SLOT(ButtonPath_clicked()));
     connect(CheckBox_Text, SIGNAL(clicked(bool)), TextEdit_Text, SLOT(setEnabled(bool)));
-    //connect(buttonSave, SIGNAL(clicked()), this, SLOT(SaveValues()));
+    connect(buttonSave, SIGNAL(clicked()), this, SLOT(SaveValues()));
     connect(buttonMinimizeToSystemTray, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 
 void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode,
-                        bool isDebug, bool isText, bool isClock, bool isMessage30sec, QString Text)
+                        bool isDebug, bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text)
 {
     Spinbox_RefreshmentInterval->setValue(pauseInterval /1000/60);
     Spinbox_RefreshmentContinuous->setValue(pauseContinuous/1000);
@@ -146,12 +154,13 @@ void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPat
     CheckBox_Text->setChecked(isText);
     CheckBox_Clock->setChecked(isClock);
     CheckBox_Message->setChecked(isMessage30sec);
+    CheckBox_PrettyFont->setChecked(isPrettyFont);
     TextEdit_Text->setEnabled(isText);
     TextEdit_Text->setPlainText(Text);
 
 
 
-    connect(LineEdit_Path, SIGNAL(textChanged(QString)), this, SLOT(SaveValues()));
+    /*connect(LineEdit_Path, SIGNAL(textChanged(QString)), this, SLOT(SaveValues()));
     connect(Combobox_imageAspectMode, SIGNAL(currentIndexChanged(int)), this, SLOT(SaveValues()));
     connect(Spinbox_RefreshmentInterval, SIGNAL(valueChanged(int)), this, SLOT(SaveValues()));
     connect(Spinbox_RefreshmentContinuous, SIGNAL(valueChanged(int)), this, SLOT(SaveValues()));
@@ -159,7 +168,9 @@ void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPat
     connect(CheckBox_Debug, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
     connect(CheckBox_Message, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
     connect(CheckBox_Text, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
-    connect(TextEdit_Text, SIGNAL(textChanged()), this, SLOT(SaveValues()));
+    connect(CheckBox_PrettyFont, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
+    */
+    //connect(TextEdit_Text, SIGNAL(textChanged()), this, SLOT(SaveValues()));
 }
 
 void Dialog::UpdateLabel(QString time)
@@ -199,5 +210,5 @@ void Dialog::SaveValues()
     emit save(Spinbox_RefreshmentInterval->value()*60 * 1000, Spinbox_RefreshmentContinuous->value() * 1000,
               LineEdit_Path->text(), Combobox_imageAspectMode->currentText(),
               CheckBox_Debug->isChecked(), CheckBox_Text->isChecked(), CheckBox_Clock->isChecked(), CheckBox_Message->isChecked(),
-              TextEdit_Text->toPlainText());
+              CheckBox_PrettyFont->isChecked(), TextEdit_Text->toPlainText());
 }

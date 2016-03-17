@@ -28,6 +28,7 @@
 #include <QPlainTextEdit>
 #include <QSpinBox>
 #include <QDebug>
+#include <QGroupBox>
 
 class Dialog : public QDialog
 {
@@ -37,7 +38,7 @@ public:
     void Init();
     bool event(QEvent *event);
     void SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isDebug,
-                   bool isText, bool isClock, bool isMessage30sec, QString Text);
+                   bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text);
 
 
 public slots:
@@ -47,7 +48,7 @@ public slots:
 signals:
     void closedialog();
     void save(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isDebug,
-              bool isText, bool isClock, bool isMessage30sec, QString Text);
+              bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text);
 
 
 private slots:
@@ -62,9 +63,10 @@ private:
     QSpinBox * Spinbox_RefreshmentContinuous;
     QLabel * Label_Timer;
     QCheckBox * CheckBox_Clock;
-    QCheckBox * CheckBox_Text;
     QCheckBox * CheckBox_Message;
     QCheckBox * CheckBox_Debug;
+    QCheckBox * CheckBox_PrettyFont;
+    QCheckBox * CheckBox_Text;
 };
 
 #endif // DIALOG_H

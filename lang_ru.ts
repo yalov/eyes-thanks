@@ -83,43 +83,53 @@
         <translation>Часы</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="83"/>
+        <location filename="src/dialog.cpp" line="85"/>
+        <source>PrettyFont</source>
+        <translation>Красивый шрифт</translation>
+    </message>
+    <message>
+        <location filename="src/dialog.cpp" line="86"/>
         <source>Text</source>
         <translation>Надпись</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="84"/>
+        <location filename="src/dialog.cpp" line="83"/>
         <source>30-sec message</source>
         <translation>Оповещение</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="103"/>
+        <location filename="src/dialog.cpp" line="109"/>
         <source>Support params: %interval, %break</source>
         <translation>Поддерживаемые параметры: %interval, %break</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="88"/>
-        <location filename="src/dialog.cpp" line="107"/>
+        <location filename="src/dialog.cpp" line="90"/>
+        <location filename="src/dialog.cpp" line="113"/>
         <source>Until break</source>
         <translation>До перерыва</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="85"/>
+        <location filename="src/dialog.cpp" line="84"/>
         <source>Debug</source>
         <translation>Отладка</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="90"/>
+        <location filename="src/dialog.cpp" line="92"/>
         <source>Break continuous</source>
         <translation>Перерыв</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="125"/>
+        <location filename="src/dialog.cpp" line="127"/>
+        <source>Save</source>
+        <translation>Сохранить</translation>
+    </message>
+    <message>
+        <location filename="src/dialog.cpp" line="131"/>
         <source>Close to notification area</source>
         <translation>Свернуть в область уведомлений</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="189"/>
+        <location filename="src/dialog.cpp" line="200"/>
         <source>Open Directory</source>
         <translation>Папка с изображениями</translation>
     </message>
@@ -138,10 +148,10 @@
     </message>
     <message>
         <location filename="src/trayicon.cpp" line="50"/>
-        <location filename="src/trayicon.cpp" line="178"/>
-        <location filename="src/trayicon.cpp" line="219"/>
-        <location filename="src/trayicon.cpp" line="220"/>
-        <location filename="src/trayicon.cpp" line="224"/>
+        <location filename="src/trayicon.cpp" line="185"/>
+        <location filename="src/trayicon.cpp" line="226"/>
+        <location filename="src/trayicon.cpp" line="227"/>
+        <location filename="src/trayicon.cpp" line="231"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
@@ -157,18 +167,18 @@
     </message>
     <message>
         <location filename="src/trayicon.cpp" line="68"/>
-        <location filename="src/trayicon.cpp" line="296"/>
-        <location filename="src/trayicon.cpp" line="300"/>
+        <location filename="src/trayicon.cpp" line="303"/>
+        <location filename="src/trayicon.cpp" line="307"/>
         <source>Until break</source>
         <translation>До перерыва</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="123"/>
+        <location filename="src/trayicon.cpp" line="128"/>
         <source>Auto</source>
         <translation>Автоматически</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="124"/>
+        <location filename="src/trayicon.cpp" line="129"/>
         <source>All work and no play
 makes Jack a dull boy.</source>
         <oldsource>All work and no play makes Jack a dull boy.</oldsource>
@@ -176,30 +186,30 @@ makes Jack a dull boy.</source>
 а потехе %break.</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="154"/>
-        <location filename="src/trayicon.cpp" line="300"/>
+        <location filename="src/trayicon.cpp" line="160"/>
+        <location filename="src/trayicon.cpp" line="307"/>
         <source>Eyes&apos; Thanks</source>
         <translation>Eyes&apos; Thanks</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="155"/>
+        <location filename="src/trayicon.cpp" line="161"/>
         <source>The program will keep running in the system tray. To terminate the program, choose &quot;Quit&quot; in the context menu of the system tray entry.</source>
         <translation>Программа по прежнему выполняется. Чтобы выйти из программы выберите соотв. пункт в контекстном меню значка системного трея.</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="208"/>
+        <location filename="src/trayicon.cpp" line="215"/>
         <source>Unpause</source>
         <translation>Продолжить</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="296"/>
-        <location filename="src/trayicon.cpp" line="300"/>
-        <location filename="src/trayicon.cpp" line="371"/>
+        <location filename="src/trayicon.cpp" line="303"/>
+        <location filename="src/trayicon.cpp" line="307"/>
+        <location filename="src/trayicon.cpp" line="378"/>
         <source>sec</source>
         <translation>сек</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="370"/>
+        <location filename="src/trayicon.cpp" line="377"/>
         <source>min</source>
         <translation>мин</translation>
     </message>

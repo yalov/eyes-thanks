@@ -67,8 +67,15 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
     setIcon( QIcon(":/icons/00.png"));
     setToolTip(QString(tr("Until break") + " %1").arg(TimeRemains));
 
-    QFontDatabase::addApplicationFont(":fonts/TrixiePro-Heavy.otf");
+    for (auto f: QDir(":fonts").entryList())
+    {
+        QFontDatabase::addApplicationFont(":fonts/"+ f);
+        //qDebug() << QFontDatabase::applicationFontFamilies(
+        //            QFontDatabase::addApplicationFont(":fonts/"+ f));
+    }
 
+
+    //QFontDatabase::addApplicationFont(":fonts/PrettyFont.otf");
 
     ReadSettings();
 
@@ -119,6 +126,7 @@ void TrayIcon::ReadSettings()
     isMessage30sec = settings.value("message_enabled", true).toBool();
     isDebug = settings.value("debug_enabled", false).toBool();
     isText = settings.value("text_enabled", false).toBool();
+    isPrettyFont = settings.value("PrettyFont_enabled", true).toBool();
 
     imageAspectMode = settings.value("aspectMode", tr("Auto")).toString();
     Text = settings.value("text", tr("All work and no play\nmakes Jack a dull boy.")).toString();
@@ -138,6 +146,7 @@ void TrayIcon::WriteSettings()
     settings.setValue("clock_enabled", isClock);
     settings.setValue("message_enabled", isMessage30sec);
     settings.setValue("debug_enabled", isDebug);
+    settings.setValue("PrettyFont_enabled", isPrettyFont);
     settings.setValue("aspectMode", imageAspectMode);
 
     settings.setValue("text_enabled", isText);
@@ -161,7 +170,7 @@ void TrayIcon::CloseDialog()
 
 
 void TrayIcon::Save(int pauseinterval, int pausecontinuous, QString Imagespath, QString imageaspectMode,
-                    bool isdebug, bool istext, bool isclock, bool ismessage30sec, QString text)
+                    bool isdebug, bool istext, bool isclock, bool ismessage30sec, bool isprettyFont, QString text)
 {
     pauseInterval = pauseinterval;
     pauseContinuous = pausecontinuous;
@@ -171,6 +180,7 @@ void TrayIcon::Save(int pauseinterval, int pausecontinuous, QString Imagespath, 
     isText = istext;
     isClock = isclock;
     isMessage30sec = ismessage30sec;
+    isPrettyFont = isprettyFont;
     Text = text;
 
     WriteSettings();
@@ -265,15 +275,15 @@ void TrayIcon::ShowDialog()
 {
     dialog = new Dialog();
     connect(dialog, SIGNAL(closedialog()), this, SLOT(CloseDialog()));
-    connect(dialog, SIGNAL(save(int, int, QString, QString, bool, bool, bool, bool, QString)),
-            this, SLOT(Save(int, int, QString, QString, bool, bool, bool, bool, QString)));
+    connect(dialog, SIGNAL(save(int, int, QString, QString, bool, bool, bool, bool, bool, QString)),
+            this, SLOT(Save(int, int, QString, QString, bool, bool, bool, bool, bool, QString)));
 
     connect(this, SIGNAL(updateLabel(QString)), dialog, SLOT(UpdateLabel(QString)));
 
     ShowSettingAct->setEnabled(false);
 
     dialog->SetValues(pauseInterval, pauseContinuous, ImagesPath, imageAspectMode,
-                                 isDebug, isText, isClock, isMessage30sec, Text);
+                                 isDebug, isText, isClock, isMessage30sec, isPrettyFont, Text);
 
 #ifdef __linux__
     dialog->showNormal();
@@ -370,7 +380,7 @@ void TrayIcon::ShowView()
     text.replace("%interval", QString::number( pauseInterval / 1000/60) + " " + tr("min"));
     text.replace("%break", QString::number(pauseContinuous/1000) + " " + tr("sec"));
 
-    view->ShowRefreshment(pic_path, clock, text, isDebug, imageAspectMode);
+    view->ShowRefreshment(pic_path, clock, text, isDebug, isPrettyFont, imageAspectMode);
 }
 
 

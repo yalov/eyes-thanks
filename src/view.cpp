@@ -119,7 +119,7 @@ inline QString Tostr(QRect r)
     return QString("(%1,%2)[%3x%4]").arg(r.x(),5).arg(r.y(),5).arg(r.width(),4).arg(r.height(),4);
 }
 
-void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool isDebug, QString AspectMode)
+void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool isDebug, bool isPrettyFont, QString AspectMode)
 {
     picture_path = pic_path;
     //qDebug() << "isDebug " << isDebug;
@@ -138,7 +138,7 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
 
     if (!pic.isNull())
     {
-        double ratio_pic = (double)pic.width()/pic.height();
+        ratio_pic = (double)pic.width()/pic.height();
 
         QGraphicsPixmapItem * pic_item;
 
@@ -242,6 +242,14 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
 
         myscene->addItem( DebugItemRect);
         myscene->addItem( DebugItem);
+
+
+        QFile file("Debug.txt");
+        if (file.open(QIODevice::WriteOnly))
+        {
+            QTextStream out(&file);
+            out << debug_str;
+        }
     }
 
 
@@ -271,11 +279,11 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
     {
 
         clockItem = new QGraphicsTextItem();
-        clockItem->setFont(QFont("TrixiePro-Heavy",30,30));
+        clockItem->setFont(QFont(isPrettyFont?"UKIJ Diwani Yantu":"",30,30));
         clockItem->setDefaultTextColor(QColor(Qt::white));
         clockItem->setOpacity(0.5);
         clockItem->setZValue(-1);
-        clockItem->setPlainText( clock);
+        clockItem->setPlainText(clock);
         clockItem->setPos(default_screen.topRight() + QPoint(-50 -clockItem->boundingRect().width() , 25) );
 
         QGraphicsRectItem * clockItemRect = new QGraphicsRectItem();
@@ -296,7 +304,8 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
         textItem->setPlainText(text);
         textItem->setPos(default_screen.topLeft() + QPoint(50, 25));
         textItem->setZValue(-1);
-        textItem->setFont(QFont("TrixiePro-Heavy",30,30));
+        textItem->setFont(QFont(isPrettyFont?"UKIJ Diwani Yantu":"",30,30));
+
         textItem->setDefaultTextColor(QColor(Qt::white));
         textItem->setOpacity(0.5);
 

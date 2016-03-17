@@ -38,3 +38,4 @@ build-*_Qt_*
 *.ini
 *.7z
 bin/
+build
