@@ -249,7 +249,9 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
         {
             QTextStream out(&file);
             out << debug_str;
+            file.close();
         }
+
     }
 
 

@@ -25,6 +25,8 @@
 #include <QElapsedTimer>
 #include <QObject>
 #include <QDebug>
+#include <QDateTime>
+#include <QFile>
 
 
 class Timer:public QObject
@@ -39,8 +41,18 @@ private:
 private slots:
     void slot_timeout()
     {
+
         if (elapsed()> interval)
         {
+            QFile file("Debug.txt");
+            if (file.open(QIODevice::WriteOnly))
+            {
+                QTextStream out(&file);
+                out << QString("%1, elapsed = %2, remains_str = %3, ratio = %4, elapsed_summand = %5")
+                       .arg(QDateTime::currentDateTime().toString()).arg(elapsed()).arg(remains_str(0)).arg(ratio()).arg(elapsed_summand);
+                file.close();
+            }
+
             emit finished();
             restart();
         }
