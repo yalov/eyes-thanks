@@ -37,7 +37,7 @@ public:
     Dialog();
     void Init();
     bool event(QEvent *event);
-    void SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isDebug,
+    void SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isLogging,
                    bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text);
 
 
@@ -47,7 +47,7 @@ public slots:
 
 signals:
     void closedialog();
-    void save(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isDebug,
+    void save(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isLogging,
               bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text);
 
 
@@ -64,7 +64,7 @@ private:
     QLabel * Label_Timer;
     QCheckBox * CheckBox_Clock;
     QCheckBox * CheckBox_Message;
-    QCheckBox * CheckBox_Debug;
+    QCheckBox * CheckBox_Logging;
     QCheckBox * CheckBox_PrettyFont;
     QCheckBox * CheckBox_Text;
 };

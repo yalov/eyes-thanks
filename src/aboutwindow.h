@@ -106,7 +106,7 @@ public:
                         tr("Home Page")  +": <a href=\"%4\">%4</a>"
                     "</p>"
                     "<p align = center>"
-                        "Copyright © 2015, License: <a href=\"%5\">%6</a>"  "<br>"
+                        "Copyright © 2016 License: <a href=\"%5\">%6</a>"  "<br>"
                         "%7 <a href='mailto:%8'>%8</a>"
                     "</p>"
                 "</font>"

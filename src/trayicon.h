@@ -65,7 +65,7 @@ public slots:
     void ShowDialog();
     void CloseDialog();
     void Save(int pauseinterval, int pausecontinuous, QString Imagespath, QString imageaspectMode,
-              bool isdebug, bool istext, bool isclock, bool ismessage30sec, bool isPrettyFont, QString text);
+              bool isLogging, bool istext, bool isclock, bool ismessage30sec, bool isPrettyFont, QString text);
 
 
 
@@ -87,7 +87,7 @@ public:
     QString ImagesPath;
     QString imageAspectMode;
 
-    bool isDebug;
+    bool isLogging;
     bool isText;
     bool isClock;
     bool isMessage30sec;

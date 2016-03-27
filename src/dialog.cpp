@@ -32,6 +32,7 @@ Dialog::Dialog()
 #ifdef _WIN32
     //setWindowFlags( Qt::WindowTitleHint | Qt::CustomizeWindowHint); //-- no title buttons
     setWindowFlags(Qt::WindowCloseButtonHint);
+
 #endif
 
 }
@@ -81,7 +82,7 @@ void Dialog::Init()
 
     CheckBox_Clock    = new QCheckBox(tr("Clock"));
     CheckBox_Message  = new QCheckBox(tr("30-sec message"));
-    CheckBox_Debug    = new QCheckBox(tr("Debug"));
+    CheckBox_Logging    = new QCheckBox(tr("Logging"));
     CheckBox_PrettyFont   = new QCheckBox(tr("PrettyFont"));
     CheckBox_Text     = new QCheckBox(tr("Text"));
 
@@ -97,7 +98,7 @@ void Dialog::Init()
     Layout_TimeIntervalSetting->addWidget(CheckBox_Text, 4,0);
 
     Layout_TimeIntervalSetting->addWidget(CheckBox_Message, 2,2);
-    Layout_TimeIntervalSetting->addWidget(CheckBox_Debug, 3,2);
+    Layout_TimeIntervalSetting->addWidget(CheckBox_Logging, 3,2);
 
     TopLayout->addLayout(Layout_TimeIntervalSetting);
 
@@ -106,7 +107,7 @@ void Dialog::Init()
     //TextEdit_Text->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     TextEdit_Text->setMaximumHeight(70);
 
-    TextEdit_Text->setToolTip(tr("Support params: %interval, %break"));
+    TextEdit_Text->setToolTip(tr("Support params: %interval, %continuous"));
     TopLayout->addWidget(TextEdit_Text);
 
     QHBoxLayout * Layout_Label_timer = new QHBoxLayout();
@@ -144,13 +145,13 @@ void Dialog::Init()
 
 
 void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode,
-                        bool isDebug, bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text)
+                        bool isLogging, bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text)
 {
     Spinbox_RefreshmentInterval->setValue(pauseInterval /1000/60);
     Spinbox_RefreshmentContinuous->setValue(pauseContinuous/1000);
     LineEdit_Path->setText(ImagesPath);
     Combobox_imageAspectMode->setCurrentText(imageAspectMode);
-    CheckBox_Debug->setChecked(isDebug);
+    CheckBox_Logging->setChecked(isLogging);
     CheckBox_Text->setChecked(isText);
     CheckBox_Clock->setChecked(isClock);
     CheckBox_Message->setChecked(isMessage30sec);
@@ -165,7 +166,7 @@ void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPat
     connect(Spinbox_RefreshmentInterval, SIGNAL(valueChanged(int)), this, SLOT(SaveValues()));
     connect(Spinbox_RefreshmentContinuous, SIGNAL(valueChanged(int)), this, SLOT(SaveValues()));
     connect(CheckBox_Clock, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
-    connect(CheckBox_Debug, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
+    connect(CheckBox_Logging, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
     connect(CheckBox_Message, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
     connect(CheckBox_Text, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
     connect(CheckBox_PrettyFont, SIGNAL(clicked(bool)), this, SLOT(SaveValues()));
@@ -209,6 +210,6 @@ void Dialog::SaveValues()
 
     emit save(Spinbox_RefreshmentInterval->value()*60 * 1000, Spinbox_RefreshmentContinuous->value() * 1000,
               LineEdit_Path->text(), Combobox_imageAspectMode->currentText(),
-              CheckBox_Debug->isChecked(), CheckBox_Text->isChecked(), CheckBox_Clock->isChecked(), CheckBox_Message->isChecked(),
+              CheckBox_Logging->isChecked(), CheckBox_Text->isChecked(), CheckBox_Clock->isChecked(), CheckBox_Message->isChecked(),
               CheckBox_PrettyFont->isChecked(), TextEdit_Text->toPlainText());
 }

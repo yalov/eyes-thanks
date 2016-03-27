@@ -27,7 +27,7 @@ greaterThan(QT_MAJOR_VERSION, 4):{
 }
 
 
-VERSION = 0.31.99
+VERSION = 0.90.0
 TARGET = "EyesThanks"
 
 QMAKE_TARGET_DESCRIPTION = Eyes\' Thanks

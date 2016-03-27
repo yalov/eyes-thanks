@@ -44,7 +44,7 @@ public:
     View(QWidget *parent = 0);
     ~View();
     void closeEvent(QCloseEvent *event);
-    void ShowRefreshment(QString pic_path, QString clock, QString ProgressBarText, bool isDebug, bool isPrettyFont, QString AspectMode);
+    void ShowRefreshment(QString pic_path, QString clock, QString ProgressBarText, bool isLogging, bool isPrettyFont, QString AspectMode);
     void UpdateValues(QString remains_str, double ratio);
 
     void mousePressEvent(QMouseEvent * event);

@@ -119,10 +119,10 @@ inline QString Tostr(QRect r)
     return QString("(%1,%2)[%3x%4]").arg(r.x(),5).arg(r.y(),5).arg(r.width(),4).arg(r.height(),4);
 }
 
-void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool isDebug, bool isPrettyFont, QString AspectMode)
+void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool isLogging, bool isPrettyFont, QString AspectMode)
 {
     picture_path = pic_path;
-    //qDebug() << "isDebug " << isDebug;
+    //qDebug() << "isLogging " << isLogging;
     QPixmap pic = QPixmap(picture_path);
     QRect pic_rect = pic.rect();
     QRect desktop = QApplication::desktop()->geometry();
@@ -184,71 +184,68 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
 
     }
 
-    if (isDebug)
+    if (isLogging)
     {
-        QString debug_str = "";
+        QString Logging_str = "";
 
         if (!pic.isNull())
         {
-            debug_str += pic_path + "\n";
-            debug_str += QString("image              %1  %2\n").arg(ratio_pic,4,'f',2).arg(Tostr(pic_rect));
+            Logging_str += pic_path + "\n";
+            Logging_str += QString("image              %1  %2\n").arg(ratio_pic,4,'f',2).arg(Tostr(pic_rect));
         }
 
-        debug_str += QString("full desktop       %3  %4\n").arg(ratio_desk,4,'f',2).arg(Tostr(desktop));
+        Logging_str += QString("full desktop       %3  %4\n").arg(ratio_desk,4,'f',2).arg(Tostr(desktop));
 
 
         for (int i = 0; i< QApplication::desktop()->screenCount(); i++)
         {
             if (QApplication::desktop()->primaryScreen() == i)
             {
-                debug_str += QString("default screen #%1  %2  %3\n").arg(i)
+                Logging_str += QString("default screen #%1  %2  %3\n").arg(i)
                         .arg(ratio_default_screen,4,'f',2)
                         .arg(Tostr (default_screen));
             }
             else
             {
                 QWidget * scr_i = QApplication::desktop()->screen(i);
-                debug_str += QString("        screen #%1  %2  %3\n").arg(i)
+                Logging_str += QString("        screen #%1  %2  %3\n").arg(i)
                         .arg((double)scr_i->width()/scr_i->height(),4,'f',2)
                         .arg(Tostr (scr_i->rect()));
             }
         }
 
-        debug_str += QString("Ratio case = %1").arg(ratio_case);
+        Logging_str += QString("Ratio case = %1").arg(ratio_case);
 
-        //qDebug() <<  QString("pic   %1  %2").arg(ratio_pic,4,'f',2).arg(Tostr(pic.rect()));
-        //qDebug() <<  QString("desk  %1  %2").arg(ratio_desk,4,'f',2).arg(Tostr(desktop));
-        //qDebug() <<  QString("def   %1  %2").arg(ratio_default_screen,4,'f',2).arg(Tostr(QApplication::desktop()->screenGeometry(-1)));
-
-        QGraphicsTextItem * DebugItem = new QGraphicsTextItem();
-        DebugItem->setPlainText(debug_str);
-        DebugItem->setPos(default_screen.topLeft() + QPoint(50, default_screen.height()/2));
-        DebugItem->setZValue(-1);
+        /*
+        QGraphicsTextItem * LoggingItem = new QGraphicsTextItem();
+        LoggingItem->setPlainText(Logging_str);
+        LoggingItem->setPos(default_screen.topLeft() + QPoint(50, default_screen.height()/2));
+        LoggingItem->setZValue(-1);
 
         QFont font("Monospace");
         font.setStyleHint(QFont::TypeWriter);
 
-        DebugItem->setFont(font);
-        DebugItem->setDefaultTextColor(QColor(Qt::white));
-        DebugItem->setOpacity(0.5);
+        LoggingItem->setFont(font);
+        LoggingItem->setDefaultTextColor(QColor(Qt::white));
+        LoggingItem->setOpacity(0.5);
 
-        QGraphicsRectItem * DebugItemRect = new QGraphicsRectItem();
-        DebugItemRect->setRect(DebugItem->boundingRect());
-        DebugItemRect->setPos(DebugItem->pos());
-        DebugItemRect->setZValue(-1);
-        DebugItemRect->setPen(Qt::NoPen);
-        DebugItemRect->setBrush(Qt::black);
-        DebugItemRect->setOpacity(0.5);
+        QGraphicsRectItem * LoggingItemRect = new QGraphicsRectItem();
+        LoggingItemRect->setRect(LoggingItem->boundingRect());
+        LoggingItemRect->setPos(LoggingItem->pos());
+        LoggingItemRect->setZValue(-1);
+        LoggingItemRect->setPen(Qt::NoPen);
+        LoggingItemRect->setBrush(Qt::black);
+        LoggingItemRect->setOpacity(0.5);
 
-        myscene->addItem( DebugItemRect);
-        myscene->addItem( DebugItem);
+        myscene->addItem( LoggingItemRect);
+        myscene->addItem( LoggingItem);
+        */
 
-
-        QFile file("Debug.txt");
+        QFile file("LoggingDisplay.txt");
         if (file.open(QIODevice::WriteOnly))
         {
             QTextStream out(&file);
-            out << debug_str;
+            out << Logging_str;
             file.close();
         }
 

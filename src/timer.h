@@ -37,6 +37,7 @@ private:
     QTimer qtimer;
     QElapsedTimer elatimer;
     qint64 elapsed_summand;
+    bool Logging;
 
 private slots:
     void slot_timeout()
@@ -44,13 +45,17 @@ private slots:
 
         if (elapsed()> interval)
         {
-            QFile file("Debug.txt");
-            if (file.open(QIODevice::WriteOnly))
+            qDebug() <<"Timer "<< Logging;
+            if (Logging)
             {
-                QTextStream out(&file);
-                out << QString("%1, elapsed = %2, remains_str = %3, ratio = %4, elapsed_summand = %5")
-                       .arg(QDateTime::currentDateTime().toString()).arg(elapsed()).arg(remains_str(0)).arg(ratio()).arg(elapsed_summand);
-                file.close();
+                QFile file("Logging.txt");
+                if (file.open(QIODevice::Append))
+                {
+                    QTextStream out(&file);
+                    out << QString("%1, elapsed = %2, remains_str = %3, ratio = %4, elapsed_summand = %5\n")
+                           .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss")).arg(elapsed()).arg(remains_str(0)).arg(ratio()).arg(elapsed_summand);
+                    file.close();
+                }
             }
 
             emit finished();
@@ -75,12 +80,14 @@ public:
     bool isActive;
 
 public:
-    Timer(int updateinterval, int finishedinterval): isActive(false)
+    Timer(int updateinterval, int finishedinterval, bool _Logging = false): isActive(false)
     {
         qtimer.setInterval(updateinterval);
         connect(&qtimer, SIGNAL(timeout()), this, SLOT(slot_timeout()) );
         connect(&qtimer, SIGNAL(timeout()), this, SIGNAL(update()));
         interval = finishedinterval;
+        Logging = _Logging;
+        qDebug() << "Timer constr " << Logging;
     }
 
     void Init(int updateinterval, int finishedinterval)

@@ -78,10 +78,10 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
     //QFontDatabase::addApplicationFont(":fonts/PrettyFont.otf");
 
     ReadSettings();
-
+    qDebug() <<"isLogging "<< isLogging;
     view = new View();
     ViewTimer = new Timer(UPDATE_PERIOD_1, pauseContinuous);
-    DialogTimer = new Timer(UPDATE_PERIOD_2, pauseInterval);
+    DialogTimer = new Timer(UPDATE_PERIOD_2, pauseInterval, isLogging);
     DialogTimer->start();
 
     connect(DialogTimer, SIGNAL(finished()), this, SLOT(RefreshmentStart()));
@@ -116,17 +116,17 @@ void TrayIcon::ReadSettings()
     settings.setIniCodec("utf8");
 
     settings.beginGroup("Settings");
-    Counter = settings.value("Counter",0).toInt();
-    pauseInterval = settings.value("Interval",60*60*1000).toInt();
-    pauseContinuous = settings.value("Continuous",60*1000).toInt();
+    Counter = settings.value("counter",0).toInt();
+    pauseInterval = settings.value("interval",60*60*1000).toInt();
+    pauseContinuous = settings.value("continuous",60*1000).toInt();
 
     ImagesPath = settings.value("background_path", "").toString();
 
     isClock = settings.value("clock_enabled", true).toBool();
     isMessage30sec = settings.value("message_enabled", true).toBool();
-    isDebug = settings.value("debug_enabled", false).toBool();
+    isLogging = settings.value("logging_enabled", false).toBool();
     isText = settings.value("text_enabled", false).toBool();
-    isPrettyFont = settings.value("PrettyFont_enabled", true).toBool();
+    isPrettyFont = settings.value("prettyFont_enabled", true).toBool();
 
     imageAspectMode = settings.value("aspectMode", tr("Auto")).toString();
     Text = settings.value("text", tr("All work and no play\nmakes Jack a dull boy.")).toString();
@@ -139,14 +139,14 @@ void TrayIcon::WriteSettings()
     settings.setIniCodec("utf8");
 
     settings.beginGroup("Settings");
-    settings.setValue("Counter", Counter);
-    settings.setValue("Interval", pauseInterval);
-    settings.setValue("Continuous", pauseContinuous);
+    settings.setValue("counter", Counter);
+    settings.setValue("interval", pauseInterval);
+    settings.setValue("continuous", pauseContinuous);
     settings.setValue("background_path", ImagesPath);
     settings.setValue("clock_enabled", isClock);
     settings.setValue("message_enabled", isMessage30sec);
-    settings.setValue("debug_enabled", isDebug);
-    settings.setValue("PrettyFont_enabled", isPrettyFont);
+    settings.setValue("logging_enabled", isLogging);
+    settings.setValue("prettyFont_enabled", isPrettyFont);
     settings.setValue("aspectMode", imageAspectMode);
 
     settings.setValue("text_enabled", isText);
@@ -170,13 +170,13 @@ void TrayIcon::CloseDialog()
 
 
 void TrayIcon::Save(int pauseinterval, int pausecontinuous, QString Imagespath, QString imageaspectMode,
-                    bool isdebug, bool istext, bool isclock, bool ismessage30sec, bool isprettyFont, QString text)
+                    bool islogging, bool istext, bool isclock, bool ismessage30sec, bool isprettyFont, QString text)
 {
     pauseInterval = pauseinterval;
     pauseContinuous = pausecontinuous;
     ImagesPath = Imagespath;
     imageAspectMode = imageaspectMode;
-    isDebug = isdebug;
+    isLogging = islogging;
     isText = istext;
     isClock = isclock;
     isMessage30sec = ismessage30sec;
@@ -283,7 +283,7 @@ void TrayIcon::ShowDialog()
     ShowSettingAct->setEnabled(false);
 
     dialog->SetValues(pauseInterval, pauseContinuous, ImagesPath, imageAspectMode,
-                                 isDebug, isText, isClock, isMessage30sec, isPrettyFont, Text);
+                                 isLogging, isText, isClock, isMessage30sec, isPrettyFont, Text);
 
 #ifdef __linux__
     dialog->showNormal();
@@ -307,6 +307,16 @@ void TrayIcon::DialogUpdateTime()
 
     if (isMessage30sec && remains < 30000 && !TrayMessageShowed)
     {
+        QFile file("Logging.txt");
+        if (file.open(QIODevice::Append))
+        {
+            QTextStream out(&file);
+            out << QString("%1, remains = %2, TimeRemains = %3\n")
+                   .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
+                   .arg(remains).arg(TimeRemains);
+            file.close();
+        }
+
         showMessage(tr("Eyes' Thanks"),QString(tr("Until break") +" %1 "+tr("sec")).arg(qRound( remains/1000.)));
         TrayMessageShowed = true;
     }
@@ -378,9 +388,9 @@ void TrayIcon::ShowView()
     else           text = "";
 
     text.replace("%interval", QString::number( pauseInterval / 1000/60) + " " + tr("min"));
-    text.replace("%break", QString::number(pauseContinuous/1000) + " " + tr("sec"));
+    text.replace("%continuous", QString::number(pauseContinuous/1000) + " " + tr("sec"));
 
-    view->ShowRefreshment(pic_path, clock, text, isDebug, isPrettyFont, imageAspectMode);
+    view->ShowRefreshment(pic_path, clock, text, isLogging, isPrettyFont, imageAspectMode);
 }
 
 

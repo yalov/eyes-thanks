@@ -43,93 +43,98 @@
         <translation>Eyes&apos; Thanks</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="45"/>
+        <location filename="src/dialog.cpp" line="46"/>
         <source>Folder with pictures</source>
         <translation>Папка с изображениями</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="61"/>
+        <location filename="src/dialog.cpp" line="62"/>
         <source>Auto</source>
         <translation>Автоматически</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="61"/>
+        <location filename="src/dialog.cpp" line="62"/>
         <source>Outside</source>
         <translation>Описать</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="61"/>
+        <location filename="src/dialog.cpp" line="62"/>
         <source>Inside</source>
         <translation>Вписать</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="62"/>
+        <location filename="src/dialog.cpp" line="63"/>
         <source>Image Aspect Mode</source>
         <translation>Масштабирование изображений</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="79"/>
+        <location filename="src/dialog.cpp" line="80"/>
         <source>min</source>
         <translation>мин</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="80"/>
+        <location filename="src/dialog.cpp" line="81"/>
         <source>sec</source>
         <translation>сек</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="82"/>
+        <location filename="src/dialog.cpp" line="83"/>
         <source>Clock</source>
         <translation>Часы</translation>
     </message>
     <message>
         <location filename="src/dialog.cpp" line="85"/>
+        <source>Logging</source>
+        <translation>Логирование</translation>
+    </message>
+    <message>
+        <location filename="src/dialog.cpp" line="86"/>
         <source>PrettyFont</source>
         <translation>Красивый шрифт</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="86"/>
+        <location filename="src/dialog.cpp" line="87"/>
         <source>Text</source>
         <translation>Надпись</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="83"/>
+        <location filename="src/dialog.cpp" line="84"/>
         <source>30-sec message</source>
         <translation>Оповещение</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="109"/>
-        <source>Support params: %interval, %break</source>
-        <translation>Поддерживаемые параметры: %interval, %break</translation>
+        <location filename="src/dialog.cpp" line="110"/>
+        <source>Support params: %interval, %continuous</source>
+        <oldsource>Support params: %interval, %break</oldsource>
+        <translation>Поддерживаемые параметры: %interval, %continuous</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="90"/>
-        <location filename="src/dialog.cpp" line="113"/>
+        <location filename="src/dialog.cpp" line="91"/>
+        <location filename="src/dialog.cpp" line="114"/>
         <source>Until break</source>
         <translation>До перерыва</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="84"/>
         <source>Debug</source>
-        <translation>Отладка</translation>
+        <translation type="vanished">Отладка</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="92"/>
+        <location filename="src/dialog.cpp" line="93"/>
         <source>Break continuous</source>
         <translation>Перерыв</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="127"/>
+        <location filename="src/dialog.cpp" line="128"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="131"/>
+        <location filename="src/dialog.cpp" line="132"/>
         <source>Close to notification area</source>
         <translation>Свернуть в область уведомлений</translation>
     </message>
     <message>
-        <location filename="src/dialog.cpp" line="200"/>
+        <location filename="src/dialog.cpp" line="201"/>
         <source>Open Directory</source>
         <translation>Папка с изображениями</translation>
     </message>
@@ -148,10 +153,10 @@
     </message>
     <message>
         <location filename="src/trayicon.cpp" line="50"/>
-        <location filename="src/trayicon.cpp" line="185"/>
-        <location filename="src/trayicon.cpp" line="226"/>
-        <location filename="src/trayicon.cpp" line="227"/>
-        <location filename="src/trayicon.cpp" line="231"/>
+        <location filename="src/trayicon.cpp" line="188"/>
+        <location filename="src/trayicon.cpp" line="229"/>
+        <location filename="src/trayicon.cpp" line="230"/>
+        <location filename="src/trayicon.cpp" line="234"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
@@ -167,49 +172,49 @@
     </message>
     <message>
         <location filename="src/trayicon.cpp" line="68"/>
-        <location filename="src/trayicon.cpp" line="303"/>
-        <location filename="src/trayicon.cpp" line="307"/>
+        <location filename="src/trayicon.cpp" line="306"/>
+        <location filename="src/trayicon.cpp" line="320"/>
         <source>Until break</source>
         <translation>До перерыва</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="128"/>
+        <location filename="src/trayicon.cpp" line="131"/>
         <source>Auto</source>
         <translation>Автоматически</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="129"/>
+        <location filename="src/trayicon.cpp" line="132"/>
         <source>All work and no play
 makes Jack a dull boy.</source>
         <oldsource>All work and no play makes Jack a dull boy.</oldsource>
         <translation>Делу %interval,
-а потехе %break.</translation>
+а потехе %continuous.</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="160"/>
-        <location filename="src/trayicon.cpp" line="307"/>
+        <location filename="src/trayicon.cpp" line="163"/>
+        <location filename="src/trayicon.cpp" line="320"/>
         <source>Eyes&apos; Thanks</source>
         <translation>Eyes&apos; Thanks</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="161"/>
+        <location filename="src/trayicon.cpp" line="164"/>
         <source>The program will keep running in the system tray. To terminate the program, choose &quot;Quit&quot; in the context menu of the system tray entry.</source>
         <translation>Программа по прежнему выполняется. Чтобы выйти из программы выберите соотв. пункт в контекстном меню значка системного трея.</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="215"/>
+        <location filename="src/trayicon.cpp" line="218"/>
         <source>Unpause</source>
         <translation>Продолжить</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="303"/>
-        <location filename="src/trayicon.cpp" line="307"/>
-        <location filename="src/trayicon.cpp" line="378"/>
+        <location filename="src/trayicon.cpp" line="306"/>
+        <location filename="src/trayicon.cpp" line="320"/>
+        <location filename="src/trayicon.cpp" line="391"/>
         <source>sec</source>
         <translation>сек</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="377"/>
+        <location filename="src/trayicon.cpp" line="390"/>
         <source>min</source>
         <translation>мин</translation>
     </message>
