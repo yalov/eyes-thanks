@@ -73,6 +73,9 @@ View::View(QWidget *parent): QGraphicsView(parent), clockItem(NULL)
     ButtonRectItem->setOpacity(0.9);
     ButtonRectItem->setZValue(2);
     myscene->addItem(ButtonRectItem);
+
+
+
 }
 
 
@@ -145,37 +148,58 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
         if (AspectMode == tr("Outside"))                                 ratio_case = "Full_desktop Outside";
         else if (AspectMode == tr("Inside"))                             ratio_case = "Default_screen Inside";
 
-        else if (std::abs(ratio_desk - ratio_pic) < 0.6 )                ratio_case = "Full_desktop Outside";
-        else if (std::abs(ratio_default_screen - ratio_pic) < 0.6 )      ratio_case = "Default_screen Outside";
-        //else if (ratio_pic > 2.9 && ratio_desk > 2.9)                    ratio_case = "Full_desktop Outside";
-        else if (std::abs(ratio_desk - ratio_pic) < std::abs(ratio_default_screen - ratio_pic)) ratio_case = "Full_desktop Inside";
-        else                                                             ratio_case = "Default_screen Inside";
+        //else if (std::abs(ratio_desk - ratio_pic) < 0.6 )                ratio_case = "Full_desktop Outside";
+        //else if (std::abs(ratio_default_screen - ratio_pic) < 0.6 )      ratio_case = "Default_screen Outside";
+        //else if (std::abs(ratio_desk - ratio_pic) < std::abs(ratio_default_screen - ratio_pic)) ratio_case = "Full_desktop Inside";
+        //else                                                             ratio_case = "Default_screen Inside";
+
+        else if (AspectMode == tr("Auto"))
+        {
+            if (std::abs(ratio_desk - ratio_pic) <= std::abs(ratio_default_screen - ratio_pic)) // Full_desktop
+            {
+                //if (std::abs(ratio_desk - ratio_pic) < 0.6 )              ratio_case = "Full_desktop Outside";
+                //else                                                      ratio_case = "Full_desktop Inside";
+
+                if (ratio_pic / ratio_desk < 0.7 || ratio_pic / ratio_desk > 1/0.7 )  ratio_case = "Full_desktop Inside";
+                else                                                                  ratio_case = "Full_desktop Outside";
+
+            }
+            else   //Default_screen
+            {
+                 //if (std::abs(ratio_default_screen - ratio_pic) < 0.6 )   ratio_case = "Default_screen Outside";
+                 //else                                                     ratio_case = "Default_screen Inside";
+
+
+                if (ratio_pic / ratio_default_screen < 0.7 || ratio_pic / ratio_default_screen > 1/0.7 )  ratio_case = "Default_screen Inside";
+                else                                                                                      ratio_case = "Default_screen Outside";
+            }
+        }
 
 
         if ( ratio_case == "Full_desktop Outside")
         {
             pic = pic.scaled(desktop.size(),Qt::KeepAspectRatioByExpanding);
             pic_item = new QGraphicsPixmapItem(pic);
-            pic_item->setPos(desktop.topLeft());
+            pic_item->setPos(desktop.topLeft()+ QPoint(desktop.width()-pic.width(), desktop.height()-pic.height())/2);
         }
         else if (ratio_case == "Default_screen Outside")
         {
             pic = pic.scaled(default_screen.size(),Qt::KeepAspectRatioByExpanding);
             pic_item = new QGraphicsPixmapItem(pic);
-            pic_item->setPos(default_screen.topLeft());
+            pic_item->setPos(default_screen.topLeft()+ QPoint(default_screen.width()-pic.width(), default_screen.height()-pic.height())/2);
 
         }
         else if (ratio_case == "Full_desktop Inside")
         {
             pic = pic.scaled(desktop.size(),Qt::KeepAspectRatio);
             pic_item = new QGraphicsPixmapItem(pic);
-            pic_item->setPos(desktop.topLeft());
+            pic_item->setPos(desktop.topLeft()+ QPoint(desktop.width()-pic.width(), desktop.height()-pic.height())/2);
         }
         else //if (ratio_var == "Default_screen Inside")
         {
             pic = pic.scaled(default_screen.size(),Qt::KeepAspectRatio);
             pic_item = new QGraphicsPixmapItem(pic);
-            pic_item->setPos(default_screen.topLeft());
+            pic_item->setPos(default_screen.topLeft()+ QPoint(default_screen.width()-pic.width(), default_screen.height()-pic.height())/2);
         }
 
 
@@ -207,10 +231,10 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
             }
             else
             {
-                QWidget * scr_i = QApplication::desktop()->screen(i);
+                QRect scr_i = QApplication::desktop()->screenGeometry(i);
                 Logging_str += QString("        screen #%1  %2  %3\n").arg(i)
-                        .arg((double)scr_i->width()/scr_i->height(),4,'f',2)
-                        .arg(Tostr (scr_i->rect()));
+                        .arg((double)scr_i.width()/scr_i.height(),4,'f',2)
+                        .arg(Tostr (scr_i));
             }
         }
 
@@ -359,7 +383,7 @@ void View::keyPressEvent(QKeyEvent * event)
                 }
         }
     }
-    else if (event->key() == Qt::Key_Q)
+    else if (event->key() == Qt::Key_Escape)
     {
         close();
     }
@@ -379,8 +403,10 @@ void View::closeEvent(QCloseEvent *event)
             delete item;
         }
 
-    hide();
-    event->ignore();
+    //hide();
+    //event->ignore();
+    //close();
 
-    QGraphicsView::close();
+    //QGraphicsView::close();
+    QGraphicsView::closeEvent(event);
 }

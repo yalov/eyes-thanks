@@ -25,15 +25,19 @@
 Dialog::Dialog()
 {
     setWindowTitle(tr("Eyes' Thanks"));
-    setWindowIcon(QIcon(":icons/00.png"));
+    setWindowIcon(QIcon(":icons/logo.png"));
 
-    Init();
+
 
 #ifdef _WIN32
     //setWindowFlags( Qt::WindowTitleHint | Qt::CustomizeWindowHint); //-- no title buttons
-    setWindowFlags(Qt::WindowCloseButtonHint);
+    //setWindowFlags(Qt::WindowCloseButtonHint);
+    setWindowFlags( Qt::WindowTitleHint | Qt::CustomizeWindowHint);
+    setAttribute(Qt::WA_DeleteOnClose, true);
 
 #endif
+
+    Init();
 
 }
 
@@ -43,10 +47,10 @@ void Dialog::Init()
     setLayout(TopLayout);
 
     QHBoxLayout * layout_Path = new QHBoxLayout();
-    QLabel * label_path = new QLabel(tr("Folder with pictures") + ":");
+    QLabel * label_path = new QLabel(tr("Pictures folder") + ":");
     label_path->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
     LineEdit_Path = new QLineEdit();
-    LineEdit_Path->setReadOnly(true);
+    //LineEdit_Path->setReadOnly(true);
     layout_Path->addWidget(LineEdit_Path);
 
     QPushButton * ButtonPath = new QPushButton("...");
@@ -65,12 +69,26 @@ void Dialog::Init()
     TopLayout->addLayout(layout_AspectMode);
 
 
+    QHBoxLayout * layout_iconsMode = new QHBoxLayout();
+    Combobox_iconsMode = new QComboBox();
+    Combobox_iconsMode->insertItems(0, QStringList() << tr("Light") << tr("Dark"));
+    layout_iconsMode->addWidget(new QLabel(tr("Tray Icon Style")+ ":" ));
+    layout_iconsMode->addWidget(Combobox_iconsMode);
+    TopLayout->addLayout(layout_iconsMode);
+
+
     QFrame* line = new QFrame();
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
     TopLayout->addWidget(line);
 
-    TopLayout->addStretch();
+
+    QFrame* line2 = new QFrame();
+    line2->setFrameShape(QFrame::HLine);
+    line2->setFrameShadow(QFrame::Sunken);
+
+
+    //TopLayout->addStretch();
 
 
     Spinbox_RefreshmentInterval   = new QSpinBox();
@@ -89,28 +107,34 @@ void Dialog::Init()
 
     QGridLayout * Layout_TimeIntervalSetting = new QGridLayout();
     Layout_TimeIntervalSetting->addWidget(new QLabel(tr("Until break")), 0,0);
-    Layout_TimeIntervalSetting->addWidget(Spinbox_RefreshmentInterval, 0,2);
+    Layout_TimeIntervalSetting->addWidget(Spinbox_RefreshmentInterval, 0,1);
     Layout_TimeIntervalSetting->addWidget(new QLabel(tr("Break continuous")), 1,0);
-    Layout_TimeIntervalSetting->addWidget(Spinbox_RefreshmentContinuous, 1,2);
+    Layout_TimeIntervalSetting->addWidget(Spinbox_RefreshmentContinuous, 1,1);
 
-    Layout_TimeIntervalSetting->addWidget(CheckBox_PrettyFont, 2,0);
-    Layout_TimeIntervalSetting->addWidget(CheckBox_Clock, 3,0);
-    Layout_TimeIntervalSetting->addWidget(CheckBox_Text, 4,0);
 
-    Layout_TimeIntervalSetting->addWidget(CheckBox_Message, 2,2);
-    Layout_TimeIntervalSetting->addWidget(CheckBox_Logging, 3,2);
+    Layout_TimeIntervalSetting->addWidget(CheckBox_Message, 2,0,1,2);
+
+    Layout_TimeIntervalSetting->addWidget(CheckBox_Logging, 3,0);
+
+    Layout_TimeIntervalSetting->addWidget(line2, 4,0,1,2);
+
+    Layout_TimeIntervalSetting->addWidget(CheckBox_PrettyFont, 5,0);
+    Layout_TimeIntervalSetting->addWidget(CheckBox_Clock, 6,0);
+    Layout_TimeIntervalSetting->addWidget(CheckBox_Text, 6,1);
 
     TopLayout->addLayout(Layout_TimeIntervalSetting);
 
 
     TextEdit_Text = new QPlainTextEdit();
-    //TextEdit_Text->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    TextEdit_Text->setMaximumHeight(70);
+    //TextEdit_Text->setMaximumHeight(70);
+    TextEdit_Text->setFixedHeight(70);
 
     TextEdit_Text->setToolTip(tr("Support params: %interval, %continuous"));
     TopLayout->addWidget(TextEdit_Text);
+    TextEdit_Text->setGeometry(0,0,50,50);
 
     QHBoxLayout * Layout_Label_timer = new QHBoxLayout();
+
     QLabel * Label_Timer_Prefix = new QLabel(tr("Until break") + ": ");
 
     Label_Timer = new QLabel();
@@ -120,22 +144,32 @@ void Dialog::Init()
     Layout_Label_timer->addWidget(Label_Timer_Prefix);
     Layout_Label_timer->addWidget(Label_Timer);
     TopLayout->addLayout(Layout_Label_timer);
-    //Label_Timer_Prefix->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    //Label_Timer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    Label_Timer_Prefix->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    Label_Timer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QHBoxLayout * layout_buttons = new QHBoxLayout();
 
     QPushButton * buttonSave = new QPushButton(tr("Save"));
-    buttonSave->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     layout_buttons->addWidget(buttonSave);
 
     QPushButton * buttonMinimizeToSystemTray = new QPushButton(tr("Close to notification area"));
-    buttonMinimizeToSystemTray->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     layout_buttons->addWidget(buttonMinimizeToSystemTray);
-
 
     TopLayout->addLayout(layout_buttons);
 
+
+
+#ifdef Q_OS_WIN32
+
+
+    TaskbarButton = new QWinTaskbarButton(this);
+    //TaskbarButton->setOverlayIcon(QIcon(":icons/50.png"));
+
+    TaskbarProgress = TaskbarButton->progress();
+    TaskbarProgress->setVisible(true);
+
+
+#endif
 
     connect(ButtonPath, SIGNAL(clicked()), this, SLOT(ButtonPath_clicked()));
     connect(CheckBox_Text, SIGNAL(clicked(bool)), TextEdit_Text, SLOT(setEnabled(bool)));
@@ -144,13 +178,26 @@ void Dialog::Init()
 }
 
 
+void Dialog::showEvent(QShowEvent *e)
+{
+#ifdef Q_OS_WIN32
+    TaskbarButton->setWindow(windowHandle());
+#endif
+
+    e->accept();
+}
+
+
+
+
 void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode,
-                        bool isLogging, bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text)
+                        bool isLogging, bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text, IconsMode iconsmode)
 {
     Spinbox_RefreshmentInterval->setValue(pauseInterval /1000/60);
     Spinbox_RefreshmentContinuous->setValue(pauseContinuous/1000);
     LineEdit_Path->setText(ImagesPath);
     Combobox_imageAspectMode->setCurrentText(imageAspectMode);
+    Combobox_iconsMode->setCurrentIndex(iconsmode);
     CheckBox_Logging->setChecked(isLogging);
     CheckBox_Text->setChecked(isText);
     CheckBox_Clock->setChecked(isClock);
@@ -160,6 +207,7 @@ void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPat
     TextEdit_Text->setPlainText(Text);
 
 
+    emit TimerStatusRequest();
 
     /*connect(LineEdit_Path, SIGNAL(textChanged(QString)), this, SLOT(SaveValues()));
     connect(Combobox_imageAspectMode, SIGNAL(currentIndexChanged(int)), this, SLOT(SaveValues()));
@@ -174,9 +222,25 @@ void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPat
     //connect(TextEdit_Text, SIGNAL(textChanged()), this, SLOT(SaveValues()));
 }
 
-void Dialog::UpdateLabel(QString time)
+void Dialog::UpdateLabel(QString time, double ratio)
 {
     Label_Timer->setText(time);
+
+    if (ratio>=0)
+    {
+        TaskbarProgress->resume();
+        TaskbarProgress->setValue(ratio*100);
+
+        //qDebug() << "Set time " << time;
+    }
+    else
+    {
+        TaskbarProgress->pause();
+        TaskbarProgress->setValue(-ratio*100);
+        //qDebug() << "pause " << time;
+    }
+
+
 }
 
 bool Dialog::event(QEvent *event)
@@ -184,9 +248,10 @@ bool Dialog::event(QEvent *event)
 
     if (event->type() == QEvent::Close)
     {
-        event->accept();
+        //event->accept();
         emit closedialog();
         return QDialog::close();
+        //return QDialog::event(event);
     }
     else
     {
@@ -201,15 +266,18 @@ void Dialog::ButtonPath_clicked()
     QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
                    (LineEdit_Path->text().isEmpty()?QDir::homePath():LineEdit_Path->text()) , QFileDialog::ShowDirsOnly);
     if (!path.isEmpty())
+    {
         LineEdit_Path->setText(path);
+    }
 }
 
 void Dialog::SaveValues()
 {
-    Label_Timer->setText(QString("%1:00").arg(Spinbox_RefreshmentInterval->value(),2,10,QLatin1Char(' ')));
+    //emit TimerStatusRequest();
+    //Label_Timer->setText(QString("%1:00").arg(Spinbox_RefreshmentInterval->value(),2,10,QLatin1Char(' ')));
 
     emit save(Spinbox_RefreshmentInterval->value()*60 * 1000, Spinbox_RefreshmentContinuous->value() * 1000,
               LineEdit_Path->text(), Combobox_imageAspectMode->currentText(),
               CheckBox_Logging->isChecked(), CheckBox_Text->isChecked(), CheckBox_Clock->isChecked(), CheckBox_Message->isChecked(),
-              CheckBox_PrettyFont->isChecked(), TextEdit_Text->toPlainText());
+              CheckBox_PrettyFont->isChecked(), TextEdit_Text->toPlainText(), static_cast<IconsMode>(Combobox_iconsMode->currentIndex()));
 }

@@ -39,21 +39,29 @@ private:
     qint64 elapsed_summand;
     bool Logging;
 
+public:
+    qint64 interval;
+    bool isActive;
+
+signals:
+    void update();
+    void finished();
+
 private slots:
     void slot_timeout()
     {
 
         if (elapsed()> interval)
         {
-            qDebug() <<"Timer "<< Logging;
+            //qDebug() <<"Timer "<< Logging;
             if (Logging)
             {
                 QFile file("Logging.txt");
                 if (file.open(QIODevice::Append))
                 {
                     QTextStream out(&file);
-                    out << QString("%1, elapsed = %2, remains_str = %3, ratio = %4, elapsed_summand = %5\n")
-                           .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss")).arg(elapsed()).arg(remains_str(0)).arg(ratio()).arg(elapsed_summand);
+                    out << QString("%1, start view, elapsed = %2, elapsed_summand = %5\n")
+                           .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss")).arg(elapsed()).arg(elapsed_summand);
                     file.close();
                 }
             }
@@ -63,10 +71,6 @@ private slots:
         }
     }
 
-signals:
-    void update();
-    void finished();
-
 public slots:
     void  stop()
      {
@@ -75,9 +79,7 @@ public slots:
          elapsed_summand = 0;
      }
 
-public:
-    qint64 interval;
-    bool isActive;
+
 
 public:
     Timer(int updateinterval, int finishedinterval, bool _Logging = false): isActive(false)
@@ -87,7 +89,6 @@ public:
         connect(&qtimer, SIGNAL(timeout()), this, SIGNAL(update()));
         interval = finishedinterval;
         Logging = _Logging;
-        qDebug() << "Timer constr " << Logging;
     }
 
     void Init(int updateinterval, int finishedinterval)
@@ -104,7 +105,6 @@ public:
         elapsed_summand = 0;
     }
 
-
     void pause()
     {
         isActive = false;
@@ -118,8 +118,6 @@ public:
         qtimer.start();
         elatimer.restart();
     }
-
-
 
    void  restart(int updateinterval, int finishedinterval)
     {
@@ -140,24 +138,20 @@ public:
        elatimer.restart();
     }
 
-
     qint64 elapsed()
     {
-        return elapsed_summand + elatimer.elapsed();
+        return elapsed_summand + ((isActive) ? elatimer.elapsed() : 0);
     }
-
 
     qint64 remains()
     {
         return interval - elapsed();
     }
 
-
     double ratio()
     {
         return (double)elapsed()/interval;
     }
-
 
     QString remains_str(bool isDeciSec)
     {
@@ -169,8 +163,8 @@ public:
                     .arg(r/100%10);
 
         else return QString("%1:%2")
-                    .arg((r+1000)/60000,2,10,QLatin1Char(' '))
-                    .arg((r+1000)/1000%60,2,10,QLatin1Char('0'));
+                    .arg((r+500)/60000,2,10,QLatin1Char(' '))
+                    .arg((r+500)/1000%60,2,10,QLatin1Char('0'));
     }
 
 

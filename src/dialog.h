@@ -29,36 +29,46 @@
 #include <QSpinBox>
 #include <QDebug>
 #include <QGroupBox>
+#include <QWinTaskbarButton>
+#include <QWinTaskbarProgress>
+
+
+enum IconsMode {light, dark };
 
 class Dialog : public QDialog
 {
     Q_OBJECT
 public:
     Dialog();
-    void Init();
-    bool event(QEvent *event);
     void SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isLogging,
-                   bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text);
+                   bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text,  IconsMode iconsmode);
+
+private:
+    void showEvent(QShowEvent *e);
+    bool event(QEvent *event);
+    void Init();
+
 
 
 public slots:
-    void UpdateLabel(QString time);
-
-
-signals:
-    void closedialog();
-    void save(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isLogging,
-              bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text);
-
+    void UpdateLabel(QString time, double ratio);
 
 private slots:
     void SaveValues();
     void ButtonPath_clicked();
 
+
+signals:
+    void closedialog();
+    void save(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isLogging,
+              bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text, IconsMode iconmode);
+    void TimerStatusRequest();
+
 private:
     QLineEdit * LineEdit_Path;
     QPlainTextEdit * TextEdit_Text;
     QComboBox * Combobox_imageAspectMode;
+    QComboBox * Combobox_iconsMode;
     QSpinBox * Spinbox_RefreshmentInterval;
     QSpinBox * Spinbox_RefreshmentContinuous;
     QLabel * Label_Timer;
@@ -67,6 +77,9 @@ private:
     QCheckBox * CheckBox_Logging;
     QCheckBox * CheckBox_PrettyFont;
     QCheckBox * CheckBox_Text;
+
+    QWinTaskbarButton *TaskbarButton;
+    QWinTaskbarProgress *TaskbarProgress;
 };
 
 #endif // DIALOG_H

@@ -1,15 +1,9 @@
-# Welcome #
+![2monitors_preview.jpg](https://bitbucket.org/repo/rr7nxk/images/2041447689-2monitors.jpg)
 
-Eyes' Thanks is a software that protect your eyes. 
+**Eyes' Thanks** is a software that protect your eyes. 
 
-The program frequently alerts you to take rest breaks by showing fullscreen image (random from the folder).
-It supports multiple monitor system and wide image for all monitors.
+The program frequently alerts you to take rest breaks by showing fullscreen image (random image from the folder).
 
-Copyright © 2015 [Alexander Yalov](mailto:alexander.yalov@gmail.com), License: [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html)
+It supports **multiple monitors system** and wide image for all monitors.
 
-**Eyes' Thanks v0.31.0 for Windows (x86, portable) — [Download](https://bitbucket.org/flart/eyes-thanks/downloads/EyesThanks_v0.31.0.zip)**
-
-Setting dialog and alerting screensaver:
-
-![setting.png](https://bitbucket.org/repo/rr7nxk/images/3635807857-setting.png)
-![screen.jpg](https://bitbucket.org/repo/rr7nxk/images/4033221739-screen.jpg)
+More info — https://yalov.github.io/2016/eyes-thanks

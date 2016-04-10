@@ -25,17 +25,25 @@
 
 class GraphicsTextItemFixBound : public QGraphicsTextItem
 {
-    public:
+private:
+
     int d1x;
     int d1y;
     int d2x;
     int d2y;
 
-    GraphicsTextItemFixBound()
-    : QGraphicsTextItem()
+    void paint(QPainter *painter,const QStyleOptionGraphicsItem *option,QWidget *widget)
     {
+        QGraphicsTextItem::paint(painter,option,widget);
+        //painter->setPen(Qt::black);
+        //painter->drawRect(boundingRect());
     }
 
+public:
+
+    GraphicsTextItemFixBound() : QGraphicsTextItem()
+    {
+    }
 
     void setFont(QFont f)
     {
@@ -47,10 +55,7 @@ class GraphicsTextItemFixBound : public QGraphicsTextItem
         d2y = -f.pointSize()/4; // 0;    //-f.pointSize()/4; // kde4 -f.pointSize()/4
     }
 
-    QRectF boundingRect() const
-    {
-    return QGraphicsTextItem::boundingRect().adjusted(d1x,d1y,d2x,d2y);
-    }
+
 
     void setPos(const QPoint& pos)
     {
@@ -62,12 +67,9 @@ class GraphicsTextItemFixBound : public QGraphicsTextItem
         QGraphicsTextItem::setPos(QPoint(x - d1x,y - d1y));
     }
 
-
-    void paint(QPainter *painter,const QStyleOptionGraphicsItem *option,QWidget *widget)
+    QRectF boundingRect() const
     {
-    QGraphicsTextItem::paint(painter,option,widget);
-    //painter->setPen(Qt::black);
-    //painter->drawRect(boundingRect());
+        return QGraphicsTextItem::boundingRect().adjusted(d1x,d1y,d2x,d2y);
     }
 
 };

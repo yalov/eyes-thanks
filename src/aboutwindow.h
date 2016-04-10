@@ -49,7 +49,7 @@ public:
         QString license_url = "http://www.gnu.org/licenses/gpl-3.0.html";
         QString license_path = ":/copying.html";
         QString license_name = "GNU GPLv3";
-        QString logo_path = ":/icons/00.png";
+        QString logo_path = ":icons/logo.png";
 
     #ifdef _WIN32
         QIcon aboutIcon     = QIcon(":icons/help-about.png");

@@ -33,6 +33,7 @@
 #include "timer.h"
 #include "dialog.h"
 #include "aboutwindow.h"
+#include "updater.h"
 
 
 class TrayIcon : public QSystemTrayIcon
@@ -43,14 +44,11 @@ public:
     TrayIcon(QWidget *parent = 0);
     ~TrayIcon();
 
-    QAction *TestAct;
-    QAction *ShowSettingAct;
-    QAction *QuitAct;
-    QAction *PauseAct;
-    QAction *AboutAct;
+signals:
+    void updateLabel(QString text, double ratio);
 
+private slots:
 
-public slots:
     void ReadSettings();
     void WriteSettings();
 
@@ -65,13 +63,17 @@ public slots:
     void ShowDialog();
     void CloseDialog();
     void Save(int pauseinterval, int pausecontinuous, QString Imagespath, QString imageaspectMode,
-              bool isLogging, bool istext, bool isclock, bool ismessage30sec, bool isPrettyFont, QString text);
+              bool isLogging, bool istext, bool isclock, bool ismessage30sec, bool isPrettyFont, QString text, IconsMode iconsmode);
 
+    void TimerStatusSend();
 
+private:
 
+    void InitIcons();
+    void setCurrentIcon(double ratio);
+    void setPauseIcon();
+    void setCurrentIconbyCurrentIconRatio();
 
-signals:
-    void updateLabel(QString text);
 
 private:
     View *view;
@@ -80,7 +82,15 @@ private:
     Timer * ViewTimer;
     Timer * DialogTimer;
 
-public:
+    QAction *TestAct;
+    QAction *ShowSettingAct;
+    QAction *QuitAct;
+    QAction *PauseAct;
+    QAction *AboutAct;
+    UpdateAction *UpdaterAct;
+
+    QIcon ipp,i00, i25, i50, i75, i87, i95;
+
     int Counter;
     int pauseInterval;
     int pauseContinuous;
@@ -93,11 +103,13 @@ public:
     bool isMessage30sec;
     bool isPrettyFont;
     QString Text;
+    IconsMode iconsMode;
 
 
     bool TrayMessageShowed;
     QString TimeRemains;
-    double ActualIconRatio;
+    double CurrentIconRatio;
+
 };
 
 #endif // TRAYICON_H

@@ -21,13 +21,15 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4):{
     CONFIG += c++11
     QT += widgets
+    QT += network
+    QT += winextras
     win32:RC_ICONS += icons/icon.ico
 }else: {
     QMAKE_CXXFLAGS += -std=c++11
 }
 
 
-VERSION = 0.90.0
+VERSION = 0.98.0
 TARGET = "EyesThanks"
 
 QMAKE_TARGET_DESCRIPTION = Eyes\' Thanks
@@ -44,14 +46,16 @@ SOURCES += \
     src/dialog.cpp \
     src/main.cpp \
     src/trayicon.cpp \
-    src/view.cpp
+    src/view.cpp \
+    src/updater.cpp
 
 HEADERS  += src/aboutwindow.h \
     src/dialog.h \
     src/graphicstextitemfixbound.h \
     src/timer.h \
     src/trayicon.h \
-    src/view.h
+    src/view.h \
+    src/updater.h
 
 TRANSLATIONS += lang_ru.ts
 
