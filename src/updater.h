@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <qaction.h>
+#include <QMessageBox>
 
 #include <QtNetwork/QNetworkReply>
 
@@ -14,8 +15,10 @@ public:
 
 private:
     QNetworkAccessManager *manager;
+    QMessageBox *downloadProcess;
 
 private slots:
+    void showmessagebox();
     void update();
     void replyFinished(QNetworkReply *reply);
 };

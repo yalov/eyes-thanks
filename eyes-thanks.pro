@@ -29,16 +29,19 @@ greaterThan(QT_MAJOR_VERSION, 4):{
 }
 
 
-VERSION = 0.98.0
+VERSION = 0.99.0
 TARGET = "EyesThanks"
 
 QMAKE_TARGET_DESCRIPTION = Eyes\' Thanks
 QMAKE_TARGET_COPYRIGHT = Alexander Yalov
 
+DEFINES += REPOSITORY_PATH=\\\"https://github.com/yalov/eyes-thanks\\\"
+
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += 'APP_NAME=\'\"$$TARGET\"\''
 
 DEFINES += 'DEVELOP_NAME=\'\"$$QMAKE_TARGET_COPYRIGHT\"\''
+DEFINES += DEVELOP_EMAIL=\\\"alexander.yalov@gmail.com\\\"
 
 TEMPLATE = app
 

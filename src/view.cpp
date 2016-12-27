@@ -148,11 +148,6 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
         if (AspectMode == tr("Outside"))                                 ratio_case = "Full_desktop Outside";
         else if (AspectMode == tr("Inside"))                             ratio_case = "Default_screen Inside";
 
-        //else if (std::abs(ratio_desk - ratio_pic) < 0.6 )                ratio_case = "Full_desktop Outside";
-        //else if (std::abs(ratio_default_screen - ratio_pic) < 0.6 )      ratio_case = "Default_screen Outside";
-        //else if (std::abs(ratio_desk - ratio_pic) < std::abs(ratio_default_screen - ratio_pic)) ratio_case = "Full_desktop Inside";
-        //else                                                             ratio_case = "Default_screen Inside";
-
         else if (AspectMode == tr("Auto"))
         {
             if (std::abs(ratio_desk - ratio_pic) <= std::abs(ratio_default_screen - ratio_pic)) // Full_desktop
@@ -344,6 +339,8 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
         myscene->addItem( textItem);
     }
 
+
+
 #ifdef __linux__ // showFullScreen() doesn't work
     setWindowFlags(Qt::X11BypassWindowManagerHint);
     show();
@@ -369,6 +366,11 @@ void View::UpdateValues(QString remains_str, double ratio)
 
 void View::keyPressEvent(QKeyEvent * event)
 {
+
+}
+
+void View::keyReleaseEvent(QKeyEvent * event)
+{
     if (event->key() == Qt::Key_Delete)
     {
         QFile pic (picture_path);
@@ -388,10 +390,9 @@ void View::keyPressEvent(QKeyEvent * event)
         close();
     }
 
-    QGraphicsView::keyPressEvent(event);
+    // QGraphicsView::keyPressEvent(event);
+
 }
-
-
 
 void View::closeEvent(QCloseEvent *event)
 {

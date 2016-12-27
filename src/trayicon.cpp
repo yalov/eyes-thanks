@@ -94,15 +94,9 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     connect(DialogTimer, SIGNAL(finished()), this, SLOT(RefreshmentStart()));
 
-    //connect(view,      SIGNAL(view_close()),    ViewTimer, SLOT(stop()));
-    //connect(ViewTimer, SIGNAL(finished()), ViewTimer, SLOT(stop()));
-    //connect(ViewTimer, SIGNAL(finished()), view, SLOT(close()));
-
     connect(ViewTimer, SIGNAL(finished()), view, SIGNAL(view_close()));
     connect(view,      SIGNAL(view_close()),    view, SLOT(close()));
     connect(ViewTimer, SIGNAL(finished()), ViewTimer, SLOT(stop()));
-
-
 
     connect(this, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this, SLOT(Activated(QSystemTrayIcon::ActivationReason)));
@@ -176,17 +170,11 @@ void TrayIcon::WriteSettings()
 
 void TrayIcon::CloseDialog()
 {
-    //Counter++;
-    //if (Counter < 2)
-    //    showMessage(tr("Eyes' Thanks"),
-    //                         tr("The program will keep running in the system tray. To terminate the program, "
-    //                            "choose \"Quit\" in the context menu of the system tray entry."));
 
     ShowSettingAct->setEnabled(true);
     //dialog->closedialog();
     //dialog->close();
     dialog = NULL;
-    //qDebug() << "TrayIcon::CloseDialog()";
 
 }
 
@@ -459,6 +447,9 @@ void TrayIcon::RefreshmentStart()
 
 void TrayIcon::ShowView()
 {
+    //QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter);
+    //QCoreApplication::postEvent (receiver, event);
+
     QStringList images = QDir( ImagesPath).entryList(QStringList() <<"*.jpg" << "*.png");
 
     QString pic_path;

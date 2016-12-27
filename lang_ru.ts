@@ -43,10 +43,6 @@
         <translation>Eyes&apos; Thanks</translation>
     </message>
     <message>
-        <source>Folder with pictures</source>
-        <translation type="vanished">Папка с изображениями</translation>
-    </message>
-    <message>
         <location filename="src/dialog.cpp" line="66"/>
         <source>Auto</source>
         <translation>Автоматически</translation>
@@ -65,10 +61,6 @@
         <location filename="src/dialog.cpp" line="67"/>
         <source>Image Aspect Mode</source>
         <translation>Масштабирование изображений</translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation type="vanished">Обычный</translation>
     </message>
     <message>
         <location filename="src/dialog.cpp" line="74"/>
@@ -138,10 +130,6 @@
         <translation>До перерыва</translation>
     </message>
     <message>
-        <source>Debug</source>
-        <translation type="vanished">Отладка</translation>
-    </message>
-    <message>
         <location filename="src/dialog.cpp" line="111"/>
         <source>Break continuous</source>
         <translation>Перерыв</translation>
@@ -176,11 +164,11 @@
     </message>
     <message>
         <location filename="src/trayicon.cpp" line="54"/>
-        <location filename="src/trayicon.cpp" line="214"/>
-        <location filename="src/trayicon.cpp" line="257"/>
-        <location filename="src/trayicon.cpp" line="258"/>
-        <location filename="src/trayicon.cpp" line="262"/>
-        <location filename="src/trayicon.cpp" line="412"/>
+        <location filename="src/trayicon.cpp" line="202"/>
+        <location filename="src/trayicon.cpp" line="245"/>
+        <location filename="src/trayicon.cpp" line="246"/>
+        <location filename="src/trayicon.cpp" line="250"/>
+        <location filename="src/trayicon.cpp" line="400"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
@@ -201,18 +189,18 @@
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="424"/>
-        <location filename="src/trayicon.cpp" line="441"/>
+        <location filename="src/trayicon.cpp" line="412"/>
+        <location filename="src/trayicon.cpp" line="429"/>
         <source>Until break</source>
         <translation>До перерыва</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="143"/>
+        <location filename="src/trayicon.cpp" line="137"/>
         <source>Auto</source>
         <translation>Автоматически</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="144"/>
+        <location filename="src/trayicon.cpp" line="138"/>
         <source>All work and no play
 makes Jack a dull boy.</source>
         <oldsource>All work and no play makes Jack a dull boy.</oldsource>
@@ -220,28 +208,24 @@ makes Jack a dull boy.</source>
 а потехе %continuous.</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="441"/>
+        <location filename="src/trayicon.cpp" line="429"/>
         <source>Eyes&apos; Thanks</source>
         <translation>Eyes&apos; Thanks</translation>
     </message>
     <message>
-        <source>The program will keep running in the system tray. To terminate the program, choose &quot;Quit&quot; in the context menu of the system tray entry.</source>
-        <translation type="vanished">Программа по прежнему выполняется. Чтобы выйти из программы выберите соотв. пункт в контекстном меню значка системного трея.</translation>
-    </message>
-    <message>
-        <location filename="src/trayicon.cpp" line="246"/>
+        <location filename="src/trayicon.cpp" line="234"/>
         <source>Unpause</source>
         <translation>Продолжить</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="424"/>
-        <location filename="src/trayicon.cpp" line="441"/>
-        <location filename="src/trayicon.cpp" line="481"/>
+        <location filename="src/trayicon.cpp" line="412"/>
+        <location filename="src/trayicon.cpp" line="429"/>
+        <location filename="src/trayicon.cpp" line="472"/>
         <source>sec</source>
         <translation>сек</translation>
     </message>
     <message>
-        <location filename="src/trayicon.cpp" line="480"/>
+        <location filename="src/trayicon.cpp" line="471"/>
         <source>min</source>
         <translation>мин</translation>
     </message>
@@ -249,32 +233,35 @@ makes Jack a dull boy.</source>
 <context>
     <name>UpdateAction</name>
     <message>
-        <location filename="src/updater.cpp" line="57"/>
-        <location filename="src/updater.cpp" line="85"/>
-        <location filename="src/updater.cpp" line="92"/>
-        <location filename="src/updater.cpp" line="105"/>
+        <location filename="src/updater.cpp" line="25"/>
         <source>Eyes&apos; Thanks</source>
         <translation>Eyes&apos; Thanks</translation>
     </message>
     <message>
-        <location filename="src/updater.cpp" line="58"/>
-        <source>There was an error connecting to %1.</source>
-        <translation>Возникла ошибка при подключении к %1.</translation>
+        <location filename="src/updater.cpp" line="25"/>
+        <source>Checking update...</source>
+        <translation>Проверка обновлений...</translation>
     </message>
     <message>
-        <location filename="src/updater.cpp" line="86"/>
+        <location filename="src/updater.cpp" line="68"/>
+        <source>There was an error connecting to &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;.</source>
+        <translation>Возникла ошибка при подключении к &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <location filename="src/updater.cpp" line="118"/>
+        <source>Fantastic! You are have &lt;b&gt;Eyes&apos; Thanks %1&lt;/b&gt;, but last available version is &lt;b&gt;%2&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Please, upload new version to &lt;a href=%3&gt;%3&lt;/a&gt;.</source>
+        <translation>Ого! У вас &lt;b&gt;Eyes&apos; Thanks %1&lt;/b&gt;, а последняя доступная на репизитории версия &lt;b&gt;%2&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Не забудьте загрузить новую версию на &lt;a href=%3&gt;%3&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <location filename="src/updater.cpp" line="95"/>
         <source>You are already running the most recent version of &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt;.</source>
         <translation>У вас уже установлена последняя версия программы &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt;.</translation>
     </message>
     <message>
-        <location filename="src/updater.cpp" line="93"/>
-        <source>A new version of &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt; has been released! Version &lt;b&gt;%1&lt;/b&gt; is available at %2.&lt;br&gt;&lt;br&gt;You can download this version using the link:&lt;br&gt;%3</source>
-        <translation>Выпущена новая версия программы &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt;! Версия &lt;b&gt;%1&lt;/b&gt; доступна на сайте %2.&lt;br&gt;&lt;br&gt;Вы можете скачать эту версию, используя следующую прямую ссылку:&lt;br&gt;%3</translation>
-    </message>
-    <message>
         <location filename="src/updater.cpp" line="106"/>
-        <source>Fantastic! You are have &lt;b&gt;Eyes&apos; Thanks %1&lt;/b&gt;, but last available version is &lt;b&gt;%2&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Please, upload new version to %3.</source>
-        <translation>Ого! У вас &lt;b&gt;Eyes&apos; Thanks %1&lt;/b&gt;, а последняя доступная на репизитории версия &lt;b&gt;%2&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Не забудьте загрузить новую версию на %3.</translation>
+        <source>A new version of &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt; has been released! Version &lt;b&gt;%1&lt;/b&gt; is available at &lt;a href=%2&gt;%2&lt;/a&gt;.&lt;br&gt;&lt;br&gt;You can download this version using the link:&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;</source>
+        <oldsource>Fantastic! You are have &lt;b&gt;Eyes&apos; Thanks %1&lt;/b&gt;, but last available version is &lt;b&gt;%2&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Please, upload new version to %3.</oldsource>
+        <translation>Выпущена новая версия программы &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt;! Версия &lt;b&gt;%1&lt;/b&gt; доступна на сайте &lt;a href=%2&gt;%2&lt;/a&gt;.&lt;br&gt;&lt;br&gt;Вы можете скачать эту версию, используя следующую прямую ссылку:&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;</translation>
     </message>
 </context>
 <context>
@@ -295,47 +282,9 @@ makes Jack a dull boy.</source>
         <translation>Вписать</translation>
     </message>
     <message>
-        <location filename="src/view.cpp" line="156"/>
+        <location filename="src/view.cpp" line="151"/>
         <source>Auto</source>
         <translation>Автоматически</translation>
-    </message>
-</context>
-<context>
-    <name>updater</name>
-    <message>
-        <source>Eyes&apos; Thanks</source>
-        <translation type="vanished">Eyes&apos; Thanks</translation>
-    </message>
-    <message>
-        <source>There was an error connecting to %1.</source>
-        <translation type="vanished">Возникла ошибка при подключении к %1.</translation>
-    </message>
-    <message>
-        <source>You are already running the most recent version of &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt;.</source>
-        <oldsource>No updates available. You are already using the latest version.</oldsource>
-        <translation type="vanished">У вас уже установлена последняя версия программы &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source>A new version of &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt; has been released! Version &lt;b&gt;%1&lt;/b&gt; is available at %2.&lt;br&gt;&lt;br&gt;You can download this version using the link:&lt;br&gt;%3</source>
-        <translation type="vanished">Выпущена новая версия программы &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt;! Версия &lt;b&gt;%1&lt;/b&gt; доступна на сайте %2.&lt;br&gt;&lt;br&gt;Вы можете скачать эту версию, используя следующую прямую ссылку:&lt;br&gt;%3</translation>
-    </message>
-    <message>
-        <source>New version Eyes&apos; Thanks %1 is available.
-</source>
-        <translation type="vanished">Доступна новая верcия Eyes&apos; Thanks %1.</translation>
-    </message>
-    <message>
-        <source>Ignore</source>
-        <translation type="vanished">Игнорировать</translation>
-    </message>
-    <message>
-        <source>Download</source>
-        <translation type="vanished">Скачать</translation>
-    </message>
-    <message>
-        <source>There is some issue with your default browser, but you can download new version from repository: %1</source>
-        <oldsource>There is some issue with your default browser, but you can download new version from repository: &lt;a href=&apos;https://bitbucket.org/flart/eyes-thanks&apos;&gt;https://bitbucket.org/flart/eyes-thanks&lt;/a&gt;</oldsource>
-        <translation type="vanished">К сожалению, в вашем браузере обнаружены странности, но вы можете самостоятельно скачать обновление с репозитория: %1</translation>
     </message>
 </context>
 </TS>

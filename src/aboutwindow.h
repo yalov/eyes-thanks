@@ -45,7 +45,7 @@ public:
         QString app_version = QString(APP_VERSION);
         QString dev_name = QString(DEVELOP_NAME);
         QString dev_email = "alexander.yalov@gmail.com";
-        QString repository_url = "https://bitbucket.org/flart/eyes-thanks";
+        QString repository_url = QString(REPOSITORY_PATH);
         QString license_url = "http://www.gnu.org/licenses/gpl-3.0.html";
         QString license_path = ":/copying.html";
         QString license_name = "GNU GPLv3";
