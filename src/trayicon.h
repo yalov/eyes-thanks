@@ -63,7 +63,7 @@ private slots:
     void ShowDialog();
     void CloseDialog();
     void Save(int pauseinterval, int pausecontinuous, QString Imagespath, QString imageaspectMode,
-              bool isLogging, bool istext, bool isclock, bool ismessage30sec, bool isPrettyFont, QString text, IconsMode iconsmode);
+              bool isLogging, bool istext, bool isclock, bool ismessage30sec, bool isPrettyFont, bool isstartuplink, QString text, IconsMode iconsmode);
 
     void TimerStatusSend();
 
@@ -102,6 +102,7 @@ private:
     bool isClock;
     bool isMessage30sec;
     bool isPrettyFont;
+    bool isStartupLink;
     QString Text;
     IconsMode iconsMode;
 

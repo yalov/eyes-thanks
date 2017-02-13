@@ -29,8 +29,8 @@ greaterThan(QT_MAJOR_VERSION, 4):{
 }
 
 
-VERSION = 0.99.0
-TARGET = "EyesThanks"
+VERSION = 0.99.2
+TARGET = "Eyes Thanks"
 
 QMAKE_TARGET_DESCRIPTION = Eyes\' Thanks
 QMAKE_TARGET_COPYRIGHT = Alexander Yalov
@@ -60,7 +60,7 @@ HEADERS  += src/aboutwindow.h \
     src/view.h \
     src/updater.h
 
-TRANSLATIONS += lang_ru.ts
+TRANSLATIONS += languages/lang_ru.ts
 
 RESOURCES += \
     resource.qrc

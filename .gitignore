@@ -39,3 +39,6 @@ build-*_Qt_*
 *.7z
 bin/
 build
+
+inno-setup
+Thumbs.db

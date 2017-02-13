@@ -33,6 +33,9 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QStyle>
+#include <QRegularExpression>
+
+#include "QtNetwork/QNetworkAccessManager"
 
 class AboutWindow : public QDialog
 {
@@ -44,77 +47,101 @@ public:
         QString app_name = "Eyes' Thanks"; //QString(APP_NAME);
         QString app_version = QString(APP_VERSION);
         QString dev_name = QString(DEVELOP_NAME);
-        QString dev_email = "alexander.yalov@gmail.com";
+        QString dev_email = QString(DEVELOP_EMAIL);
         QString repository_url = QString(REPOSITORY_PATH);
         QString license_url = "http://www.gnu.org/licenses/gpl-3.0.html";
         QString license_path = ":/copying.html";
         QString license_name = "GNU GPLv3";
         QString logo_path = ":icons/logo.png";
 
-    #ifdef _WIN32
+        QString SSL_version_compiletime = QSslSocket::sslLibraryBuildVersionString();
+        QString SSL_version_runtime = QSslSocket::sslLibraryVersionString();
+
+
+        QRegularExpression re("\\d+\\.\\d+\\.\\S+");
+
+        QString SSL_version_compile = re.match(QSslSocket::sslLibraryBuildVersionString()).captured();
+        QString SSL_version_run = re.match(QSslSocket::sslLibraryVersionString()).captured();
+
+
+
+        QString Qt_version_compiletime = QString(QT_VERSION_STR);
+        QString Qt_version_runtime = qVersion();
+
+
+
+#ifdef _WIN32
         QIcon aboutIcon     = QIcon(":icons/help-about.png");
-        setWindowFlags( Qt::WindowTitleHint | Qt::CustomizeWindowHint);
-    #else
+        setWindowFlags(Qt::WindowTitleHint | Qt::CustomizeWindowHint);
+#else
         QIcon aboutIcon     = QIcon::fromTheme("help-about");       //QStyle::SP_MessageBoxInformation
-    #endif
+#endif
         setWindowIcon(aboutIcon);
 
         setWindowTitle(win_title);
 
 
-        QVBoxLayout * TopLayout = new QVBoxLayout(this);
+        QVBoxLayout *TopLayout = new QVBoxLayout(this);
 
-        QPushButton * ok = new QPushButton("OK");
+        QPushButton *ok = new QPushButton("OK");
         connect(ok, SIGNAL(clicked()), this, SLOT(close()));
 
-        QHBoxLayout * buttons = new QHBoxLayout();
+        QHBoxLayout *buttons = new QHBoxLayout();
         buttons->addStretch();
         buttons->addWidget(ok);
 
-        QTabWidget * tabs = new QTabWidget;
-        QHBoxLayout * middleLayout = new QHBoxLayout();
+        QTabWidget *tabs = new QTabWidget;
+        QHBoxLayout *middleLayout = new QHBoxLayout();
         middleLayout->addWidget(tabs);
 
-        TopLayout->addWidget(new QLabel("<h1 align = center>" + app_name +" v" + app_version + "</h1>"));
+        TopLayout->addWidget(new QLabel("<h1 align = center>" + app_name + " v" + app_version + "</h1>"));
         TopLayout->addLayout(middleLayout);
         TopLayout->addLayout(buttons);
 
         {
-            QWidget * tab1 = new QWidget;
+            QWidget *tab1 = new QWidget;
 
             tabs->addTab(tab1, QIcon(), tr("About"));
 
-            QHBoxLayout * lay1 = new QHBoxLayout(tab1);
-            QLabel* pic = new QLabel();
+            QHBoxLayout *lay1 = new QHBoxLayout(tab1);
+            QLabel *pic = new QLabel();
             pic->setPixmap(QPixmap(logo_path).scaledToWidth(128));
             pic->setFixedSize(pic->sizeHint());
             pic->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
-
-            QString aboutText = QString(
-                "<font size=4"
+            QString aboutText =
+                QString(
+                    "<font size=4>"
                     "<p align = justify>" +
                     tr("Eyes' Thanks is a software that protect your eyes. "
                        "The program frequently alerts you to take rest breaks by showing fullscreen image (random from the folder). "
                        "It supports multiple monitor system and wide image for all monitors.") +
+                    "<br></p>") +
+                QString(
+                    "<p align = center>"
+                    "Compile time:<br>Qt %1, %2"
                     "</p>"
-                    "<br>"
-                    "<p align = center>" +
-                        tr("Programmed in %1, based on Qt %2 toolkit %3") +
+
+                    "<p align = center>"
+                    "Runtime:<br>Qt %4 (with OpenSSL %3),<br>OpenSSL %5"
                     "</p>"
-                    "<p align = center>" +
-                        tr("Home Page")  +": <a href=\"%4\">%4</a>"
+                ).arg("<nobr>" + Qt_version_compiletime + "</nobr>", CompilerInfo(),
+                      "<nobr>" +  SSL_version_compile + "</nobr>", "<nobr>" + Qt_version_runtime + "</nobr>",
+                      "<nobr>" + SSL_version_run + "</nobr>") +
+
+                QString(
+                    "<p align = center>"
+                    "Repository"  ": <a href=\"%1\">%1</a>"
                     "</p>"
                     "<p align = center>"
-                        "Copyright © 2016 License: <a href=\"%5\">%6</a>"  "<br>"
-                        "%7 <a href='mailto:%8'>%8</a>"
+                    "Copyright © 2016 License: <a href=\"%2\">%3</a>"  "<br>"
+                    "%4 <a href='mailto:%5'>%5</a>"
                     "</p>"
-                "</font>"
-                ).arg("<nobr>C++</nobr>", "<nobr>" QT_VERSION_STR "</nobr>" ,CompilerInfo(),
-                      repository_url, license_url, license_name, dev_name, dev_email);
+                    "</font>"
+                ).arg(repository_url, license_url, license_name, dev_name, dev_email);
 
 
-            QLabel * lb_aboutText = new QLabel(aboutText);
+            QLabel *lb_aboutText = new QLabel(aboutText);
             lb_aboutText->setWordWrap(true);
             lb_aboutText->setTextFormat(Qt::RichText);
             lb_aboutText->setTextInteractionFlags(Qt::TextBrowserInteraction);
@@ -125,14 +152,13 @@ public:
         }
 
         QFile file(license_path);
-        if (file.open(QFile::ReadOnly | QFile::Text))
-        {
-            QWidget * tab2 = new QWidget;
+        if (file.open(QFile::ReadOnly | QFile::Text)) {
+            QWidget *tab2 = new QWidget;
             tabs->addTab(tab2, QIcon(), tr("License"));
 
-            QVBoxLayout * lay2 = new QVBoxLayout(tab2);
+            QVBoxLayout *lay2 = new QVBoxLayout(tab2);
 
-            QTextBrowser * textBrowser = new QTextBrowser();
+            QTextBrowser *textBrowser = new QTextBrowser();
 
             QTextStream ReadFile(&file);
             textBrowser->setText(ReadFile.readAll());
@@ -145,43 +171,46 @@ public:
 private:
     QString CompilerInfo()
     {
-        QString compiler_info = QString("<nobr>(");
+        QString compiler_info = QString("<nobr>");
 
-        #ifdef __GNUC__
-            #ifdef __MINGW32__
-                compiler_info += "MinGW ";
-            #else
-                compiler_info += "GCC ";
-            #endif
-            compiler_info += QString("%1.%2.%3,").arg( __GNUC__).arg( __GNUC_MINOR__).arg( __GNUC_PATCHLEVEL__);
-        #endif
+#ifdef __GNUC__
+#ifdef __MINGW32__
+        compiler_info += "MinGW ";
+#else
+        compiler_info += "GCC ";
+#endif
+        compiler_info += QString("%1.%2.%3,").arg(__GNUC__).arg(__GNUC_MINOR__).arg(__GNUC_PATCHLEVEL__);
+#endif
 
-        #ifdef _MSC_VER
-            version += "MSVC++ ";
-            switch (_MSC_VER)
-            {
-                case 1900: compiler_info+= "14.0"; break;
-                case 1800: compiler_info+= "12.0"; break;
-                case 1700: compiler_info+= "11.0"; break;
-                case 1600: compiler_info+= "10.0"; break;
-                case 1500: compiler_info+= "9.0" ; break;
-                case 1400: compiler_info+= "8.0" ; break;
-                default  : compiler_info+= "<8.0"; break;
-            }
+#ifdef _MSC_VER
+        compiler_info += "MSVC++ ";
+        if (_MSC_VER >= 2000) compiler_info += "14.0+";
+        else if (_MSC_VER >= 1900) compiler_info += "14.0"; // VS 2015
+        else if (_MSC_VER >= 1800) compiler_info += "12.0";
+        else if (_MSC_VER >= 1700) compiler_info += "11.0";
+        else if (_MSC_VER >= 1600) compiler_info += "10.0";
+        else if (_MSC_VER >= 1500) compiler_info += "9.0";
+        else if (_MSC_VER >= 1400) compiler_info += "8.0";
+        else                      compiler_info += "< 8.0";
 
-            compiler_info += ",";
+        compiler_info += ",";
 
-        #endif
+#endif
 
-        switch (sizeof(void*))
-        {
-            case 8:  compiler_info += " x64"; break;
-            case 4:  compiler_info += " x86"; break;
+        switch (sizeof(void *)) {
+        case 8:
+            compiler_info += " x64";
+            break;
+        case 4:
+            compiler_info += " x86";
+            break;
 
-            default: compiler_info += " ORLY?"; break;
+        default:
+            compiler_info += " ORLY?";
+            break;
         }
 
-        compiler_info += ")</nobr>";
+        compiler_info += "</nobr>";
         return compiler_info;
     }
 };

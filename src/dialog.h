@@ -41,7 +41,7 @@ class Dialog : public QDialog
 public:
     Dialog();
     void SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isLogging,
-                   bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text,  IconsMode iconsmode);
+                   bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, bool isStartupLink, QString Text,  IconsMode iconsmode);
 
 private:
     void showEvent(QShowEvent *e);
@@ -61,7 +61,7 @@ private slots:
 signals:
     void closedialog();
     void save(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isLogging,
-              bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, QString Text, IconsMode iconmode);
+              bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, bool isStartupLink, QString Text, IconsMode iconmode);
     void TimerStatusRequest();
 
 private:
@@ -77,6 +77,7 @@ private:
     QCheckBox * CheckBox_Logging;
     QCheckBox * CheckBox_PrettyFont;
     QCheckBox * CheckBox_Text;
+    QCheckBox * CheckBox_StartupLink;
 
     QWinTaskbarButton *TaskbarButton;
     QWinTaskbarProgress *TaskbarProgress;

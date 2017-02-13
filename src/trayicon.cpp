@@ -62,7 +62,7 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     UpdaterAct       = new UpdateAction(updateIcon, tr("Check for Updates"), this);
 
-    QMenu * ContextMenu = new QMenu();
+    QMenu *ContextMenu = new QMenu();
     ContextMenu->addAction(TestAct);
     ContextMenu->addAction(ShowSettingAct);
     ContextMenu->addAction(PauseAct);
@@ -76,8 +76,8 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     //setToolTip(QString(tr("Until break") + " %1").arg(TimeRemains));
 
-    for (auto f: QDir(":fonts").entryList())
-        QFontDatabase::addApplicationFont(":fonts/"+ f);
+    for (auto f : QDir(":fonts").entryList())
+        QFontDatabase::addApplicationFont(":fonts/" + f);
 
 
 
@@ -102,8 +102,7 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
             this, SLOT(Activated(QSystemTrayIcon::ActivationReason)));
 
 
-    if (Counter == 0)
-    {
+    if (Counter == 0) {
         ShowDialog();
     }
 
@@ -122,22 +121,31 @@ void TrayIcon::ReadSettings()
     settings.setIniCodec("utf8");
 
     settings.beginGroup("Settings");
-    Counter = settings.value("counter",0).toInt();
-    pauseInterval = settings.value("interval",60*60*1000).toInt();
-    pauseContinuous = settings.value("continuous",60*1000).toInt();
+    Counter         = settings.value("counter", 0).toInt();
+    pauseInterval   = settings.value("interval", 60 * 60 * 1000).toInt();
+    pauseContinuous = settings.value("continuous", 60 * 1000).toInt();
 
-    ImagesPath = settings.value("background_path", "").toString();
+    ImagesPath      = settings.value("background_path", "").toString();
 
-    isClock = settings.value("clock_enabled", true).toBool();
-    isMessage30sec = settings.value("message_enabled", true).toBool();
-    isLogging = settings.value("logging_enabled", false).toBool();
-    isText = settings.value("text_enabled", false).toBool();
-    isPrettyFont = settings.value("prettyFont_enabled", true).toBool();
+    isClock         = settings.value("clock_enabled", true).toBool();
+    isMessage30sec  = settings.value("message_enabled", true).toBool();
+    isLogging       = settings.value("logging_enabled", false).toBool();
+    isText          = settings.value("text_enabled", false).toBool();
+    isPrettyFont    = settings.value("prettyFont_enabled", true).toBool();
+
+    bool defaultisStartupLink;
+    if (QFile::exists(QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
+                      QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk"))
+        defaultisStartupLink = true;
+    else
+        defaultisStartupLink = false;
+
+    isStartupLink   = settings.value("startupLink_enabled", defaultisStartupLink).toBool();
 
     imageAspectMode = settings.value("aspectMode", tr("Auto")).toString();
-    Text = settings.value("text", tr("All work and no play\nmakes Jack a dull boy.")).toString();
+    Text            = settings.value("text", tr("All work and no play\nmakes Jack a dull boy.")).toString();
 
-    iconsMode = static_cast<IconsMode>(settings.value("iconsMode",IconsMode::light).toUInt());
+    iconsMode       = static_cast<IconsMode>(settings.value("iconsMode", IconsMode::light).toUInt());
     settings.endGroup();
 }
 
@@ -155,12 +163,13 @@ void TrayIcon::WriteSettings()
     settings.setValue("message_enabled", isMessage30sec);
     settings.setValue("logging_enabled", isLogging);
     settings.setValue("prettyFont_enabled", isPrettyFont);
+    settings.setValue("startupLink_enabled", isStartupLink);
     settings.setValue("aspectMode", imageAspectMode);
 
     settings.setValue("text_enabled", isText);
     settings.setValue("text", Text);
 
-    settings.setValue("iconsMode",static_cast<uint>(iconsMode));
+    settings.setValue("iconsMode", static_cast<uint>(iconsMode));
 
 
     settings.endGroup();
@@ -180,8 +189,21 @@ void TrayIcon::CloseDialog()
 
 
 void TrayIcon::Save(int pauseinterval, int pausecontinuous, QString Imagespath, QString imageaspectMode,
-                    bool islogging, bool istext, bool isclock, bool ismessage30sec, bool isprettyFont, QString text, IconsMode iconsmode)
+                    bool islogging, bool istext, bool isclock, bool ismessage30sec, bool isprettyFont, bool isstartuplink, QString text, IconsMode iconsmode)
 {
+
+    // create and delete StartUp Icon, at save time.
+    if (isstartuplink != isStartupLink) {
+        QString startup_lnk =  QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
+                               QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk";
+
+        if (isstartuplink == true)
+            QFile::link(QApplication::applicationFilePath(), startup_lnk);
+        else
+            QFile::remove(startup_lnk);
+
+    }
+
     pauseInterval = pauseinterval;
     pauseContinuous = pausecontinuous;
     ImagesPath = Imagespath;
@@ -191,11 +213,14 @@ void TrayIcon::Save(int pauseinterval, int pausecontinuous, QString Imagespath, 
     isClock = isclock;
     isMessage30sec = ismessage30sec;
     isPrettyFont = isprettyFont;
+    isStartupLink = isstartuplink;
     Text = text;
     iconsMode = iconsmode;
     CurrentIconRatio = -1;
 
     WriteSettings();
+
+
     InitIcons();
     setCurrentIcon(DialogTimer->ratio());
 
@@ -205,7 +230,7 @@ void TrayIcon::Save(int pauseinterval, int pausecontinuous, QString Imagespath, 
 #else
     PauseAct->setIcon(QIcon::fromTheme("media-playback-pause"));
 #endif
-    DialogTimer->restart(UPDATE_PERIOD_2, pauseInterval );
+    DialogTimer->restart(UPDATE_PERIOD_2, pauseInterval);
     ViewTimer->Init(UPDATE_PERIOD_1, pauseContinuous);
 
     TrayMessageShowed = false;
@@ -222,37 +247,34 @@ void TrayIcon::Quit()
 
 void TrayIcon::About()
 {
-    AboutWindow * about = new AboutWindow();
+    AboutWindow *about = new AboutWindow();
     about->show();
 }
 
 
 void TrayIcon::Pause()
 {
-    if (DialogTimer->isActive)
-    {
+    if (DialogTimer->isActive) {
         PauseAct->setText(tr("Unpause"));
 
-    #ifdef _WIN32
+#ifdef _WIN32
         PauseAct->setIcon(QIcon(":icons/media-playback-start.png"));
-    #else
+#else
         PauseAct->setIcon(QIcon::fromTheme("media-playback-start"));
-    #endif
+#endif
 
         DialogTimer->pause();
 
         setPauseIcon();
         setToolTip(toolTip() + " (" + tr("Pause") + ")");
-        emit updateLabel(DialogTimer->remains_str(false) +  " (" + tr("Pause")+")", -DialogTimer->ratio());
-    }
-    else
-    {
+        emit updateLabel(DialogTimer->remains_str(false) +  " (" + tr("Pause") + ")", -DialogTimer->ratio());
+    } else {
         PauseAct->setText(tr("Pause"));
-    #ifdef _WIN32
+#ifdef _WIN32
         PauseAct->setIcon(QIcon(":icons/media-playback-pause.png"));
-    #else
+#else
         PauseAct->setIcon(QIcon::fromTheme("media-playback-pause"));
-    #endif
+#endif
 
         DialogTimer->unpause();
 
@@ -265,8 +287,7 @@ void TrayIcon::Pause()
 
 void TrayIcon::Activated(QSystemTrayIcon::ActivationReason reason)
 {
-    switch (reason)
-    {
+    switch (reason) {
     case QSystemTrayIcon::Trigger:
         if (!dialog) this->ShowDialog();
         break;
@@ -286,44 +307,33 @@ void TrayIcon::setPauseIcon()
 
 void TrayIcon::setCurrentIconbyCurrentIconRatio()
 {
-    if      (CurrentIconRatio == 0.25 ) setIcon(i25);
-    else if (CurrentIconRatio == 0.5  ) setIcon( i50);
-    else if (CurrentIconRatio == 0.75 ) setIcon( i75);
-    else if (CurrentIconRatio == 0.87 ) setIcon( i87);
-    else if (CurrentIconRatio == 0.95 ) setIcon( i95);
-    else                                setIcon( i00); //if CurrentIconRatio == 0 or -1
+    if (CurrentIconRatio == 0.25) setIcon(i25);
+    else if (CurrentIconRatio == 0.5) setIcon(i50);
+    else if (CurrentIconRatio == 0.75) setIcon(i75);
+    else if (CurrentIconRatio == 0.87) setIcon(i87);
+    else if (CurrentIconRatio == 0.95) setIcon(i95);
+    else                                setIcon(i00);  //if CurrentIconRatio == 0 or -1
 }
 
 void TrayIcon::setCurrentIcon(double ratio)
 {
-    if (CurrentIconRatio == -1)
-    {
-        setIcon( i00);
+    if (CurrentIconRatio == -1) {
+        setIcon(i00);
         CurrentIconRatio = 0;
-    }
-    else if (ratio >0.25 && CurrentIconRatio == 0)
-    {
-        setIcon( i25);
+    } else if (ratio > 0.25 && CurrentIconRatio == 0) {
+        setIcon(i25);
         CurrentIconRatio = 0.25;
-    }
-    else if (ratio >0.50 && CurrentIconRatio == 0.25 )
-    {
+    } else if (ratio > 0.50 && CurrentIconRatio == 0.25) {
         setIcon(i50);
         CurrentIconRatio = 0.5;
-    }
-    else if (ratio >0.75&& CurrentIconRatio == 0.5 )
-    {
-        setIcon( i75);
+    } else if (ratio > 0.75 && CurrentIconRatio == 0.5) {
+        setIcon(i75);
         CurrentIconRatio = 0.75;
-    }
-    else if (ratio >0.87 && CurrentIconRatio == 0.75 )
-    {
-        setIcon( i87);
+    } else if (ratio > 0.87 && CurrentIconRatio == 0.75) {
+        setIcon(i87);
         CurrentIconRatio = 0.87;
-    }
-    else if (ratio >0.95 && CurrentIconRatio == 0.87 )
-    {
-        setIcon( i95);
+    } else if (ratio > 0.95 && CurrentIconRatio == 0.87) {
+        setIcon(i95);
         CurrentIconRatio = 0.95;
     }
 }
@@ -331,8 +341,7 @@ void TrayIcon::setCurrentIcon(double ratio)
 void TrayIcon::InitIcons()
 {
 
-    if (iconsMode == IconsMode::light)
-    {
+    if (iconsMode == IconsMode::light) {
         ipp = QIcon(":icons/light/pp.png");
         i00 = QIcon(":icons/light/00.png");
         i25 = QIcon(":icons/light/25.png");
@@ -341,9 +350,7 @@ void TrayIcon::InitIcons()
         i87 = QIcon(":icons/light/87.png");
         i95 = QIcon(":icons/light/95.png");
 
-    }
-    else if(iconsMode == IconsMode::dark)
-    {
+    } else if (iconsMode == IconsMode::dark) {
         ipp = QIcon(":icons/dark/pp.png");
         i00 = QIcon(":icons/dark/00.png");
         i25 = QIcon(":icons/dark/25.png");
@@ -351,9 +358,7 @@ void TrayIcon::InitIcons()
         i75 = QIcon(":icons/dark/75.png");
         i87 = QIcon(":icons/dark/87.png");
         i95 = QIcon(":icons/dark/95.png");
-    }
-    else
-    {
+    } else {
         ipp = QIcon(":icons/logo.png");
         i00 = QIcon(":icons/logo.png");
         i25 = QIcon(":icons/logo.png");
@@ -370,8 +375,8 @@ void TrayIcon::ShowDialog()
 {
     dialog = new Dialog();
     connect(dialog, SIGNAL(closedialog()), this, SLOT(CloseDialog()));
-    connect(dialog, SIGNAL(save(int, int, QString, QString, bool, bool, bool, bool, bool, QString, IconsMode)),
-            this, SLOT(Save(int, int, QString, QString, bool, bool, bool, bool, bool, QString, IconsMode)));
+    connect(dialog, SIGNAL(save(int, int, QString, QString, bool, bool, bool, bool, bool, bool, QString, IconsMode)),
+            this, SLOT(Save(int, int, QString, QString, bool, bool, bool, bool, bool, bool, QString, IconsMode)));
 
     connect(dialog, SIGNAL(TimerStatusRequest()), this, SLOT(TimerStatusSend()));
 
@@ -380,7 +385,7 @@ void TrayIcon::ShowDialog()
     ShowSettingAct->setEnabled(false);
 
     dialog->SetValues(pauseInterval, pauseContinuous, ImagesPath, imageAspectMode,
-                                 isLogging, isText, isClock, isMessage30sec, isPrettyFont, Text, iconsMode);
+                      isLogging, isText, isClock, isMessage30sec, isPrettyFont, isStartupLink, Text, iconsMode);
 
 #ifdef __linux__
     dialog->showNormal();
@@ -392,12 +397,10 @@ void TrayIcon::ShowDialog()
 
 void TrayIcon::TimerStatusSend()
 {
-    //qDebug() << "Time was requested, " <</* DialogTimer->remains_str(false) <<" " << */ "isActive = "<<DialogTimer->isActive ;
-
     if (DialogTimer->isActive)
         emit updateLabel(DialogTimer->remains_str(false), DialogTimer->ratio());
     else
-        emit updateLabel(DialogTimer->remains_str(false) +  " (" + tr("Pause")+")", -DialogTimer->ratio());
+        emit updateLabel(DialogTimer->remains_str(false) +  " (" + tr("Pause") + ")", -DialogTimer->ratio());
 }
 
 void TrayIcon::DialogUpdateTime()
@@ -409,24 +412,21 @@ void TrayIcon::DialogUpdateTime()
 
     emit updateLabel(TimeRemains, ratio);
 
-    setToolTip(QString(tr("Until break") +" %1 "+tr("sec")).arg(TimeRemains));
+    setToolTip(QString(tr("Until break") + " %1 " + tr("sec")).arg(TimeRemains));
 
-    if (isMessage30sec && remains < 30000 && !TrayMessageShowed)
-    {
-        if (isLogging)
-        {
+    if (isMessage30sec && remains < 30000 && !TrayMessageShowed) {
+        if (isLogging) {
             QFile file("Logging.txt");
-            if (file.open(QIODevice::Append))
-            {
+            if (file.open(QIODevice::Append)) {
                 QTextStream out(&file);
                 out << QString("%1, message. remains = %2; ")
-                       .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
-                       .arg(remains);
+                    .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
+                    .arg(remains);
                 file.close();
             }
         }
 
-        showMessage(tr("Eyes' Thanks"),QString(tr("Until break") +" %1 "+tr("sec")).arg(qRound( remains/1000.)));
+        showMessage(tr("Eyes' Thanks"), QString(tr("Until break") + " %1 " + tr("sec")).arg(qRound(remains / 1000.)));
         TrayMessageShowed = true;
     }
 
@@ -450,12 +450,11 @@ void TrayIcon::ShowView()
     //QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter);
     //QCoreApplication::postEvent (receiver, event);
 
-    QStringList images = QDir( ImagesPath).entryList(QStringList() <<"*.jpg" << "*.png");
+    QStringList images = QDir(ImagesPath).entryList(QStringList() << "*.jpg" << "*.png");
 
     QString pic_path;
-    if (!images.isEmpty())
-    {
-        pic_path = ImagesPath + "/" + images[qrand()%images.size()];
+    if (!images.isEmpty()) {
+        pic_path = ImagesPath + "/" + images[qrand() % images.size()];
     }
 
 
@@ -468,8 +467,8 @@ void TrayIcon::ShowView()
     if (isText)    text = Text;
     else           text = "";
 
-    text.replace("%interval", QString::number( pauseInterval / 1000/60) + " " + tr("min"));
-    text.replace("%continuous", QString::number(pauseContinuous/1000) + " " + tr("sec"));
+    text.replace("%interval", QString::number(pauseInterval / 1000 / 60) + " " + tr("min"));
+    text.replace("%continuous", QString::number(pauseContinuous / 1000) + " " + tr("sec"));
 
     view->ShowRefreshment(pic_path, clock, text, isLogging, isPrettyFont, imageAspectMode);
 }
@@ -478,8 +477,7 @@ void TrayIcon::ShowView()
 
 void TrayIcon::ViewUpdateTime()
 {
-    if (view->isHidden())
-    {
+    if (view->isHidden()) {
         ViewTimer->stop();
         return;
     }
