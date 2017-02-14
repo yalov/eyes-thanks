@@ -412,7 +412,7 @@ void TrayIcon::DialogUpdateTime()
 
     emit updateLabel(TimeRemains, ratio);
 
-    setToolTip(QString(tr("Until break") + " %1 " + tr("sec")).arg(TimeRemains));
+    setToolTip(tr("Until break")+ ": "+ TimeRemains);
 
     if (isMessage30sec && remains < 30000 && !TrayMessageShowed) {
         if (isLogging) {

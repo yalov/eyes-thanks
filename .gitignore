@@ -42,3 +42,6 @@ build
 
 inno-setup
 Thumbs.db
+EyesThanks/*.dll
+EyesThanks/*.exe
+EyesThanks/*/*.dll

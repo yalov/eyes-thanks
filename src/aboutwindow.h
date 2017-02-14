@@ -54,15 +54,14 @@ public:
         QString license_name = "GNU GPLv3";
         QString logo_path = ":icons/logo.png";
 
-        QString SSL_version_compiletime = QSslSocket::sslLibraryBuildVersionString();
-        QString SSL_version_runtime = QSslSocket::sslLibraryVersionString();
 
+        QRegularExpression re("\\S+\\s+\\d+\\.\\d+\\.\\S+");
 
-        QRegularExpression re("\\d+\\.\\d+\\.\\S+");
+        QString OpenSSL_version_compile = re.match(QSslSocket::sslLibraryBuildVersionString()).captured();
+        QString OpenSSL_version_run = re.match(QSslSocket::sslLibraryVersionString()).captured();
 
-        QString SSL_version_compile = re.match(QSslSocket::sslLibraryBuildVersionString()).captured();
-        QString SSL_version_run = re.match(QSslSocket::sslLibraryVersionString()).captured();
-
+        if (OpenSSL_version_run == "")
+            OpenSSL_version_run = "OpenSSL dlls are missing";
 
 
         QString Qt_version_compiletime = QString(QT_VERSION_STR);
@@ -123,11 +122,11 @@ public:
                     "</p>"
 
                     "<p align = center>"
-                    "Runtime:<br>Qt %4 (with OpenSSL %3),<br>OpenSSL %5"
+                    "Runtime:<br>Qt %4 (with %3),<br>%5"
                     "</p>"
                 ).arg("<nobr>" + Qt_version_compiletime + "</nobr>", CompilerInfo(),
-                      "<nobr>" +  SSL_version_compile + "</nobr>", "<nobr>" + Qt_version_runtime + "</nobr>",
-                      "<nobr>" + SSL_version_run + "</nobr>") +
+                      "<nobr>" +  OpenSSL_version_compile + "</nobr>", "<nobr>" + Qt_version_runtime + "</nobr>",
+                      "<nobr>" + OpenSSL_version_run + "</nobr>") +
 
                 QString(
                     "<p align = center>"
