@@ -122,7 +122,7 @@ public:
                     "</p>"
 
                     "<p align = center>"
-                    "Runtime:<br>Qt %4 (with %3),<br>%5"
+                    "Runtime:<br>Qt %4 (%3 inside),<br>%5"
                     "</p>"
                 ).arg("<nobr>" + Qt_version_compiletime + "</nobr>", CompilerInfo(),
                       "<nobr>" +  OpenSSL_version_compile + "</nobr>", "<nobr>" + Qt_version_runtime + "</nobr>",
