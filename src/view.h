@@ -67,8 +67,10 @@ private:
     GraphicsTextItemFixBound * ProgressBarText;
     QRect ProgressBarRect;
     QGraphicsRectItem * ButtonRectItem;
-    GraphicsTextItemFixBound * ButtonText;
     double Hue;
+
+public:
+    GraphicsTextItemFixBound * ButtonText;
 };
 
 

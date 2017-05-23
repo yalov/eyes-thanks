@@ -194,19 +194,19 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
 <context>
     <name>TrayIcon</name>
     <message>
-        <location filename="../src/trayicon.cpp" line="148"/>
+        <location filename="../src/trayicon.cpp" line="131"/>
         <location filename="../src/trayicon.cpp" line="421"/>
         <source>Test</source>
         <translation>Тест</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="151"/>
+        <location filename="../src/trayicon.cpp" line="134"/>
         <location filename="../src/trayicon.cpp" line="422"/>
         <source>Setting</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="154"/>
+        <location filename="../src/trayicon.cpp" line="137"/>
         <location filename="../src/trayicon.cpp" line="283"/>
         <location filename="../src/trayicon.cpp" line="324"/>
         <location filename="../src/trayicon.cpp" line="325"/>
@@ -217,19 +217,19 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="157"/>
+        <location filename="../src/trayicon.cpp" line="145"/>
         <location filename="../src/trayicon.cpp" line="424"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="160"/>
+        <location filename="../src/trayicon.cpp" line="142"/>
         <location filename="../src/trayicon.cpp" line="425"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="163"/>
+        <location filename="../src/trayicon.cpp" line="140"/>
         <location filename="../src/trayicon.cpp" line="426"/>
         <source>Check for Updates</source>
         <oldsource>Check Update</oldsource>
@@ -250,13 +250,13 @@ makes Jack a dull boy.</source>
 а потехе %continuous.</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="77"/>
+        <location filename="../src/trayicon.cpp" line="156"/>
         <location filename="../src/trayicon.cpp" line="427"/>
         <source>Languages</source>
         <translation>Языки</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="108"/>
+        <location filename="../src/trayicon.cpp" line="90"/>
         <source>English</source>
         <translation>Русский</translation>
     </message>

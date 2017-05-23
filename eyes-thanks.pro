@@ -65,7 +65,7 @@ HEADERS  += src/aboutwindow.h \
     src/view.h \
     src/updater.h
 
-TRANSLATIONS += languages/lang_ru.ts
+TRANSLATIONS += languages/lang_ru.ts languages/lang_en.ts
 RESOURCES += resource.qrc
 
 

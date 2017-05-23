@@ -31,6 +31,7 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     createActions();
     createContextMenu();
+    view = new View();
 
     ReadSettings();
 
@@ -38,11 +39,10 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
         QFontDatabase::addApplicationFont(":fonts/" + f);
 
 
-
     InitIcons();
 
     setCurrentIcon(0.0);
-    view = new View();
+
     ViewTimer = new Timer(UPDATE_PERIOD_1, pauseContinuous);
     DialogTimer = new Timer(UPDATE_PERIOD_2, pauseInterval, isLogging);
     DialogTimer->start();
@@ -65,24 +65,6 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 TrayIcon::~TrayIcon()
 {
 
-}
-
-void TrayIcon::createContextMenu()
-{
-    QMenu *ContextMenu = new QMenu();
-    ContextMenu->addAction(TestAct);
-    ContextMenu->addAction(ShowSettingAct);
-    ContextMenu->addAction(PauseAct);
-
-    SubMenuLanguages = new QMenu(tr("Languages"));
-    SubMenuLanguages->addActions(LangActGroup->actions());
-    ContextMenu->addMenu(SubMenuLanguages);
-
-    ContextMenu->addAction(UpdaterAct);
-    ContextMenu->addAction(AboutAct);
-    ContextMenu->addAction(QuitAct);
-
-    setContextMenu(ContextMenu);
 }
 
 void TrayIcon::createLangActionGroup()
@@ -128,20 +110,21 @@ void TrayIcon::createLangActionGroup()
 void TrayIcon::createActions()
 {
 #ifdef _WIN32
+
+    QIcon testIcon    = QIcon(":icons/video-display.png");
     QIcon settingIcon = QIcon(":icons/configure.png");
     QIcon pauseIcon   = QIcon(":icons/media-playback-pause.png");
+    QIcon updateIcon  = QIcon(":icons/system-software-update");
     QIcon aboutIcon   = QIcon(":icons/help-about.png");
     QIcon quitIcon    = QIcon(":icons/application-exit.png");
-    QIcon updateIcon  = QIcon(":icons/system-software-update");
-    QIcon testIcon    = QIcon(":icons/video-display.png");
 
 #else
+    QIcon testIcon    = QIcon::fromTheme("video-display"); // preferences-desktop-display
     QIcon settingIcon = QIcon::fromTheme("document-properties");//QIcon::fromTheme( "configure" );
     QIcon pauseIcon   = QIcon::fromTheme("media-playback-pause");//QWidget().style()->standardIcon(QStyle::SP_MediaPause);
+    QIcon updateIcon  = QIcon::fromTheme("system-software-update");
     QIcon aboutIcon   = QIcon::fromTheme("help-about");//QWidget().style()->standardIcon(QStyle::SP_MessageBoxInformation);
     QIcon quitIcon    = QIcon::fromTheme("application-exit");//QWidget().style()->standardIcon(QStyle::SP_DialogCloseButton);
-    QIcon updateIcon  = QIcon::fromTheme("system-software-update");
-    QIcon testIcon    = QIcon::fromTheme("video-display"); // preferences-desktop-display
 
 #endif
 
@@ -154,15 +137,32 @@ void TrayIcon::createActions()
     PauseAct       = new QAction(pauseIcon, tr("Pause"), this);
     connect(PauseAct, SIGNAL(triggered()), this, SLOT(Pause()));
 
-    QuitAct        = new QAction(quitIcon, tr("Quit"), this);
-    connect(QuitAct, SIGNAL(triggered()), this, SLOT(Quit()));
+    UpdaterAct       = new UpdateAction(updateIcon, tr("Check for Updates"), this);
 
     AboutAct       = new QAction(aboutIcon, tr("About"), this);
     connect(AboutAct, SIGNAL(triggered()), this, SLOT(About()));
 
-    UpdaterAct       = new UpdateAction(updateIcon, tr("Check for Updates"), this);
+    QuitAct        = new QAction(quitIcon, tr("Quit"), this);
+    connect(QuitAct, SIGNAL(triggered()), this, SLOT(Quit()));
 }
 
+void TrayIcon::createContextMenu()
+{
+    QMenu *ContextMenu = new QMenu();
+    ContextMenu->addAction(TestAct);
+    ContextMenu->addAction(ShowSettingAct);
+    ContextMenu->addAction(PauseAct);
+
+    SubMenuLanguages = new QMenu(tr("Languages"));
+    SubMenuLanguages->addActions(LangActGroup->actions());
+    ContextMenu->addMenu(SubMenuLanguages);
+
+    ContextMenu->addAction(UpdaterAct);
+    ContextMenu->addAction(AboutAct);
+    ContextMenu->addAction(QuitAct);
+
+    setContextMenu(ContextMenu);
+}
 
 void TrayIcon::ReadSettings()
 {
@@ -388,7 +388,6 @@ void TrayIcon::LoadLanguage(const QString& rLanguage)
 {
     if(LangCurrent != rLanguage && !rLanguage.isEmpty())
     {
-        qDebug() << LangCurrent << " to " << rLanguage;
         LangCurrent = rLanguage;
         QLocale locale = QLocale(LangCurrent);
         QLocale::setDefault(locale);
@@ -398,7 +397,6 @@ void TrayIcon::LoadLanguage(const QString& rLanguage)
         bool load = Translator->load(QString("lang_%1.qm").arg(LangCurrent), LangPath);
         if (load){
             qApp->installTranslator(Translator);
-            qDebug() << "load";
         }
 
         retranslate();
@@ -416,8 +414,6 @@ void TrayIcon::LoadLanguage(const QString& rLanguage)
 //-----------------------------------------------------------------
 void TrayIcon::retranslate()
 {
-    qDebug() << "retranslate";
-
     TestAct->setText(tr("Test"));
     ShowSettingAct->setText(tr("Setting"));
     PauseAct->setText(tr("Pause"));
@@ -425,7 +421,7 @@ void TrayIcon::retranslate()
     AboutAct->setText(tr("About"));
     UpdaterAct->setText(tr("Check for Updates"));
     SubMenuLanguages->setTitle(tr("Languages"));
-    //createContextMenu();
+    view->ButtonText->setPlainText(view->tr("Close"));
 }
 
 
@@ -578,12 +574,9 @@ void TrayIcon::ShowView()
         pics_path.append(pic_path_alt);
     }
 
-
-
     QString clock;
     if (isClock)  clock = QTime::currentTime().toString("hh:mm");
     else          clock = "";
-
 
     QString text;
     if (isText)    text = Text;

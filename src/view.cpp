@@ -201,7 +201,7 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
             pic_item->setPos(default_screen.topLeft() + QPoint(default_screen.width() - pic.width(), default_screen.height() - pic.height()) / 2);
         }
 
-        pic_item->setZValue(-1);
+        pic_item->setZValue(-2);
         myscene->addItem(pic_item);
 
     } else { // pics.size()==0
@@ -376,7 +376,7 @@ void View::keyReleaseEvent(QKeyEvent *event)
 
         if (pic.exists() && pic.remove()) {
             for (auto item : myscene->items())
-                if (item->zValue() == -1 && item->boundingRect().height() > 500) {
+                if (item->zValue() == -2) {
                     myscene->removeItem(item);
                     delete item;
                 }
@@ -394,7 +394,7 @@ void View::closeEvent(QCloseEvent *event)
 {
     emit view_close();
     for (auto item : myscene->items())
-        if (item->zValue() == -1) {
+        if (item->zValue() == -1 || item->zValue() == -2) {
             myscene->removeItem(item);
             delete item;
         }
