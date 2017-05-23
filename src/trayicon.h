@@ -49,8 +49,7 @@ signals:
 
 private slots:
 
-    void ReadSettings();
-    void WriteSettings();
+
 
     void ShowView();
     void RefreshmentStart();
@@ -62,17 +61,25 @@ private slots:
     void About();
     void ShowDialog();
     void CloseDialog();
-    void Save(int pauseinterval, int pausecontinuous, QString Imagespath, QString imageaspectMode,
+    void Save(int pauseinterval, int pausecontinuous, QString Imagespath, QString Imagespath_alt, QString imageaspectMode,
               bool isLogging, bool istext, bool isclock, bool ismessage30sec, bool isPrettyFont, bool isstartuplink, QString text, IconsMode iconsmode);
 
     void TimerStatusSend();
+    void slotLanguageChanged(QAction* action);  // this slot is called by the language menu actions
 
 private:
+    void ReadSettings();
+    void WriteSettings();
 
     void InitIcons();
     void setCurrentIcon(double ratio);
     void setPauseIcon();
     void setCurrentIconbyCurrentIconRatio();
+    void retranslate();
+    void LoadLanguage(const QString& rLanguage);  // loads a language by the given language shortcur (e.g. de, en)
+    void createContextMenu();
+    void createLangActionGroup();
+    void createActions();
 
 
 private:
@@ -82,11 +89,15 @@ private:
     Timer * ViewTimer;
     Timer * DialogTimer;
 
+    QTranslator * Translator;
+
     QAction *TestAct;
     QAction *ShowSettingAct;
     QAction *QuitAct;
     QAction *PauseAct;
     QAction *AboutAct;
+    QActionGroup * LangActGroup;
+    QMenu *SubMenuLanguages;
     UpdateAction *UpdaterAct;
 
     QIcon ipp,i00, i25, i50, i75, i87, i95;
@@ -94,7 +105,10 @@ private:
     int Counter;
     int pauseInterval;
     int pauseContinuous;
+    QString LangPath;
+    QString LangCurrent;
     QString ImagesPath;
+    QString ImagesPath_alt;
     QString imageAspectMode;
 
     bool isLogging;

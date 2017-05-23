@@ -27,6 +27,7 @@ View::View(QWidget *parent): QGraphicsView(parent), clockItem(NULL)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setStyleSheet("QGraphicsView { border-style: none; }");
+
     setScene(myscene);
 
 
@@ -117,50 +118,70 @@ inline QString Tostr(QRect r)
     return QString("(%1,%2)[%3x%4]").arg(r.x(), 5).arg(r.y(), 5).arg(r.width(), 4).arg(r.height(), 4);
 }
 
-void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool isLogging, bool isPrettyFont, QString AspectMode)
+inline QString Tostr(QSize s)
 {
-    picture_path = pic_path;
-    //qDebug() << "isLogging " << isLogging;
-    QPixmap pic = QPixmap(picture_path);
-    QRect pic_rect = pic.rect();
+    return QString("             [%3x%4]").arg(s.width(), 4).arg(s.height(), 4);
+}
+
+void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text, bool isLogging, bool isPrettyFont, QString AspectMode)
+{
+    QList<double> ratios_pic;
+    QList<QPixmap> pics;
+    QList<QString> pics_path_confirmed;
+
+    for (auto pic_path: pics_path){
+        QPixmap pic = QPixmap(pic_path);
+        if (!pic.isNull()) {
+        pics.append(pic);
+        ratios_pic.append((double)pic.width() / pic.height());
+        pics_path_confirmed.append(pic_path);
+        }
+    }
+
+    QPixmap pic;
     QRect desktop = QApplication::desktop()->geometry();
     QRect default_screen = QApplication::desktop()->screenGeometry(-1);
-
-    myscene->setSceneRect(desktop);
-    myscene->setBackgroundBrush(QBrush(Qt::black));
-
-    QString ratio_case = "No image";
-    double ratio_pic = 0.0;
     double ratio_desk = (double)desktop.width() / desktop.height();
     double ratio_default_screen = (double)default_screen.width() / default_screen.height();
 
-    if (!pic.isNull()) {
-        ratio_pic = (double)pic.width() / pic.height();
+    myscene->setSceneRect(desktop);
+    myscene->setBackgroundBrush(Qt::black);
+    QString ratio_case = "No image";
+    double ratio_pic = 0.0;
 
-        QGraphicsPixmapItem *pic_item;
 
-        if (AspectMode == tr("Outside"))                                 ratio_case = "Full_desktop Outside";
-        else if (AspectMode == tr("Inside"))                             ratio_case = "Default_screen Inside";
+    if (pics.size()>0) {
+        // find out which one of pic apropriate, if "inside" - comparison to def screen, if outside or auto - comparison to desk
+        {
+            double ratio = (AspectMode == QWidget::tr("Inside"))?ratio_default_screen:ratio_desk;
+            double min_value = std::numeric_limits<double>::max();
+            double min_index = 0;
 
-        else if (AspectMode == tr("Auto")) {
+            for (int i=0; i<pics.size();i++){
+                if (abs(ratios_pic[i] - ratio) < min_value ){
+                    min_value = abs(ratios_pic[i] - ratio);
+                    min_index = i;
+                }
+            }
+
+            picture_path = pics_path_confirmed[min_index];
+            pic = pics[min_index];
+            ratio_pic = ratios_pic[min_index];
+        }
+
+        if      (AspectMode == QWidget::tr("Inside"))      ratio_case = "Default_screen Inside";
+        else if (AspectMode == QWidget::tr("Outside"))     ratio_case = "Full_desktop Outside";
+        else if (AspectMode == QWidget::tr("Auto")) {
             if (std::abs(ratio_desk - ratio_pic) <= std::abs(ratio_default_screen - ratio_pic)) { // Full_desktop
-                //if (std::abs(ratio_desk - ratio_pic) < 0.6 )              ratio_case = "Full_desktop Outside";
-                //else                                                      ratio_case = "Full_desktop Inside";
-
-                if (ratio_pic / ratio_desk < 0.7 || ratio_pic / ratio_desk > 1 / 0.7)  ratio_case = "Full_desktop Inside";
-                else                                                                  ratio_case = "Full_desktop Outside";
-
+                if (ratio_pic / ratio_desk < 0.7 || ratio_pic / ratio_desk > 1 / 0.7)  {ratio_case = "Full_desktop Inside"; qDebug() << ratio_pic << " " << ratio_desk; }
+                else                                                                   {ratio_case = "Full_desktop Outside"; qDebug() << ratio_pic << " " << ratio_desk;}
             } else { //Default_screen
-                //if (std::abs(ratio_default_screen - ratio_pic) < 0.6 )   ratio_case = "Default_screen Outside";
-                //else                                                     ratio_case = "Default_screen Inside";
-
-
                 if (ratio_pic / ratio_default_screen < 0.7 || ratio_pic / ratio_default_screen > 1 / 0.7)  ratio_case = "Default_screen Inside";
-                else                                                                                      ratio_case = "Default_screen Outside";
+                else                                                                                       ratio_case = "Default_screen Outside";
             }
         }
 
-
+        QGraphicsPixmapItem *pic_item;
         if (ratio_case == "Full_desktop Outside") {
             pic = pic.scaled(desktop.size(), Qt::KeepAspectRatioByExpanding);
             pic_item = new QGraphicsPixmapItem(pic);
@@ -180,21 +201,25 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
             pic_item->setPos(default_screen.topLeft() + QPoint(default_screen.width() - pic.width(), default_screen.height() - pic.height()) / 2);
         }
 
-
         pic_item->setZValue(-1);
         myscene->addItem(pic_item);
 
+    } else { // pics.size()==0
+        Hue = qrand()%360/360.0;
     }
 
     if (isLogging) {
         QString Logging_str = "";
 
-        if (!pic.isNull()) {
-            Logging_str += pic_path + "\n";
-            Logging_str += QString("image              %1  %2\n").arg(ratio_pic, 4, 'f', 2).arg(Tostr(pic_rect));
+        for (int i = 0; i<pics.size();i++){
+            if (picture_path == pics_path_confirmed[i])
+                Logging_str += QString("image showing      %1  %2 %3\n").arg(ratios_pic[i], 4, 'f', 2).arg(Tostr(pics[i].size())).arg(pics_path_confirmed[i]);
+            else
+                Logging_str += QString("image              %1  %2 %3\n").arg(ratios_pic[i], 4, 'f', 2).arg(Tostr(pics[i].size())).arg(pics_path_confirmed[i]);
+
         }
 
-        Logging_str += QString("full desktop       %3  %4\n").arg(ratio_desk, 4, 'f', 2).arg(Tostr(desktop));
+        Logging_str += QString("full desktop       %3  %4\n").arg(ratio_desk, 4, 'f', 2).arg(Tostr(desktop.size()));
 
 
         for (int i = 0; i < QApplication::desktop()->screenCount(); i++) {
@@ -211,31 +236,6 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
         }
 
         Logging_str += QString("Ratio case = %1").arg(ratio_case);
-
-        /*
-        QGraphicsTextItem * LoggingItem = new QGraphicsTextItem();
-        LoggingItem->setPlainText(Logging_str);
-        LoggingItem->setPos(default_screen.topLeft() + QPoint(50, default_screen.height()/2));
-        LoggingItem->setZValue(-1);
-
-        QFont font("Monospace");
-        font.setStyleHint(QFont::TypeWriter);
-
-        LoggingItem->setFont(font);
-        LoggingItem->setDefaultTextColor(QColor(Qt::white));
-        LoggingItem->setOpacity(0.5);
-
-        QGraphicsRectItem * LoggingItemRect = new QGraphicsRectItem();
-        LoggingItemRect->setRect(LoggingItem->boundingRect());
-        LoggingItemRect->setPos(LoggingItem->pos());
-        LoggingItemRect->setZValue(-1);
-        LoggingItemRect->setPen(Qt::NoPen);
-        LoggingItemRect->setBrush(Qt::black);
-        LoggingItemRect->setOpacity(0.5);
-
-        myscene->addItem( LoggingItemRect);
-        myscene->addItem( LoggingItem);
-        */
 
         QFile file("LoggingDisplay.txt");
         if (file.open(QIODevice::WriteOnly)) {
@@ -325,18 +325,44 @@ void View::ShowRefreshment(QString pic_path, QString clock, QString text, bool i
 #endif
 }
 
+
+
 void View::UpdateValues(QString remains_str, double ratio)
 {
     this->ProgressBarRect.setRight(qRound(ProgressBarBackground->rect().left() + ProgressBarBackground->rect().width() * (1 - ratio)));
     ProgressBar->setRect(ProgressBarRect);
 
 
-    this->ProgressBarText->setPlainText(remains_str);
+    this->ProgressBarText->setPlainText(remains_str)  ;
 
     if (clockItem != NULL)
         clockItem->setPlainText(QTime::currentTime().toString("hh:mm"));
+
+    if (picture_path.isEmpty()) {
+        setGradient(Hue + ratio);
+    }
 }
 
+
+
+void View::setGradient(double hue_first)
+{
+    //QRect desktop = QApplication::desktop()->geometry();
+    QRect default_screen = QApplication::desktop()->screenGeometry(-1);
+    QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomRight());
+    //QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomLeft());
+
+    QColor c1; c1.setHsvF(fmod(hue_first,       1), 1, 0.3);
+    QColor c2; c2.setHsvF(fmod(hue_first + 0.1, 1), 1, 0.5);
+    QColor c3; c3.setHsvF(fmod(hue_first + 0.2, 1), 1, 0.3);
+
+    linearGrad.setColorAt(0.1, c1);
+    linearGrad.setColorAt(0.5, c2);
+    linearGrad.setColorAt(0.9, c3);
+
+    myscene->setBackgroundBrush(QBrush(linearGrad));
+
+}
 
 void View::keyPressEvent(QKeyEvent *event)
 {
@@ -354,6 +380,7 @@ void View::keyReleaseEvent(QKeyEvent *event)
                     myscene->removeItem(item);
                     delete item;
                 }
+            setGradient(rand()%360/360.);
         }
     } else if (event->key() == Qt::Key_Escape) {
         close();

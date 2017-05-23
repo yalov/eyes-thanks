@@ -25,5 +25,7 @@
         <file>icons/dark/95.png</file>
         <file>icons/video-display.png</file>
         <file>icons/logo.png</file>
+        <file>icons/tooltip.png</file>
+        <file>icons/save.png</file>
     </qresource>
 </RCC>

@@ -1,7 +1,6 @@
 #include "updater.h"
 
 #include "QDebug"
-
 #include <QElapsedTimer>
 #include <QRegularExpression>
 #include <QDesktopServices>
@@ -22,7 +21,7 @@ UpdateAction::UpdateAction(const QIcon &icon, const QString &text, QObject *pare
 
 void UpdateAction::showmessagebox()
 {
-    downloadProcess = new QMessageBox(QMessageBox::Icon::NoIcon, tr("Eyes' Thanks"), tr("Checking update..."), QMessageBox::StandardButton::Cancel);
+    downloadProcess = new QMessageBox(QMessageBox::Icon::NoIcon, QWidget::tr("Eyes' Thanks"), tr("Checking update..."), QMessageBox::StandardButton::Cancel);
 
     QSpacerItem *horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
     QGridLayout *layout = (QGridLayout *)downloadProcess->layout();
@@ -88,8 +87,7 @@ void UpdateAction::replyFinished(QNetworkReply *reply)
         downloadProcess->setStandardButtons(QMessageBox::Ok);
 
         if (currVersion == newVersion) {
-            downloadProcess->setText(tr("You are already running the most recent version of <b>Eyes' Thanks</b>.") +
-                                     QSslSocket::sslLibraryBuildVersionString() + ", " + QSslSocket::sslLibraryVersionNumber());
+            downloadProcess->setText(tr("You are already running the most recent version of <b>Eyes' Thanks</b>."));
 
         } else if ((currVersion[0] < newVersion[0]) ||
                    (currVersion[0] == newVersion[0] && currVersion[1] < newVersion[1]) ||

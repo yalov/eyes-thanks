@@ -24,9 +24,9 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     a.setQuitOnLastWindowClosed(false);
-    QTranslator Translator;
-    Translator.load(QString("languages") + QDir::separator() + QString("lang_ru.qm"));
-    a.installTranslator(&Translator);
+    //QTranslator Translator;
+    //Translator.load(QString("languages") + QDir::separator() + QString("lang_ru.qm"));
+    //a.installTranslator(&Translator);
 
     TrayIcon w;
     w.show();

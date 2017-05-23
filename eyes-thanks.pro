@@ -16,11 +16,12 @@
 #      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       #
 #----------------------------------------------------------------------------------#
 
-VERSION = 1.0.0
+VERSION = 1.1.0
 TARGET  = "Eyes\' Thanks"
 
 # no debug and release subfolder in debug and release folder
-CONFIG-=debug_and_release
+CONFIG -= debug_and_release
+CONFIG += c++11
 
 CONFIG(release, debug|release) {
 DESTDIR = ../EyesThanks
@@ -35,8 +36,6 @@ UI_DIR      = $$OUT_PWD/.ui
 
 QT     += core gui network widgets winextras
 
-CONFIG += c++11
-
 win32:RC_ICONS += icons/icon.ico
 
 QMAKE_TARGET_DESCRIPTION = Eyes\' Thanks
@@ -46,7 +45,6 @@ DEFINES += REPOSITORY_PATH='"\\\"https://github.com/yalov/eyes-thanks\\\""'
 
 DEFINES += APP_VERSION='"\\\"$$VERSION\\\""'
 #DEFINES += APP_NAME='"\\\"$$TARGET\\\""'
-
 DEFINES += DEVELOP_NAME='"\\\"$$QMAKE_TARGET_COPYRIGHT\\\""'
 DEFINES += DEVELOP_EMAIL='"\\\"alexander.yalov@gmail.com\\\""'
 

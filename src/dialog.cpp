@@ -24,7 +24,7 @@
 
 Dialog::Dialog()
 {
-    setWindowTitle(tr("Eyes' Thanks"));
+    setWindowTitle(QWidget::tr("Eyes' Thanks"));
     setWindowIcon(QIcon(":icons/logo.png"));
 
 
@@ -46,17 +46,31 @@ void Dialog::Init()
     QVBoxLayout *TopLayout = new QVBoxLayout();
     setLayout(TopLayout);
 
-    QLabel *label_Path = new QLabel(tr("Pictures folder") + ":");
+    QLabel *label_Path = new QLabel(tr("Pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
     LineEdit_Path = new QLineEdit();
     QPushButton *ButtonPath = new QPushButton("...");
     ButtonPath->setMaximumWidth(25);
+    QString pic_folder_tooltip = QString(tr("Leave both folder paths empty, if you want nice gradient instead of pictures."));
+    label_Path->setToolTip(pic_folder_tooltip);
+
+    QLabel *label_Path_alt = new QLabel(tr("Alternative pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
+    LineEdit_Path_alt = new QLineEdit();
+    QPushButton *ButtonPath_alt = new QPushButton("...");
+    ButtonPath_alt->setMaximumWidth(25);
+    QString alt_pic_folder = QString(tr("Use, if you have two different-ratio sets of monitors.\n\n"
+                                        "Ex. if sometimes you disconnect your FHD notebook from your FHD monitor,\n"
+                                        "put 2FHD (3860×1080) pictures to “Pictures folder” and\n"
+                                        "FHD (1920×1080) pictures to “Alternative pictures folder”).\n"
+                                        "So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app use FHD folder."
+                                        ));
+    label_Path_alt->setToolTip(alt_pic_folder);
 
     Spinbox_RefreshmentInterval   = new QSpinBox();
     Spinbox_RefreshmentContinuous = new QSpinBox();
     Spinbox_RefreshmentInterval->setRange(1, 24 * 60);
     Spinbox_RefreshmentContinuous->setRange(0, 60 * 60);
-    Spinbox_RefreshmentInterval->setSuffix(" " + tr("min"));
-    Spinbox_RefreshmentContinuous->setSuffix(" " + tr("sec"));
+    Spinbox_RefreshmentInterval->setSuffix(" " + tr("min") + ".");
+    Spinbox_RefreshmentContinuous->setSuffix(" " + tr("sec")+ ".");
 
     CheckBox_Clock       = new QCheckBox(tr("Clock"));
     CheckBox_Message     = new QCheckBox(tr("30-sec message"));
@@ -70,7 +84,7 @@ void Dialog::Init()
     TextEdit_Text->setToolTip(tr("Support params: %interval, %continuous"));
 
     Combobox_imageAspectMode = new QComboBox();
-    Combobox_imageAspectMode->insertItems(0, QStringList() << tr("Auto") << tr("Outside") << tr("Inside"));
+    Combobox_imageAspectMode->insertItems(0, QStringList() << QWidget::tr("Auto") << QWidget::tr("Outside") << QWidget::tr("Inside"));
 
     Combobox_iconsMode = new QComboBox();
     Combobox_iconsMode->insertItems(0, QStringList() << tr("Light") << tr("Dark"));
@@ -82,12 +96,18 @@ void Dialog::Init()
 
 
     QHBoxLayout *layout_Path = new QHBoxLayout();
-
     layout_Path->addWidget(LineEdit_Path);
     layout_Path->addWidget(ButtonPath);
 
+    QHBoxLayout *layout_Path_alt = new QHBoxLayout();
+    layout_Path_alt->addWidget(LineEdit_Path_alt);
+    layout_Path_alt->addWidget(ButtonPath_alt);
+
     layoutVertical_GroupBox->addWidget(label_Path);
     layoutVertical_GroupBox->addLayout(layout_Path);
+
+    layoutVertical_GroupBox->addWidget(label_Path_alt);
+    layoutVertical_GroupBox->addLayout(layout_Path_alt);
 
     //-----
     QGridLayout *layoutGrid_SettingBreakShowing = new QGridLayout();
@@ -146,7 +166,8 @@ void Dialog::Init()
     //-----
     QHBoxLayout *layout_buttons = new QHBoxLayout();
 
-    QPushButton *buttonSave = new QPushButton(tr("Save"));
+    QPushButton *buttonSave = new QPushButton( tr("Save"));
+    buttonSave->setIcon(QIcon(":/icons/save.png"));
     layout_buttons->addWidget(buttonSave);
 
     QPushButton *buttonMinimizeToSystemTray = new QPushButton(tr("Close to notification area"));
@@ -167,6 +188,7 @@ void Dialog::Init()
 #endif
 
     connect(ButtonPath, SIGNAL(clicked()), this, SLOT(ButtonPath_clicked()));
+    connect(ButtonPath_alt, SIGNAL(clicked()), this, SLOT(ButtonPath_alt_clicked()));
     connect(CheckBox_Text, SIGNAL(clicked(bool)), TextEdit_Text, SLOT(setEnabled(bool)));
     connect(buttonSave, SIGNAL(clicked()), this, SLOT(SaveValues()));
     connect(buttonMinimizeToSystemTray, SIGNAL(clicked()), this, SLOT(close()));
@@ -185,12 +207,13 @@ void Dialog::showEvent(QShowEvent *e)
 
 
 
-void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode,
+void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString ImagesPath_alt, QString imageAspectMode,
                        bool isLogging, bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, bool isStartupLink, QString Text, IconsMode iconsmode)
 {
     Spinbox_RefreshmentInterval->setValue(pauseInterval / 1000 / 60);
     Spinbox_RefreshmentContinuous->setValue(pauseContinuous / 1000);
     LineEdit_Path->setText(ImagesPath);
+    LineEdit_Path_alt->setText(ImagesPath_alt);
     Combobox_imageAspectMode->setCurrentText(imageAspectMode);
     Combobox_iconsMode->setCurrentIndex(iconsmode);
     CheckBox_Logging->setChecked(isLogging);
@@ -258,6 +281,17 @@ void Dialog::ButtonPath_clicked()
     if (!path.isEmpty()) {
         LineEdit_Path->setText(path);
     }
+    LineEdit_Path->resize(LineEdit_Path->sizeHint());
+    resize(sizeHint());
+}
+
+void Dialog::ButtonPath_alt_clicked()
+{
+    QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+                   (LineEdit_Path_alt->text().isEmpty() ? QDir::homePath() : LineEdit_Path_alt->text()), QFileDialog::ShowDirsOnly);
+    if (!path.isEmpty()) {
+        LineEdit_Path_alt->setText(path);
+    }
 }
 
 void Dialog::SaveValues()
@@ -266,7 +300,7 @@ void Dialog::SaveValues()
     //Label_Timer->setText(QString("%1:00").arg(Spinbox_RefreshmentInterval->value(),2,10,QLatin1Char(' ')));
 
     emit save(Spinbox_RefreshmentInterval->value() * 60 * 1000, Spinbox_RefreshmentContinuous->value() * 1000,
-              LineEdit_Path->text(), Combobox_imageAspectMode->currentText(),
+              LineEdit_Path->text(), LineEdit_Path_alt->text(), Combobox_imageAspectMode->currentText(),
               CheckBox_Logging->isChecked(), CheckBox_Text->isChecked(), CheckBox_Clock->isChecked(), CheckBox_Message->isChecked(),
               CheckBox_PrettyFont->isChecked(), CheckBox_StartupLink->isChecked(), TextEdit_Text->toPlainText(), static_cast<IconsMode>(Combobox_iconsMode->currentIndex()));
 }

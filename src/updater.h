@@ -4,7 +4,6 @@
 #include <QObject>
 #include <qaction.h>
 #include <QMessageBox>
-
 #include <QtNetwork/QNetworkReply>
 
 class UpdateAction : public QAction

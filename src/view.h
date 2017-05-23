@@ -41,7 +41,7 @@ public:
     View(QWidget *parent = 0);
     ~View();
 
-    void ShowRefreshment(QString pic_path, QString clock, QString ProgressBarText, bool isLogging, bool isPrettyFont, QString AspectMode);
+    void ShowRefreshment(QList<QString> pics_path, QString clock, QString ProgressBarText, bool isLogging, bool isPrettyFont, QString AspectMode);
     void UpdateValues(QString remains_str, double ratio);
 
 signals:
@@ -54,6 +54,7 @@ private:
     void mouseReleaseEvent(QMouseEvent * event);
     void keyPressEvent(QKeyEvent * event);
     void keyReleaseEvent(QKeyEvent * event);
+    void setGradient(double hue_first);
 
     QString picture_path;
 
@@ -67,6 +68,7 @@ private:
     QRect ProgressBarRect;
     QGraphicsRectItem * ButtonRectItem;
     GraphicsTextItemFixBound * ButtonText;
+    double Hue;
 };
 
 

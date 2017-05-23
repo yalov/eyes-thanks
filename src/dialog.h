@@ -40,7 +40,7 @@ class Dialog : public QDialog
     Q_OBJECT
 public:
     Dialog();
-    void SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isLogging,
+    void SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString ImagesPath_alt, QString imageAspectMode, bool isLogging,
                    bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, bool isStartupLink, QString Text,  IconsMode iconsmode);
 
 private:
@@ -56,16 +56,18 @@ public slots:
 private slots:
     void SaveValues();
     void ButtonPath_clicked();
+    void ButtonPath_alt_clicked();
 
 
 signals:
     void closedialog();
-    void save(int pauseInterval, int pauseContinuous, QString ImagesPath, QString imageAspectMode, bool isLogging,
+    void save(int pauseInterval, int pauseContinuous, QString ImagesPath, QString ImagesPath_alt, QString imageAspectMode, bool isLogging,
               bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, bool isStartupLink, QString Text, IconsMode iconmode);
     void TimerStatusRequest();
 
 private:
     QLineEdit * LineEdit_Path;
+    QLineEdit * LineEdit_Path_alt;
     QPlainTextEdit * TextEdit_Text;
     QComboBox * Combobox_imageAspectMode;
     QComboBox * Combobox_iconsMode;
