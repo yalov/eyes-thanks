@@ -42,11 +42,13 @@ public:
     Dialog();
     void SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString ImagesPath_alt, QString imageAspectMode, bool isLogging,
                    bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, bool isStartupLink, QString Text,  IconsMode iconsmode);
+    void retranslate();
 
 private:
     void showEvent(QShowEvent *e);
     bool event(QEvent *event);
     void Init();
+
 
 
 
@@ -57,6 +59,7 @@ private slots:
     void SaveValues();
     void ButtonPath_clicked();
     void ButtonPath_alt_clicked();
+    void ButtonGenerateText_clicked();
 
 
 signals:
@@ -66,6 +69,17 @@ signals:
     void TimerStatusRequest();
 
 private:
+    QLabel *label_Path;
+    QLabel *label_Path_alt;
+    QGroupBox *SettingBreakShowing;
+    QLabel *Label_ImageAspectMode;
+    QLabel *Label_UntilBreak     ;
+    QLabel *Label_BreakContinuous;
+    QGroupBox *SettingSystem;
+    QLabel *Label_TrayIconStyle;
+    QLabel *Label_Timer_Prefix;
+    QPushButton *buttonSave;
+    QPushButton *buttonMinimizeToSystemTray;
     QLineEdit * LineEdit_Path;
     QLineEdit * LineEdit_Path_alt;
     QPlainTextEdit * TextEdit_Text;
@@ -80,6 +94,7 @@ private:
     QCheckBox * CheckBox_PrettyFont;
     QCheckBox * CheckBox_Text;
     QCheckBox * CheckBox_StartupLink;
+    QPushButton * ButtonGenerateText;
 
     QWinTaskbarButton *TaskbarButton;
     QWinTaskbarProgress *TaskbarProgress;

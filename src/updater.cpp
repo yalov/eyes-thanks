@@ -21,7 +21,7 @@ UpdateAction::UpdateAction(const QIcon &icon, const QString &text, QObject *pare
 
 void UpdateAction::showmessagebox()
 {
-    downloadProcess = new QMessageBox(QMessageBox::Icon::NoIcon, QWidget::tr("Eyes' Thanks"), tr("Checking update..."), QMessageBox::StandardButton::Cancel);
+    downloadProcess = new QMessageBox(QMessageBox::Icon::NoIcon, qApp->translate("App","Eyes' Thanks"), tr("Checking update..."), QMessageBox::StandardButton::Cancel);
 
     QSpacerItem *horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
     QGridLayout *layout = (QGridLayout *)downloadProcess->layout();

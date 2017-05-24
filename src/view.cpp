@@ -19,6 +19,7 @@
 #include "view.h"
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QGraphicsDropShadowEffect>
 
 View::View(QWidget *parent): QGraphicsView(parent), clockItem(NULL)
 {
@@ -100,15 +101,11 @@ void View::mousePressEvent(QMouseEvent *event)
 }
 void View::mouseReleaseEvent(QMouseEvent *event)
 {
-    for (auto i : items(event->pos())) {
-        if (ButtonRectItem == i) {
-            ButtonRectItem->setOpacity(0.9);
+    for (auto i : items(event->pos()))
+        if (ButtonRectItem == i)
             close();
-        } else {
-            ButtonRectItem->setOpacity(0.9);
-        }
 
-    }
+    ButtonRectItem->setOpacity(0.9);
 
 }
 
@@ -132,9 +129,9 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
     for (auto pic_path: pics_path){
         QPixmap pic = QPixmap(pic_path);
         if (!pic.isNull()) {
-        pics.append(pic);
-        ratios_pic.append((double)pic.width() / pic.height());
-        pics_path_confirmed.append(pic_path);
+            pics.append(pic);
+            ratios_pic.append((double)pic.width() / pic.height());
+            pics_path_confirmed.append(pic_path);
         }
     }
 
@@ -153,7 +150,7 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
     if (pics.size()>0) {
         // find out which one of pic apropriate, if "inside" - comparison to def screen, if outside or auto - comparison to desk
         {
-            double ratio = (AspectMode == QWidget::tr("Inside"))?ratio_default_screen:ratio_desk;
+            double ratio = (AspectMode == qApp->translate("App","Inside"))?ratio_default_screen:ratio_desk;
             double min_value = std::numeric_limits<double>::max();
             double min_index = 0;
 
@@ -169,9 +166,9 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
             ratio_pic = ratios_pic[min_index];
         }
 
-        if      (AspectMode == QWidget::tr("Inside"))      ratio_case = "Default_screen Inside";
-        else if (AspectMode == QWidget::tr("Outside"))     ratio_case = "Full_desktop Outside";
-        else if (AspectMode == QWidget::tr("Auto")) {
+        if      (AspectMode == qApp->translate("App","Inside"))      ratio_case = "Default_screen Inside";
+        else if (AspectMode == qApp->translate("App","Outside"))     ratio_case = "Full_desktop Outside";
+        else if (AspectMode == qApp->translate("App","Auto")) {
             if (std::abs(ratio_desk - ratio_pic) <= std::abs(ratio_default_screen - ratio_pic)) { // Full_desktop
                 if (ratio_pic / ratio_desk < 0.7 || ratio_pic / ratio_desk > 1 / 0.7)  {ratio_case = "Full_desktop Inside"; qDebug() << ratio_pic << " " << ratio_desk; }
                 else                                                                   {ratio_case = "Full_desktop Outside"; qDebug() << ratio_pic << " " << ratio_desk;}
@@ -206,6 +203,7 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
 
     } else { // pics.size()==0
         Hue = qrand()%360/360.0;
+        setGradient(Hue);
     }
 
     if (isLogging) {
@@ -225,13 +223,13 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
         for (int i = 0; i < QApplication::desktop()->screenCount(); i++) {
             if (QApplication::desktop()->primaryScreen() == i) {
                 Logging_str += QString("default screen #%1  %2  %3\n").arg(i)
-                               .arg(ratio_default_screen, 4, 'f', 2)
-                               .arg(Tostr(default_screen));
+                        .arg(ratio_default_screen, 4, 'f', 2)
+                        .arg(Tostr(default_screen));
             } else {
                 QRect scr_i = QApplication::desktop()->screenGeometry(i);
                 Logging_str += QString("        screen #%1  %2  %3\n").arg(i)
-                               .arg((double)scr_i.width() / scr_i.height(), 4, 'f', 2)
-                               .arg(Tostr(scr_i));
+                        .arg((double)scr_i.width() / scr_i.height(), 4, 'f', 2)
+                        .arg(Tostr(scr_i));
             }
         }
 
@@ -266,26 +264,41 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
     ButtonRectItem->setRect(QRect(ProgressBarBackground->boundingRect().right() + 25, label_y_pos, 100, label_height));
 
     QPointF p = ButtonRectItem->rect().center() -
-                QPoint(ButtonText->boundingRect().width(), ButtonText->boundingRect().height()) / 2;
+            QPoint(ButtonText->boundingRect().width(), ButtonText->boundingRect().height()) / 2;
     ButtonText->setPos(p.x(), p.y());
+
+
+
+
 
     if (!clock.isEmpty()) {
 
         clockItem = new QGraphicsTextItem();
-        clockItem->setFont(QFont(isPrettyFont ? "UKIJ Diwani Yantu" : "", 30, 30));
-        clockItem->setDefaultTextColor(QColor(Qt::white));
-        clockItem->setOpacity(0.5);
-        clockItem->setZValue(-1);
         clockItem->setPlainText(clock);
+        clockItem->setZValue(3);
+        clockItem->setDefaultTextColor(QColor(Qt::white));
+        clockItem->setFont(QFont(isPrettyFont ? "UKIJ Diwani Yantu" : "PT Serif", 30, 30));
         clockItem->setPos(default_screen.topRight() + QPoint(-50 - clockItem->boundingRect().width(), 25));
+        clockItem->setOpacity(0.5);
+
+        //QGraphicsDropShadowEffect * shadow1 = new QGraphicsDropShadowEffect();
+        //shadow1->setColor(QColor(0,0,0));
+        //shadow1->setOffset( 0, 0 );
+        //shadow1->setBlurRadius( 20 );
+        //clockItem->setGraphicsEffect(shadow1);
+
 
         QGraphicsRectItem *clockItemRect = new QGraphicsRectItem();
         clockItemRect->setRect(clockItem->boundingRect());
         clockItemRect->setPos(clockItem->pos());
-        clockItemRect->setZValue(-1);
+        clockItemRect->setZValue(2);
         clockItemRect->setPen(Qt::NoPen);
         clockItemRect->setBrush(Qt::black);
         clockItemRect->setOpacity(0.5);
+
+        QGraphicsBlurEffect * blur = new QGraphicsBlurEffect();
+        blur->setBlurRadius( 20 );
+        clockItemRect->setGraphicsEffect(blur);
 
         myscene->addItem(clockItemRect);
         myscene->addItem(clockItem);
@@ -295,19 +308,30 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
         QGraphicsTextItem *textItem = new QGraphicsTextItem();
         textItem->setPlainText(text);
         textItem->setPos(default_screen.topLeft() + QPoint(50, 25));
-        textItem->setZValue(-1);
-        textItem->setFont(QFont(isPrettyFont ? "UKIJ Diwani Yantu" : "", 30, 30));
+        textItem->setZValue(3);
+        textItem->setDefaultTextColor(QColor(255,255,255,255));
+        textItem->setFont(QFont(isPrettyFont ? "UKIJ Diwani Yantu" : "PT Serif", 30, 30));
 
-        textItem->setDefaultTextColor(QColor(Qt::white));
+        //PT Serif
+        //QGraphicsDropShadowEffect * shadow = new QGraphicsDropShadowEffect();
+        //shadow->setColor(QColor(0,0,0));
+        //shadow->setOffset( 0, 0 );
+        //shadow->setBlurRadius( 20 );
+        //textItem->setGraphicsEffect(shadow);
+
         textItem->setOpacity(0.5);
 
         QGraphicsRectItem *textItemRect = new QGraphicsRectItem();
         textItemRect->setRect(textItem->boundingRect());
         textItemRect->setPos(textItem->pos());
-        textItemRect->setZValue(-1);
+        textItemRect->setZValue(2);
         textItemRect->setPen(Qt::NoPen);
         textItemRect->setBrush(Qt::black);
         textItemRect->setOpacity(0.5);
+
+        QGraphicsBlurEffect * blur = new QGraphicsBlurEffect();
+        blur->setBlurRadius( 20 );
+        textItemRect->setGraphicsEffect(blur);
 
         myscene->addItem(textItemRect);
         myscene->addItem(textItem);
@@ -393,15 +417,15 @@ void View::keyReleaseEvent(QKeyEvent *event)
 void View::closeEvent(QCloseEvent *event)
 {
     emit view_close();
-    for (auto item : myscene->items())
-        if (item->zValue() == -1 || item->zValue() == -2) {
-            myscene->removeItem(item);
-            delete item;
-        }
+    //for (auto item : myscene->items())
+    //   if (item->zValue() == -1 || item->zValue() == -2) {
+    //       myscene->removeItem(item);
+    //       delete item;
+    //   }
 
     //hide();
     //event->ignore();
-    //close();
+    close();
 
     //QGraphicsView::close();
     QGraphicsView::closeEvent(event);

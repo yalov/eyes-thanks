@@ -31,13 +31,13 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     createActions();
     createContextMenu();
-    view = new View();
+
 
     ReadSettings();
 
-    for (auto f : QDir(":fonts").entryList())
-        QFontDatabase::addApplicationFont(":fonts/" + f);
-
+    for (auto f : QDir(":fonts").entryInfoList())
+        QFontDatabase::addApplicationFont(f.absoluteFilePath());
+        //UKIJ Diwani Yantu
 
     InitIcons();
 
@@ -50,8 +50,6 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
     connect(ViewTimer, SIGNAL(update()), this, SLOT(ViewUpdateTime()));
     connect(DialogTimer, SIGNAL(update()), this, SLOT(DialogUpdateTime()));
     connect(DialogTimer, SIGNAL(finished()), this, SLOT(RefreshmentStart()));
-    connect(ViewTimer, SIGNAL(finished()), view, SIGNAL(view_close()));
-    connect(view,      SIGNAL(view_close()),    view, SLOT(close()));
     connect(ViewTimer, SIGNAL(finished()), ViewTimer, SLOT(stop()));
 
     connect(this, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
@@ -194,7 +192,7 @@ void TrayIcon::ReadSettings()
 
     isStartupLink   = settings.value("startupLink_enabled", defaultisStartupLink).toBool();
 
-    imageAspectMode = settings.value("aspectMode", QWidget::tr("Auto")).toString();
+    imageAspectMode = settings.value("aspectMode", qApp->translate("App","Auto")).toString();
     Text            = settings.value("text", tr("All work and no play\nmakes Jack a dull boy.")).toString();
 
     iconsMode       = static_cast<IconsMode>(settings.value("iconsMode", IconsMode::light).toUInt());
@@ -421,7 +419,10 @@ void TrayIcon::retranslate()
     AboutAct->setText(tr("About"));
     UpdaterAct->setText(tr("Check for Updates"));
     SubMenuLanguages->setTitle(tr("Languages"));
-    view->ButtonText->setPlainText(view->tr("Close"));
+    //view->ButtonText->setPlainText(view->tr("Close"));
+
+    if(dialog)
+        dialog->retranslate();
 }
 
 
@@ -539,7 +540,7 @@ void TrayIcon::DialogUpdateTime()
             }
         }
 
-        showMessage(QWidget::tr("Eyes' Thanks"), QString(tr("Until break") + " %1 " + tr("sec")).arg(qRound(remains / 1000.)));
+        showMessage(qApp->translate("App","Eyes' Thanks"), QString(tr("Until break") + " %1 " + tr("sec")).arg(qRound(remains / 1000.)));
         TrayMessageShowed = true;
     }
 
@@ -560,6 +561,10 @@ void TrayIcon::RefreshmentStart()
 
 void TrayIcon::ShowView()
 {
+    view = new View();
+    connect(ViewTimer, SIGNAL(finished()), view, SIGNAL(view_close()));
+    //connect(view,      SIGNAL(view_close()),    view, SLOT(close()));
+
     QList<QString> pics_path;
 
     QStringList images = QDir(ImagesPath).entryList(QStringList() << "*.jpg" << "*.png");

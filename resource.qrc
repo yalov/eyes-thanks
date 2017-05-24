@@ -27,5 +27,6 @@
         <file>icons/logo.png</file>
         <file>icons/tooltip.png</file>
         <file>icons/save.png</file>
+        <file>fonts/pt-serif.regular.ttf</file>
     </qresource>
 </RCC>

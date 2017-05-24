@@ -21,10 +21,11 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QFileDialog>
+#include <QApplication>
 
 Dialog::Dialog()
 {
-    setWindowTitle(QWidget::tr("Eyes' Thanks"));
+    setWindowTitle(qApp->translate("App","Eyes' Thanks"));
     setWindowIcon(QIcon(":icons/logo.png"));
 
 
@@ -46,24 +47,22 @@ void Dialog::Init()
     QVBoxLayout *TopLayout = new QVBoxLayout();
     setLayout(TopLayout);
 
-    QLabel *label_Path = new QLabel(tr("Pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
+    label_Path = new QLabel(tr("Pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
     LineEdit_Path = new QLineEdit();
     QPushButton *ButtonPath = new QPushButton("...");
     ButtonPath->setMaximumWidth(25);
-    QString pic_folder_tooltip = QString(tr("Leave both folder paths empty, if you want nice gradient instead of pictures."));
-    label_Path->setToolTip(pic_folder_tooltip);
+    label_Path->setToolTip(tr("Leave both folder paths empty, if you want nice gradient instead of pictures."));
 
-    QLabel *label_Path_alt = new QLabel(tr("Alternative pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
+    label_Path_alt = new QLabel(tr("Alternative pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
     LineEdit_Path_alt = new QLineEdit();
     QPushButton *ButtonPath_alt = new QPushButton("...");
     ButtonPath_alt->setMaximumWidth(25);
-    QString alt_pic_folder = QString(tr("Use, if you have two different-ratio sets of monitors.\n\n"
-                                        "Ex. if sometimes you disconnect your FHD notebook from your FHD monitor,\n"
-                                        "put 2FHD (3860×1080) pictures to “Pictures folder” and\n"
-                                        "FHD (1920×1080) pictures to “Alternative pictures folder”).\n"
-                                        "So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app use FHD folder."
-                                        ));
-    label_Path_alt->setToolTip(alt_pic_folder);
+    label_Path_alt->setToolTip(tr("Use, if you have two different-ratio sets of monitors.\n\n"
+                                  "Ex. if sometimes you disconnect your FHD notebook from your FHD monitor,\n"
+                                  "put 2FHD (3860×1080) pictures to “Pictures folder” and\n"
+                                  "FHD (1920×1080) pictures to “Alternative pictures folder”).\n"
+                                  "So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app use FHD folder."
+                                  ));
 
     Spinbox_RefreshmentInterval   = new QSpinBox();
     Spinbox_RefreshmentContinuous = new QSpinBox();
@@ -76,6 +75,7 @@ void Dialog::Init()
     CheckBox_Message     = new QCheckBox(tr("30-sec message"));
     CheckBox_Logging     = new QCheckBox(tr("Logging to .txt"));
     CheckBox_PrettyFont   = new QCheckBox(tr("PrettyFont"));
+    CheckBox_PrettyFont->setToolTip(tr("UKIJ Diwani Yantu Font"));
     CheckBox_Text        = new QCheckBox(tr("Text")+ ":");
     CheckBox_StartupLink = new QCheckBox(tr("Run on Windows startup"));
 
@@ -83,14 +83,16 @@ void Dialog::Init()
     TextEdit_Text->setFixedHeight(70);
     TextEdit_Text->setToolTip(tr("Support params: %interval, %continuous"));
 
+    ButtonGenerateText = new QPushButton(tr("Other text"));
+
     Combobox_imageAspectMode = new QComboBox();
-    Combobox_imageAspectMode->insertItems(0, QStringList() << QWidget::tr("Auto") << QWidget::tr("Outside") << QWidget::tr("Inside"));
+    Combobox_imageAspectMode->insertItems(0, QStringList() << qApp->translate("App","Auto") << qApp->translate("App","Outside") << qApp->translate("App","Inside"));
 
     Combobox_iconsMode = new QComboBox();
     Combobox_iconsMode->insertItems(0, QStringList() << tr("Light") << tr("Dark"));
 
 
-    QGroupBox *SettingBreakShowing = new QGroupBox(tr("Settings") + ":");
+    SettingBreakShowing = new QGroupBox(tr("Settings") + ":");
     QVBoxLayout *layoutVertical_GroupBox = new QVBoxLayout();
     SettingBreakShowing->setLayout(layoutVertical_GroupBox);
 
@@ -110,16 +112,20 @@ void Dialog::Init()
     layoutVertical_GroupBox->addLayout(layout_Path_alt);
 
     //-----
+    Label_ImageAspectMode = new QLabel(tr("Image Aspect Mode") + ":");
+    Label_UntilBreak      = new QLabel(tr("Until break") + ":");
+    Label_BreakContinuous = new QLabel(tr("Break continuous") + ":");
     QGridLayout *layoutGrid_SettingBreakShowing = new QGridLayout();
-    layoutGrid_SettingBreakShowing->addWidget(new QLabel(tr("Image Aspect Mode") + ":"), 0, 0);
+    layoutGrid_SettingBreakShowing->addWidget(Label_ImageAspectMode, 0, 0);
     layoutGrid_SettingBreakShowing->addWidget(Combobox_imageAspectMode, 0, 1);
-    layoutGrid_SettingBreakShowing->addWidget(new QLabel(tr("Until break") + ":"), 1, 0);
+    layoutGrid_SettingBreakShowing->addWidget(Label_UntilBreak, 1, 0);
     layoutGrid_SettingBreakShowing->addWidget(Spinbox_RefreshmentInterval, 1, 1);
-    layoutGrid_SettingBreakShowing->addWidget(new QLabel(tr("Break continuous") + ":"), 2, 0);
+    layoutGrid_SettingBreakShowing->addWidget(Label_BreakContinuous, 2, 0);
     layoutGrid_SettingBreakShowing->addWidget(Spinbox_RefreshmentContinuous, 2, 1);
     layoutGrid_SettingBreakShowing->addWidget(CheckBox_PrettyFont, 7, 0);
     layoutGrid_SettingBreakShowing->addWidget(CheckBox_Clock, 8, 0);
     layoutGrid_SettingBreakShowing->addWidget(CheckBox_Text, 9, 0);
+    layoutGrid_SettingBreakShowing->addWidget(ButtonGenerateText, 9, 1);
     layoutGrid_SettingBreakShowing->addWidget(TextEdit_Text, 10, 0, 1, 2);
 
     layoutVertical_GroupBox->addLayout(layoutGrid_SettingBreakShowing);
@@ -131,10 +137,10 @@ void Dialog::Init()
 
 
     //-----
-    QGroupBox *SettingSystem = new QGroupBox(tr("System Settings") + ":");
+    SettingSystem = new QGroupBox(tr("System Settings") + ":");
     QGridLayout *Layout_SettingSystem = new QGridLayout();
-
-    Layout_SettingSystem->addWidget(new QLabel(tr("Tray Icon Style") + ":"), 0, 0);
+    Label_TrayIconStyle = new QLabel(tr("Tray Icon Style") + ":");
+    Layout_SettingSystem->addWidget(Label_TrayIconStyle, 0, 0);
     Layout_SettingSystem->addWidget(Combobox_iconsMode, 0, 1);
     Layout_SettingSystem->addWidget(CheckBox_StartupLink, 2, 0, 1, 2);
     Layout_SettingSystem->addWidget(CheckBox_Message, 3, 0, 1, 2);
@@ -148,7 +154,7 @@ void Dialog::Init()
     //-----
     QHBoxLayout *Layout_Label_timer = new QHBoxLayout();
 
-    QLabel *Label_Timer_Prefix = new QLabel(tr("Until break") + ": ");
+    Label_Timer_Prefix = new QLabel(tr("Until break") + ": ");
 
     Label_Timer = new QLabel();
     QFont font;
@@ -166,11 +172,11 @@ void Dialog::Init()
     //-----
     QHBoxLayout *layout_buttons = new QHBoxLayout();
 
-    QPushButton *buttonSave = new QPushButton( tr("Save"));
+    buttonSave = new QPushButton( tr("Save"));
     buttonSave->setIcon(QIcon(":/icons/save.png"));
     layout_buttons->addWidget(buttonSave);
 
-    QPushButton *buttonMinimizeToSystemTray = new QPushButton(tr("Close to notification area"));
+    buttonMinimizeToSystemTray = new QPushButton(tr("Close to notification area"));
     layout_buttons->addWidget(buttonMinimizeToSystemTray);
 
     TopLayout->addLayout(layout_buttons);
@@ -189,9 +195,61 @@ void Dialog::Init()
 
     connect(ButtonPath, SIGNAL(clicked()), this, SLOT(ButtonPath_clicked()));
     connect(ButtonPath_alt, SIGNAL(clicked()), this, SLOT(ButtonPath_alt_clicked()));
-    connect(CheckBox_Text, SIGNAL(clicked(bool)), TextEdit_Text, SLOT(setEnabled(bool)));
+    connect(ButtonGenerateText, SIGNAL(clicked()), this, SLOT(ButtonGenerateText_clicked()));
+
+    connect(CheckBox_Text, SIGNAL(toggled(bool)), TextEdit_Text, SLOT(setEnabled(bool)));
+    connect(CheckBox_Text, SIGNAL(toggled(bool)), ButtonGenerateText, SLOT(setEnabled(bool)));
+
     connect(buttonSave, SIGNAL(clicked()), this, SLOT(SaveValues()));
     connect(buttonMinimizeToSystemTray, SIGNAL(clicked()), this, SLOT(close()));
+}
+
+void Dialog::retranslate()
+{
+    label_Path->setText(tr("Pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
+    label_Path->setToolTip(tr("Leave both folder paths empty, if you want nice gradient instead of pictures."));
+
+    label_Path_alt->setText(tr("Alternative pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
+    label_Path_alt->setToolTip(tr("Use, if you have two different-ratio sets of monitors.\n\n"
+                                  "Ex. if sometimes you disconnect your FHD notebook from your FHD monitor,\n"
+                                  "put 2FHD (3860×1080) pictures to “Pictures folder” and\n"
+                                  "FHD (1920×1080) pictures to “Alternative pictures folder”).\n"
+                                  "So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app use FHD folder."
+                                  ));
+
+    Spinbox_RefreshmentInterval->setSuffix(" " + tr("min") + ".");
+    Spinbox_RefreshmentContinuous->setSuffix(" " + tr("sec")+ ".");
+
+    CheckBox_Clock->setText(tr("Clock"));
+    CheckBox_Message->setText(tr("30-sec message"));
+    CheckBox_Logging->setText(tr("Logging to .txt"));
+    CheckBox_PrettyFont->setText(tr("PrettyFont"));
+    CheckBox_PrettyFont->setToolTip(tr("UKIJ Diwani Yantu Font"));
+    CheckBox_Text->setText(tr("Text")+ ":");
+    CheckBox_StartupLink->setText(tr("Run on Windows startup"));
+
+    TextEdit_Text->setToolTip(tr("Support params: %interval, %continuous"));
+    ButtonGenerateText->setText(tr("Other text"));
+
+    Combobox_imageAspectMode->setItemText(0, qApp->translate("App","Auto"));
+    Combobox_imageAspectMode->setItemText(1, qApp->translate("App","Outside"));
+    Combobox_imageAspectMode->setItemText(2, qApp->translate("App","Inside"));
+
+    Combobox_iconsMode->setItemText(0, tr("Light"));
+    Combobox_iconsMode->setItemText(1, tr("Dark"));
+
+    SettingBreakShowing->setTitle(tr("Settings") + ":");
+
+    Label_ImageAspectMode->setText(tr("Image Aspect Mode") + ":");
+    Label_UntilBreak->setText(tr("Until break") + ":");
+    Label_BreakContinuous->setText(tr("Break continuous") + ":");
+
+    SettingSystem->setTitle(tr("System Settings") + ":");
+    Label_TrayIconStyle->setText(tr("Tray Icon Style") + ":");
+    Label_Timer_Prefix->setText(tr("Until break") + ": ");
+
+    buttonSave->setText(tr("Save"));
+    buttonMinimizeToSystemTray->setText(tr("Close to notification area"));
 }
 
 
@@ -223,6 +281,7 @@ void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPat
     CheckBox_PrettyFont->setChecked(isPrettyFont);
     CheckBox_StartupLink->setChecked(isStartupLink);
     TextEdit_Text->setEnabled(isText);
+    ButtonGenerateText->setEnabled(isText);
     TextEdit_Text->setPlainText(Text);
 
 
@@ -281,8 +340,6 @@ void Dialog::ButtonPath_clicked()
     if (!path.isEmpty()) {
         LineEdit_Path->setText(path);
     }
-    LineEdit_Path->resize(LineEdit_Path->sizeHint());
-    resize(sizeHint());
 }
 
 void Dialog::ButtonPath_alt_clicked()
@@ -292,6 +349,14 @@ void Dialog::ButtonPath_alt_clicked()
     if (!path.isEmpty()) {
         LineEdit_Path_alt->setText(path);
     }
+}
+
+void Dialog::ButtonGenerateText_clicked()
+{
+    QStringList proverbs = qApp->translate("App","proverbs").split("\n\n");
+    TextEdit_Text->setPlainText(proverbs[rand() % proverbs.size()]);
+
+
 }
 
 void Dialog::SaveValues()
