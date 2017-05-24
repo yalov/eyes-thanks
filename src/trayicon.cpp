@@ -37,7 +37,7 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     for (auto f : QDir(":fonts").entryInfoList())
         QFontDatabase::addApplicationFont(f.absoluteFilePath());
-        //UKIJ Diwani Yantu
+    //UKIJ Diwani Yantu
 
     InitIcons();
 
@@ -69,15 +69,14 @@ void TrayIcon::createLangActionGroup()
 {
     LangActGroup = new QActionGroup(this);
     LangActGroup->setExclusive(true); // Mutually exclusive checking
-    connect(LangActGroup, SIGNAL (triggered(QAction *)), this, SLOT (slotLanguageChanged(QAction *)));
+    connect(LangActGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotLanguageChanged(QAction *)));
 
     QDir dir(LangPath);
     QStringList fileNames = dir.entryList(QStringList("lang_*.qm"));
 
     bool haveEnglish_qm = false;
 
-    for (auto fileName: fileNames) // "lang_ru.qm"
-    {
+    for (auto fileName : fileNames) { // "lang_ru.qm"
         QTranslator translator;
         translator.load(fileName, LangPath);
 
@@ -94,8 +93,7 @@ void TrayIcon::createLangActionGroup()
         LangActGroup->addAction(action);
     }
 
-    if (!haveEnglish_qm)
-    {
+    if (!haveEnglish_qm) {
         QString lang = "English";
         QAction *action = new QAction(lang, this);
         action->setCheckable(true);
@@ -192,7 +190,7 @@ void TrayIcon::ReadSettings()
 
     isStartupLink   = settings.value("startupLink_enabled", defaultisStartupLink).toBool();
 
-    imageAspectMode = settings.value("aspectMode", qApp->translate("App","Auto")).toString();
+    imageAspectMode = settings.value("aspectMode", qApp->translate("App", "Auto")).toString();
     Text            = settings.value("text", tr("All work and no play\nmakes Jack a dull boy.")).toString();
 
     iconsMode       = static_cast<IconsMode>(settings.value("iconsMode", IconsMode::light).toUInt());
@@ -248,7 +246,7 @@ void TrayIcon::Save(int pauseinterval, int pausecontinuous, QString Imagespath, 
     // create and delete StartUp Icon, at save time.
     if (isstartuplink != isStartupLink) {
         QString startup_lnk =  QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
-                QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk";
+                               QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk";
 
         if (isstartuplink == true)
             QFile::link(QApplication::applicationFilePath(), startup_lnk);
@@ -370,10 +368,9 @@ void TrayIcon::setCurrentIconbyCurrentIconRatio()
 
 //-----------------------------------------------------------------
 // Called every time, when a menu entry of the language menu is called
-void TrayIcon::slotLanguageChanged(QAction* action)
+void TrayIcon::slotLanguageChanged(QAction *action)
 {
-    if(0 != action)
-    {
+    if (0 != action) {
         // load the language dependant on the action content
         LoadLanguage(action->data().toString());
         WriteSettings();
@@ -382,10 +379,9 @@ void TrayIcon::slotLanguageChanged(QAction* action)
 
 // Called by ReadSetting
 //-----------------------------------------------------------------
-void TrayIcon::LoadLanguage(const QString& rLanguage)
+void TrayIcon::LoadLanguage(const QString &rLanguage)
 {
-    if(LangCurrent != rLanguage && !rLanguage.isEmpty())
-    {
+    if (LangCurrent != rLanguage && !rLanguage.isEmpty()) {
         LangCurrent = rLanguage;
         QLocale locale = QLocale(LangCurrent);
         QLocale::setDefault(locale);
@@ -393,15 +389,14 @@ void TrayIcon::LoadLanguage(const QString& rLanguage)
         qApp->removeTranslator(Translator);
 
         bool load = Translator->load(QString("lang_%1.qm").arg(LangCurrent), LangPath);
-        if (load){
+        if (load) {
             qApp->installTranslator(Translator);
         }
 
         retranslate();
 
         if (LangActGroup)
-            for (auto action:LangActGroup->actions())
-            {
+            for (auto action : LangActGroup->actions()) {
                 if (action->data().toString() == LangCurrent)
                     action->setChecked(true);
             }
@@ -421,7 +416,7 @@ void TrayIcon::retranslate()
     SubMenuLanguages->setTitle(tr("Languages"));
     //view->ButtonText->setPlainText(view->tr("Close"));
 
-    if(dialog)
+    if (dialog)
         dialog->retranslate();
 }
 
@@ -526,7 +521,7 @@ void TrayIcon::DialogUpdateTime()
 
     emit updateLabel(TimeRemains, ratio);
 
-    setToolTip(tr("Until break")+ ": "+ TimeRemains);
+    setToolTip(tr("Until break") + ": " + TimeRemains);
 
     if (isMessage30sec && remains < 30000 && !TrayMessageShowed) {
         if (isLogging) {
@@ -534,13 +529,13 @@ void TrayIcon::DialogUpdateTime()
             if (file.open(QIODevice::Append)) {
                 QTextStream out(&file);
                 out << QString("%1, message. remains = %2; ")
-                       .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
-                       .arg(remains);
+                    .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
+                    .arg(remains);
                 file.close();
             }
         }
 
-        showMessage(qApp->translate("App","Eyes' Thanks"), QString(tr("Until break") + " %1 " + tr("sec")).arg(qRound(remains / 1000.)));
+        showMessage(qApp->translate("App", "Eyes' Thanks"), QString(tr("Until break") + " %1 " + tr("sec")).arg(qRound(remains / 1000.)));
         TrayMessageShowed = true;
     }
 

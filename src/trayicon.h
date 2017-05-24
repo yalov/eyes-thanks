@@ -65,7 +65,7 @@ private slots:
               bool isLogging, bool istext, bool isclock, bool ismessage30sec, bool isPrettyFont, bool isstartuplink, QString text, IconsMode iconsmode);
 
     void TimerStatusSend();
-    void slotLanguageChanged(QAction* action);  // this slot is called by the language menu actions
+    void slotLanguageChanged(QAction *action);  // this slot is called by the language menu actions
 
 private:
     void ReadSettings();
@@ -76,7 +76,7 @@ private:
     void setPauseIcon();
     void setCurrentIconbyCurrentIconRatio();
     void retranslate();
-    void LoadLanguage(const QString& rLanguage);  // loads a language by the given language shortcur (e.g. de, en)
+    void LoadLanguage(const QString &rLanguage);  // loads a language by the given language shortcur (e.g. de, en)
     void createContextMenu();
     void createLangActionGroup();
     void createActions();
@@ -84,23 +84,23 @@ private:
 
 private:
     View *view;
-    Dialog * dialog;
+    Dialog *dialog;
 
-    Timer * ViewTimer;
-    Timer * DialogTimer;
+    Timer *ViewTimer;
+    Timer *DialogTimer;
 
-    QTranslator * Translator;
+    QTranslator *Translator;
 
     QAction *TestAct;
     QAction *ShowSettingAct;
     QAction *QuitAct;
     QAction *PauseAct;
     QAction *AboutAct;
-    QActionGroup * LangActGroup;
+    QActionGroup *LangActGroup;
     QMenu *SubMenuLanguages;
     UpdateAction *UpdaterAct;
 
-    QIcon ipp,i00, i25, i50, i75, i87, i95;
+    QIcon ipp, i00, i25, i50, i75, i87, i95;
 
     int Counter;
     int pauseInterval;

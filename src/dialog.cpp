@@ -25,7 +25,7 @@
 
 Dialog::Dialog()
 {
-    setWindowTitle(qApp->translate("App","Eyes' Thanks"));
+    setWindowTitle(qApp->translate("App", "Eyes' Thanks"));
     setWindowIcon(QIcon(":icons/logo.png"));
 
 
@@ -62,21 +62,21 @@ void Dialog::Init()
                                   "put 2FHD (3860×1080) pictures to “Pictures folder” and\n"
                                   "FHD (1920×1080) pictures to “Alternative pictures folder”).\n"
                                   "So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app use FHD folder."
-                                  ));
+                                 ));
 
     Spinbox_RefreshmentInterval   = new QSpinBox();
     Spinbox_RefreshmentContinuous = new QSpinBox();
     Spinbox_RefreshmentInterval->setRange(1, 24 * 60);
     Spinbox_RefreshmentContinuous->setRange(0, 60 * 60);
     Spinbox_RefreshmentInterval->setSuffix(" " + tr("min") + ".");
-    Spinbox_RefreshmentContinuous->setSuffix(" " + tr("sec")+ ".");
+    Spinbox_RefreshmentContinuous->setSuffix(" " + tr("sec") + ".");
 
     CheckBox_Clock       = new QCheckBox(tr("Clock"));
     CheckBox_Message     = new QCheckBox(tr("30-sec message"));
     CheckBox_Logging     = new QCheckBox(tr("Logging to .txt"));
-    CheckBox_PrettyFont   = new QCheckBox(tr("PrettyFont"));
+    CheckBox_PrettyFont  = new QCheckBox(tr("PrettyFont"));
     CheckBox_PrettyFont->setToolTip(tr("UKIJ Diwani Yantu Font"));
-    CheckBox_Text        = new QCheckBox(tr("Text")+ ":");
+    CheckBox_Text        = new QCheckBox(tr("Text") + ":");
     CheckBox_StartupLink = new QCheckBox(tr("Run on Windows startup"));
 
     TextEdit_Text = new QPlainTextEdit();
@@ -86,7 +86,7 @@ void Dialog::Init()
     ButtonGenerateText = new QPushButton(tr("Other text"));
 
     Combobox_imageAspectMode = new QComboBox();
-    Combobox_imageAspectMode->insertItems(0, QStringList() << qApp->translate("App","Auto") << qApp->translate("App","Outside") << qApp->translate("App","Inside"));
+    Combobox_imageAspectMode->insertItems(0, QStringList() << qApp->translate("App", "Auto") << qApp->translate("App", "Outside") << qApp->translate("App", "Inside"));
 
     Combobox_iconsMode = new QComboBox();
     Combobox_iconsMode->insertItems(0, QStringList() << tr("Light") << tr("Dark"));
@@ -172,7 +172,7 @@ void Dialog::Init()
     //-----
     QHBoxLayout *layout_buttons = new QHBoxLayout();
 
-    buttonSave = new QPushButton( tr("Save"));
+    buttonSave = new QPushButton(tr("Save"));
     buttonSave->setIcon(QIcon(":/icons/save.png"));
     layout_buttons->addWidget(buttonSave);
 
@@ -215,25 +215,25 @@ void Dialog::retranslate()
                                   "put 2FHD (3860×1080) pictures to “Pictures folder” and\n"
                                   "FHD (1920×1080) pictures to “Alternative pictures folder”).\n"
                                   "So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app use FHD folder."
-                                  ));
+                                 ));
 
     Spinbox_RefreshmentInterval->setSuffix(" " + tr("min") + ".");
-    Spinbox_RefreshmentContinuous->setSuffix(" " + tr("sec")+ ".");
+    Spinbox_RefreshmentContinuous->setSuffix(" " + tr("sec") + ".");
 
     CheckBox_Clock->setText(tr("Clock"));
     CheckBox_Message->setText(tr("30-sec message"));
     CheckBox_Logging->setText(tr("Logging to .txt"));
     CheckBox_PrettyFont->setText(tr("PrettyFont"));
     CheckBox_PrettyFont->setToolTip(tr("UKIJ Diwani Yantu Font"));
-    CheckBox_Text->setText(tr("Text")+ ":");
+    CheckBox_Text->setText(tr("Text") + ":");
     CheckBox_StartupLink->setText(tr("Run on Windows startup"));
 
     TextEdit_Text->setToolTip(tr("Support params: %interval, %continuous"));
     ButtonGenerateText->setText(tr("Other text"));
 
-    Combobox_imageAspectMode->setItemText(0, qApp->translate("App","Auto"));
-    Combobox_imageAspectMode->setItemText(1, qApp->translate("App","Outside"));
-    Combobox_imageAspectMode->setItemText(2, qApp->translate("App","Inside"));
+    Combobox_imageAspectMode->setItemText(0, qApp->translate("App", "Auto"));
+    Combobox_imageAspectMode->setItemText(1, qApp->translate("App", "Outside"));
+    Combobox_imageAspectMode->setItemText(2, qApp->translate("App", "Inside"));
 
     Combobox_iconsMode->setItemText(0, tr("Light"));
     Combobox_iconsMode->setItemText(1, tr("Dark"));
@@ -353,7 +353,7 @@ void Dialog::ButtonPath_alt_clicked()
 
 void Dialog::ButtonGenerateText_clicked()
 {
-    QStringList proverbs = qApp->translate("App","proverbs").split("\n\n");
+    QStringList proverbs = qApp->translate("App", "proverbs").split("\n\n");
     TextEdit_Text->setPlainText(proverbs[rand() % proverbs.size()]);
 
 

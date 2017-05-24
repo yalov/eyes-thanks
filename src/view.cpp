@@ -126,7 +126,7 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
     QList<QPixmap> pics;
     QList<QString> pics_path_confirmed;
 
-    for (auto pic_path: pics_path){
+    for (auto pic_path : pics_path) {
         QPixmap pic = QPixmap(pic_path);
         if (!pic.isNull()) {
             pics.append(pic);
@@ -147,15 +147,15 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
     double ratio_pic = 0.0;
 
 
-    if (pics.size()>0) {
+    if (pics.size() > 0) {
         // find out which one of pic apropriate, if "inside" - comparison to def screen, if outside or auto - comparison to desk
         {
-            double ratio = (AspectMode == qApp->translate("App","Inside"))?ratio_default_screen:ratio_desk;
+            double ratio = (AspectMode == qApp->translate("App", "Inside")) ? ratio_default_screen : ratio_desk;
             double min_value = std::numeric_limits<double>::max();
             double min_index = 0;
 
-            for (int i=0; i<pics.size();i++){
-                if (abs(ratios_pic[i] - ratio) < min_value ){
+            for (int i = 0; i < pics.size(); i++) {
+                if (abs(ratios_pic[i] - ratio) < min_value) {
                     min_value = abs(ratios_pic[i] - ratio);
                     min_index = i;
                 }
@@ -166,9 +166,9 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
             ratio_pic = ratios_pic[min_index];
         }
 
-        if      (AspectMode == qApp->translate("App","Inside"))      ratio_case = "Default_screen Inside";
-        else if (AspectMode == qApp->translate("App","Outside"))     ratio_case = "Full_desktop Outside";
-        else if (AspectMode == qApp->translate("App","Auto")) {
+        if (AspectMode == qApp->translate("App", "Inside"))      ratio_case = "Default_screen Inside";
+        else if (AspectMode == qApp->translate("App", "Outside"))     ratio_case = "Full_desktop Outside";
+        else if (AspectMode == qApp->translate("App", "Auto")) {
             if (std::abs(ratio_desk - ratio_pic) <= std::abs(ratio_default_screen - ratio_pic)) { // Full_desktop
                 if (ratio_pic / ratio_desk < 0.7 || ratio_pic / ratio_desk > 1 / 0.7)  {ratio_case = "Full_desktop Inside"; qDebug() << ratio_pic << " " << ratio_desk; }
                 else                                                                   {ratio_case = "Full_desktop Outside"; qDebug() << ratio_pic << " " << ratio_desk;}
@@ -202,14 +202,14 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
         myscene->addItem(pic_item);
 
     } else { // pics.size()==0
-        Hue = qrand()%360/360.0;
+        Hue = qrand() % 360 / 360.0;
         setGradient(Hue);
     }
 
     if (isLogging) {
         QString Logging_str = "";
 
-        for (int i = 0; i<pics.size();i++){
+        for (int i = 0; i < pics.size(); i++) {
             if (picture_path == pics_path_confirmed[i])
                 Logging_str += QString("image showing      %1  %2 %3\n").arg(ratios_pic[i], 4, 'f', 2).arg(Tostr(pics[i].size())).arg(pics_path_confirmed[i]);
             else
@@ -223,13 +223,13 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
         for (int i = 0; i < QApplication::desktop()->screenCount(); i++) {
             if (QApplication::desktop()->primaryScreen() == i) {
                 Logging_str += QString("default screen #%1  %2  %3\n").arg(i)
-                        .arg(ratio_default_screen, 4, 'f', 2)
-                        .arg(Tostr(default_screen));
+                               .arg(ratio_default_screen, 4, 'f', 2)
+                               .arg(Tostr(default_screen));
             } else {
                 QRect scr_i = QApplication::desktop()->screenGeometry(i);
                 Logging_str += QString("        screen #%1  %2  %3\n").arg(i)
-                        .arg((double)scr_i.width() / scr_i.height(), 4, 'f', 2)
-                        .arg(Tostr(scr_i));
+                               .arg((double)scr_i.width() / scr_i.height(), 4, 'f', 2)
+                               .arg(Tostr(scr_i));
             }
         }
 
@@ -264,7 +264,7 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
     ButtonRectItem->setRect(QRect(ProgressBarBackground->boundingRect().right() + 25, label_y_pos, 100, label_height));
 
     QPointF p = ButtonRectItem->rect().center() -
-            QPoint(ButtonText->boundingRect().width(), ButtonText->boundingRect().height()) / 2;
+                QPoint(ButtonText->boundingRect().width(), ButtonText->boundingRect().height()) / 2;
     ButtonText->setPos(p.x(), p.y());
 
 
@@ -296,8 +296,8 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
         clockItemRect->setBrush(Qt::black);
         clockItemRect->setOpacity(0.5);
 
-        QGraphicsBlurEffect * blur = new QGraphicsBlurEffect();
-        blur->setBlurRadius( 20 );
+        QGraphicsBlurEffect *blur = new QGraphicsBlurEffect();
+        blur->setBlurRadius(20);
         clockItemRect->setGraphicsEffect(blur);
 
         myscene->addItem(clockItemRect);
@@ -309,7 +309,7 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
         textItem->setPlainText(text);
         textItem->setPos(default_screen.topLeft() + QPoint(50, 25));
         textItem->setZValue(3);
-        textItem->setDefaultTextColor(QColor(255,255,255,255));
+        textItem->setDefaultTextColor(QColor(255, 255, 255, 255));
         textItem->setFont(QFont(isPrettyFont ? "UKIJ Diwani Yantu" : "PT Serif", 30, 30));
 
         //PT Serif
@@ -329,8 +329,8 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
         textItemRect->setBrush(Qt::black);
         textItemRect->setOpacity(0.5);
 
-        QGraphicsBlurEffect * blur = new QGraphicsBlurEffect();
-        blur->setBlurRadius( 20 );
+        QGraphicsBlurEffect *blur = new QGraphicsBlurEffect();
+        blur->setBlurRadius(20);
         textItemRect->setGraphicsEffect(blur);
 
         myscene->addItem(textItemRect);
@@ -376,9 +376,12 @@ void View::setGradient(double hue_first)
     QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomRight());
     //QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomLeft());
 
-    QColor c1; c1.setHsvF(fmod(hue_first,       1), 1, 0.3);
-    QColor c2; c2.setHsvF(fmod(hue_first + 0.1, 1), 1, 0.5);
-    QColor c3; c3.setHsvF(fmod(hue_first + 0.2, 1), 1, 0.3);
+    QColor c1;
+    c1.setHsvF(fmod(hue_first,       1), 1, 0.3);
+    QColor c2;
+    c2.setHsvF(fmod(hue_first + 0.1, 1), 1, 0.5);
+    QColor c3;
+    c3.setHsvF(fmod(hue_first + 0.2, 1), 1, 0.3);
 
     linearGrad.setColorAt(0.1, c1);
     linearGrad.setColorAt(0.5, c2);
@@ -404,7 +407,7 @@ void View::keyReleaseEvent(QKeyEvent *event)
                     myscene->removeItem(item);
                     delete item;
                 }
-            setGradient(rand()%360/360.);
+            setGradient(rand() % 360 / 360.);
         }
     } else if (event->key() == Qt::Key_Escape) {
         close();

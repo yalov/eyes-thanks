@@ -50,27 +50,27 @@ signals:
 
 private:
     void closeEvent(QCloseEvent *event);
-    void mousePressEvent(QMouseEvent * event);
-    void mouseReleaseEvent(QMouseEvent * event);
-    void keyPressEvent(QKeyEvent * event);
-    void keyReleaseEvent(QKeyEvent * event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
     void setGradient(double hue_first);
 
     QString picture_path;
 
-    QGraphicsScene * myscene;
-    QGraphicsTextItem * clockItem;
+    QGraphicsScene *myscene;
+    QGraphicsTextItem *clockItem;
 
-    QGraphicsRectItem * ProgressBar;
-    QGraphicsRectItem * ProgressBarBound;
-    QGraphicsRectItem * ProgressBarBackground;
-    GraphicsTextItemFixBound * ProgressBarText;
+    QGraphicsRectItem *ProgressBar;
+    QGraphicsRectItem *ProgressBarBound;
+    QGraphicsRectItem *ProgressBarBackground;
+    GraphicsTextItemFixBound *ProgressBarText;
     QRect ProgressBarRect;
-    QGraphicsRectItem * ButtonRectItem;
+    QGraphicsRectItem *ButtonRectItem;
     double Hue;
 
 public:
-    GraphicsTextItemFixBound * ButtonText;
+    GraphicsTextItemFixBound *ButtonText;
 };
 
 
