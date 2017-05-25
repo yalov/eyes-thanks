@@ -52,6 +52,9 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
     connect(DialogTimer, SIGNAL(finished()), this, SLOT(RefreshmentStart()));
     connect(ViewTimer, SIGNAL(finished()), ViewTimer, SLOT(stop()));
 
+    connect(DialogTimer, SIGNAL(finished()), DialogTimer, SLOT(stop()));
+
+
     connect(this, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this, SLOT(Activated(QSystemTrayIcon::ActivationReason)));
 
@@ -124,21 +127,21 @@ void TrayIcon::createActions()
 
 #endif
 
-    TestAct        = new QAction(testIcon, tr("Test"), this);
-    connect(TestAct, SIGNAL(triggered()), this, SLOT(ShowView()));
+    TestAct        = new QAction(testIcon, "", this);
+    connect(TestAct, SIGNAL(triggered()), this, SLOT(RefreshmentStart()));
 
-    ShowSettingAct = new QAction(settingIcon, tr("Setting"), this);
+    ShowSettingAct = new QAction(settingIcon, "", this);
     connect(ShowSettingAct, SIGNAL(triggered()), this, SLOT(ShowDialog()));
 
-    PauseAct       = new QAction(pauseIcon, tr("Pause"), this);
+    PauseAct       = new QAction(pauseIcon, "", this);
     connect(PauseAct, SIGNAL(triggered()), this, SLOT(Pause()));
 
-    UpdaterAct       = new UpdateAction(updateIcon, tr("Check for Updates"), this);
+    UpdaterAct       = new UpdateAction(updateIcon, "", this);
 
-    AboutAct       = new QAction(aboutIcon, tr("About"), this);
+    AboutAct       = new QAction(aboutIcon, "", this);
     connect(AboutAct, SIGNAL(triggered()), this, SLOT(About()));
 
-    QuitAct        = new QAction(quitIcon, tr("Quit"), this);
+    QuitAct        = new QAction(quitIcon, "", this);
     connect(QuitAct, SIGNAL(triggered()), this, SLOT(Quit()));
 }
 
@@ -149,7 +152,7 @@ void TrayIcon::createContextMenu()
     ContextMenu->addAction(ShowSettingAct);
     ContextMenu->addAction(PauseAct);
 
-    SubMenuLanguages = new QMenu(tr("Languages"));
+    SubMenuLanguages = new QMenu("");
     SubMenuLanguages->addActions(LangActGroup->actions());
     ContextMenu->addMenu(SubMenuLanguages);
 
@@ -393,7 +396,7 @@ void TrayIcon::LoadLanguage(const QString &rLanguage)
             qApp->installTranslator(Translator);
         }
 
-        retranslate();
+        Translate();
 
         if (LangActGroup)
             for (auto action : LangActGroup->actions()) {
@@ -405,19 +408,18 @@ void TrayIcon::LoadLanguage(const QString &rLanguage)
 
 
 //-----------------------------------------------------------------
-void TrayIcon::retranslate()
+void TrayIcon::Translate()
 {
-    TestAct->setText(tr("Test"));
+    TestAct->setText(tr("Break Now"));
     ShowSettingAct->setText(tr("Setting"));
     PauseAct->setText(tr("Pause"));
     QuitAct->setText(tr("Quit"));
     AboutAct->setText(tr("About"));
     UpdaterAct->setText(tr("Check for Updates"));
     SubMenuLanguages->setTitle(tr("Languages"));
-    //view->ButtonText->setPlainText(view->tr("Close"));
 
     if (dialog)
-        dialog->retranslate();
+        dialog->Translate();
 }
 
 
@@ -547,7 +549,7 @@ void TrayIcon::DialogUpdateTime()
 void TrayIcon::RefreshmentStart()
 {
     ShowView();
-    DialogTimer->restart();
+    DialogTimer->stop();
     TrayMessageShowed = false;
     CurrentIconRatio = -1;
     ViewTimer->start();
@@ -558,7 +560,9 @@ void TrayIcon::ShowView()
 {
     view = new View();
     connect(ViewTimer, SIGNAL(finished()), view, SIGNAL(view_close()));
-    //connect(view,      SIGNAL(view_close()),    view, SLOT(close()));
+    connect(view,      SIGNAL(view_close()),    view, SLOT(close()));
+    connect(view,      SIGNAL(view_close()), DialogTimer, SLOT(start()));
+
 
     QList<QString> pics_path;
 

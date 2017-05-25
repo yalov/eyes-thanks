@@ -63,7 +63,8 @@ HEADERS  += src/aboutwindow.h \
     src/timer.h \
     src/trayicon.h \
     src/view.h \
-    src/updater.h
+    src/updater.h \
+    src/global.h
 
 TRANSLATIONS += languages/lang_ru.ts languages/lang_en.ts
 RESOURCES += resource.qrc
@@ -95,7 +96,7 @@ CONFIG(release, debug|release) {
         }
 
         # copy OpenSSL dlls
-        OPENSSLFILES = $$shell_path($$PWD/../../bin_openssl_1.0.2h/*.dll)
+        OPENSSLFILES = $$shell_path($$PWD/../../openssl-1.0.2h-bin/*.dll)
         DDIR = $$shell_path($$DESTDIR)
         QMAKE_POST_LINK += $$RETURN $$QMAKE_COPY $$quote($$OPENSSLFILES) $$quote($$DDIR)
 

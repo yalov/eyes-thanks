@@ -75,7 +75,7 @@ private:
     void setCurrentIcon(double ratio);
     void setPauseIcon();
     void setCurrentIconbyCurrentIconRatio();
-    void retranslate();
+    void Translate();
     void LoadLanguage(const QString &rLanguage);  // loads a language by the given language shortcur (e.g. de, en)
     void createContextMenu();
     void createLangActionGroup();

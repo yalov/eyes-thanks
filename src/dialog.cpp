@@ -25,20 +25,16 @@
 
 Dialog::Dialog()
 {
-    setWindowTitle(qApp->translate("App", "Eyes' Thanks"));
     setWindowIcon(QIcon(":icons/logo.png"));
 
-
-
 #ifdef _WIN32
-    //setWindowFlags( Qt::WindowTitleHint | Qt::CustomizeWindowHint); //-- no title buttons
-    //setWindowFlags(Qt::WindowCloseButtonHint);
     setWindowFlags(Qt::WindowTitleHint | Qt::CustomizeWindowHint);
     setAttribute(Qt::WA_DeleteOnClose, true);
 
 #endif
 
     Init();
+    Translate();
 
 }
 
@@ -47,52 +43,36 @@ void Dialog::Init()
     QVBoxLayout *TopLayout = new QVBoxLayout();
     setLayout(TopLayout);
 
-    label_Path = new QLabel(tr("Pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
+    label_Path = new QLabel();
     LineEdit_Path = new QLineEdit();
     QPushButton *ButtonPath = new QPushButton("...");
     ButtonPath->setMaximumWidth(25);
-    label_Path->setToolTip(tr("Leave both folder paths empty, if you want nice gradient instead of pictures."));
 
-    label_Path_alt = new QLabel(tr("Alternative pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
+    label_Path_alt = new QLabel();
     LineEdit_Path_alt = new QLineEdit();
     QPushButton *ButtonPath_alt = new QPushButton("...");
     ButtonPath_alt->setMaximumWidth(25);
-    label_Path_alt->setToolTip(tr("Use, if you have two different-ratio sets of monitors.\n\n"
-                                  "Ex. if sometimes you disconnect your FHD notebook from your FHD monitor,\n"
-                                  "put 2FHD (3860×1080) pictures to “Pictures folder” and\n"
-                                  "FHD (1920×1080) pictures to “Alternative pictures folder”).\n"
-                                  "So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app use FHD folder."
-                                 ));
 
     Spinbox_RefreshmentInterval   = new QSpinBox();
     Spinbox_RefreshmentContinuous = new QSpinBox();
     Spinbox_RefreshmentInterval->setRange(1, 24 * 60);
     Spinbox_RefreshmentContinuous->setRange(0, 60 * 60);
-    Spinbox_RefreshmentInterval->setSuffix(" " + tr("min") + ".");
-    Spinbox_RefreshmentContinuous->setSuffix(" " + tr("sec") + ".");
 
-    CheckBox_Clock       = new QCheckBox(tr("Clock"));
-    CheckBox_Message     = new QCheckBox(tr("30-sec message"));
-    CheckBox_Logging     = new QCheckBox(tr("Logging to .txt"));
-    CheckBox_PrettyFont  = new QCheckBox(tr("PrettyFont"));
-    CheckBox_PrettyFont->setToolTip(tr("UKIJ Diwani Yantu Font"));
-    CheckBox_Text        = new QCheckBox(tr("Text") + ":");
-    CheckBox_StartupLink = new QCheckBox(tr("Run on Windows startup"));
+    CheckBox_Clock       = new QCheckBox();
+    CheckBox_Message     = new QCheckBox();
+    CheckBox_Logging     = new QCheckBox();
+    CheckBox_PrettyFont  = new QCheckBox();
+    CheckBox_Text        = new QCheckBox();
+    CheckBox_StartupLink = new QCheckBox();
 
     TextEdit_Text = new QPlainTextEdit();
     TextEdit_Text->setFixedHeight(70);
-    TextEdit_Text->setToolTip(tr("Support params: %interval, %continuous"));
 
-    ButtonGenerateText = new QPushButton(tr("Other text"));
-
+    ButtonGenerateText = new QPushButton();
     Combobox_imageAspectMode = new QComboBox();
-    Combobox_imageAspectMode->insertItems(0, QStringList() << qApp->translate("App", "Auto") << qApp->translate("App", "Outside") << qApp->translate("App", "Inside"));
-
     Combobox_iconsMode = new QComboBox();
-    Combobox_iconsMode->insertItems(0, QStringList() << tr("Light") << tr("Dark"));
 
-
-    SettingBreakShowing = new QGroupBox(tr("Settings") + ":");
+    SettingBreakShowing = new QGroupBox();
     QVBoxLayout *layoutVertical_GroupBox = new QVBoxLayout();
     SettingBreakShowing->setLayout(layoutVertical_GroupBox);
 
@@ -112,9 +92,9 @@ void Dialog::Init()
     layoutVertical_GroupBox->addLayout(layout_Path_alt);
 
     //-----
-    Label_ImageAspectMode = new QLabel(tr("Image Aspect Mode") + ":");
-    Label_UntilBreak      = new QLabel(tr("Until break") + ":");
-    Label_BreakContinuous = new QLabel(tr("Break continuous") + ":");
+    Label_ImageAspectMode = new QLabel();
+    Label_UntilBreak      = new QLabel();
+    Label_BreakContinuous = new QLabel();
     QGridLayout *layoutGrid_SettingBreakShowing = new QGridLayout();
     layoutGrid_SettingBreakShowing->addWidget(Label_ImageAspectMode, 0, 0);
     layoutGrid_SettingBreakShowing->addWidget(Combobox_imageAspectMode, 0, 1);
@@ -137,9 +117,9 @@ void Dialog::Init()
 
 
     //-----
-    SettingSystem = new QGroupBox(tr("System Settings") + ":");
+    SettingSystem = new QGroupBox();
     QGridLayout *Layout_SettingSystem = new QGridLayout();
-    Label_TrayIconStyle = new QLabel(tr("Tray Icon Style") + ":");
+    Label_TrayIconStyle = new QLabel();
     Layout_SettingSystem->addWidget(Label_TrayIconStyle, 0, 0);
     Layout_SettingSystem->addWidget(Combobox_iconsMode, 0, 1);
     Layout_SettingSystem->addWidget(CheckBox_StartupLink, 2, 0, 1, 2);
@@ -154,7 +134,7 @@ void Dialog::Init()
     //-----
     QHBoxLayout *Layout_Label_timer = new QHBoxLayout();
 
-    Label_Timer_Prefix = new QLabel(tr("Until break") + ": ");
+    Label_Timer_Prefix = new QLabel();
 
     Label_Timer = new QLabel();
     QFont font;
@@ -172,11 +152,11 @@ void Dialog::Init()
     //-----
     QHBoxLayout *layout_buttons = new QHBoxLayout();
 
-    buttonSave = new QPushButton(tr("Save"));
+    buttonSave = new QPushButton();
     buttonSave->setIcon(QIcon(":/icons/save.png"));
     layout_buttons->addWidget(buttonSave);
 
-    buttonMinimizeToSystemTray = new QPushButton(tr("Close to notification area"));
+    buttonMinimizeToSystemTray = new QPushButton();
     layout_buttons->addWidget(buttonMinimizeToSystemTray);
 
     TopLayout->addLayout(layout_buttons);
@@ -204,8 +184,10 @@ void Dialog::Init()
     connect(buttonMinimizeToSystemTray, SIGNAL(clicked()), this, SLOT(close()));
 }
 
-void Dialog::retranslate()
+void Dialog::Translate()
 {
+    setWindowTitle(qApp->translate("App", "Eyes' Thanks"));
+
     label_Path->setText(tr("Pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
     label_Path->setToolTip(tr("Leave both folder paths empty, if you want nice gradient instead of pictures."));
 

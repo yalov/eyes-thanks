@@ -76,6 +76,13 @@ public slots:
         elapsed_summand = 0;
     }
 
+    void start()
+    {
+        isActive = true;
+        qtimer.start();
+        elatimer.start();
+        elapsed_summand = 0;
+    }
 
 
 public:
@@ -94,13 +101,6 @@ public:
         interval = finishedinterval;
     }
 
-    void start()
-    {
-        isActive = true;
-        qtimer.start();
-        elatimer.start();
-        elapsed_summand = 0;
-    }
 
     void pause()
     {
@@ -134,6 +134,8 @@ public:
         elapsed_summand = 0;
         elatimer.restart();
     }
+
+
 
     qint64 elapsed()
     {
@@ -169,4 +171,3 @@ public:
 
 
 #endif // TIMER
-

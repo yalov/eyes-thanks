@@ -88,27 +88,6 @@ View::~View()
 
 }
 
-void View::mousePressEvent(QMouseEvent *event)
-{
-    for (auto i : items(event->pos())) {
-        if (ButtonRectItem == i) {
-            //ButtonRectItem->setBrush(Qt::red);
-            ButtonRectItem->setOpacity(1);
-        }
-
-    }
-
-}
-void View::mouseReleaseEvent(QMouseEvent *event)
-{
-    for (auto i : items(event->pos()))
-        if (ButtonRectItem == i)
-            close();
-
-    ButtonRectItem->setOpacity(0.9);
-
-}
-
 
 inline QString Tostr(QRect r)
 {
@@ -414,6 +393,27 @@ void View::keyReleaseEvent(QKeyEvent *event)
     }
 
     // QGraphicsView::keyPressEvent(event);
+
+}
+
+void View::mousePressEvent(QMouseEvent *event)
+{
+    for (auto i : items(event->pos())) {
+        if (ButtonRectItem == i) {
+            //ButtonRectItem->setBrush(Qt::red);
+            ButtonRectItem->setOpacity(1);
+        }
+
+    }
+
+}
+void View::mouseReleaseEvent(QMouseEvent *event)
+{
+    for (auto i : items(event->pos()))
+        if (ButtonRectItem == i)
+            close();
+
+    ButtonRectItem->setOpacity(0.9);
 
 }
 

@@ -27,37 +27,34 @@
 <context>
     <name>App</name>
     <message>
-        <location filename="../src/dialog.cpp" line="28"/>
-        <location filename="../src/trayicon.cpp" line="543"/>
+        <location filename="../src/dialog.cpp" line="189"/>
+        <location filename="../src/trayicon.cpp" line="540"/>
         <location filename="../src/updater.cpp" line="24"/>
         <source>Eyes&apos; Thanks</source>
         <translation>Eyes&apos; Thanks</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="89"/>
-        <location filename="../src/dialog.cpp" line="234"/>
-        <location filename="../src/trayicon.cpp" line="195"/>
-        <location filename="../src/view.cpp" line="171"/>
+        <location filename="../src/dialog.cpp" line="216"/>
+        <location filename="../src/trayicon.cpp" line="196"/>
+        <location filename="../src/view.cpp" line="150"/>
         <source>Auto</source>
         <translation>Автоматически</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="89"/>
-        <location filename="../src/dialog.cpp" line="235"/>
-        <location filename="../src/view.cpp" line="170"/>
+        <location filename="../src/dialog.cpp" line="217"/>
+        <location filename="../src/view.cpp" line="149"/>
         <source>Outside</source>
         <translation>Описать</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="89"/>
-        <location filename="../src/dialog.cpp" line="236"/>
-        <location filename="../src/view.cpp" line="153"/>
-        <location filename="../src/view.cpp" line="169"/>
+        <location filename="../src/dialog.cpp" line="218"/>
+        <location filename="../src/view.cpp" line="132"/>
+        <location filename="../src/view.cpp" line="148"/>
         <source>Inside</source>
         <translation>Вписать</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="356"/>
+        <location filename="../src/dialog.cpp" line="338"/>
         <source>proverbs</source>
         <translation>Делу %interval, а потехе %continuous.
 
@@ -130,92 +127,77 @@
 <context>
     <name>Dialog</name>
     <message>
-        <location filename="../src/dialog.cpp" line="115"/>
-        <location filename="../src/dialog.cpp" line="243"/>
+        <location filename="../src/dialog.cpp" line="225"/>
         <source>Image Aspect Mode</source>
         <translation>Масштабирование изображений</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="92"/>
-        <location filename="../src/dialog.cpp" line="238"/>
+        <location filename="../src/dialog.cpp" line="220"/>
         <source>Light</source>
         <translation>Светлый</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="54"/>
-        <location filename="../src/dialog.cpp" line="210"/>
+        <location filename="../src/dialog.cpp" line="192"/>
         <source>Leave both folder paths empty, if you want nice gradient instead of pictures.</source>
         <translation>Если поля ввода папок оставить пустыми, то вместо изображений будет красивый градиент.</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="86"/>
-        <location filename="../src/dialog.cpp" line="232"/>
+        <location filename="../src/dialog.cpp" line="214"/>
         <source>Other text</source>
-        <translation>Другая надпись</translation>
+        <translation>Поменять надпись</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="92"/>
-        <location filename="../src/dialog.cpp" line="239"/>
+        <location filename="../src/dialog.cpp" line="221"/>
         <source>Dark</source>
         <translation>Тёмный</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="142"/>
-        <location filename="../src/dialog.cpp" line="248"/>
+        <location filename="../src/dialog.cpp" line="230"/>
         <source>Tray Icon Style</source>
         <translation>Стиль иконки трея</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="71"/>
-        <location filename="../src/dialog.cpp" line="220"/>
+        <location filename="../src/dialog.cpp" line="202"/>
         <source>min</source>
         <translation>мин</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="72"/>
-        <location filename="../src/dialog.cpp" line="221"/>
+        <location filename="../src/dialog.cpp" line="203"/>
         <source>sec</source>
         <translation>сек</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="74"/>
-        <location filename="../src/dialog.cpp" line="223"/>
+        <location filename="../src/dialog.cpp" line="205"/>
         <source>Clock</source>
         <translation>Показывать часы</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="77"/>
-        <location filename="../src/dialog.cpp" line="226"/>
+        <location filename="../src/dialog.cpp" line="208"/>
         <source>PrettyFont</source>
         <translation>Использовать красивый шрифт</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="79"/>
-        <location filename="../src/dialog.cpp" line="228"/>
+        <location filename="../src/dialog.cpp" line="210"/>
         <source>Text</source>
         <translation>Показывать надпись</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="75"/>
-        <location filename="../src/dialog.cpp" line="224"/>
+        <location filename="../src/dialog.cpp" line="206"/>
         <source>30-sec message</source>
         <translation>Оповещать за 30 сек до перерыва</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="50"/>
-        <location filename="../src/dialog.cpp" line="209"/>
+        <location filename="../src/dialog.cpp" line="191"/>
         <source>Pictures folder</source>
         <translation>Папка с изображениями</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="56"/>
-        <location filename="../src/dialog.cpp" line="212"/>
+        <location filename="../src/dialog.cpp" line="194"/>
         <source>Alternative pictures folder</source>
         <translation>Папка с альтернативными изображениями</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="60"/>
-        <location filename="../src/dialog.cpp" line="213"/>
+        <location filename="../src/dialog.cpp" line="195"/>
         <source>Use, if you have two different-ratio sets of monitors.
 
 Ex. if sometimes you disconnect your FHD notebook from your FHD monitor,
@@ -231,71 +213,60 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
 тогда при соединении и отсоединении ноутбука вы будете видеть случайные изображения только из соотвестсвующей папки.</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="76"/>
-        <location filename="../src/dialog.cpp" line="225"/>
+        <location filename="../src/dialog.cpp" line="207"/>
         <source>Logging to .txt</source>
         <translation>Логирование в .txt</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="78"/>
-        <location filename="../src/dialog.cpp" line="227"/>
+        <location filename="../src/dialog.cpp" line="209"/>
         <source>UKIJ Diwani Yantu Font</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="80"/>
-        <location filename="../src/dialog.cpp" line="229"/>
+        <location filename="../src/dialog.cpp" line="211"/>
         <source>Run on Windows startup</source>
         <translation>Запускать при входе в Windows</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="84"/>
-        <location filename="../src/dialog.cpp" line="231"/>
+        <location filename="../src/dialog.cpp" line="213"/>
         <source>Support params: %interval, %continuous</source>
         <oldsource>Support params: %interval, %break</oldsource>
         <translation>Поддерживаемые параметры: %interval, %continuous</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="95"/>
-        <location filename="../src/dialog.cpp" line="241"/>
+        <location filename="../src/dialog.cpp" line="223"/>
         <source>Settings</source>
         <translation>Настройки отображения перерыва</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="116"/>
-        <location filename="../src/dialog.cpp" line="157"/>
-        <location filename="../src/dialog.cpp" line="244"/>
-        <location filename="../src/dialog.cpp" line="249"/>
+        <location filename="../src/dialog.cpp" line="226"/>
+        <location filename="../src/dialog.cpp" line="231"/>
         <source>Until break</source>
         <translation>До перерыва</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="117"/>
-        <location filename="../src/dialog.cpp" line="245"/>
+        <location filename="../src/dialog.cpp" line="227"/>
         <source>Break continuous</source>
         <translation>Перерыв</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="140"/>
-        <location filename="../src/dialog.cpp" line="247"/>
+        <location filename="../src/dialog.cpp" line="229"/>
         <source>System Settings</source>
         <translation>Системные настройки</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="175"/>
-        <location filename="../src/dialog.cpp" line="251"/>
+        <location filename="../src/dialog.cpp" line="233"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="179"/>
-        <location filename="../src/dialog.cpp" line="252"/>
+        <location filename="../src/dialog.cpp" line="234"/>
         <source>Close to notification area</source>
         <translation>Свернуть в область уведомлений</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="338"/>
-        <location filename="../src/dialog.cpp" line="347"/>
+        <location filename="../src/dialog.cpp" line="320"/>
+        <location filename="../src/dialog.cpp" line="329"/>
         <source>Open Directory</source>
         <translation>Папка с изображениями</translation>
     </message>
@@ -303,55 +274,53 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
 <context>
     <name>TrayIcon</name>
     <message>
-        <location filename="../src/trayicon.cpp" line="129"/>
-        <location filename="../src/trayicon.cpp" line="415"/>
         <source>Test</source>
-        <translation>Тест</translation>
+        <translation type="vanished">Тест</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="132"/>
-        <location filename="../src/trayicon.cpp" line="416"/>
+        <location filename="../src/trayicon.cpp" line="414"/>
         <source>Setting</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="135"/>
-        <location filename="../src/trayicon.cpp" line="281"/>
-        <location filename="../src/trayicon.cpp" line="322"/>
+        <location filename="../src/trayicon.cpp" line="282"/>
         <location filename="../src/trayicon.cpp" line="323"/>
-        <location filename="../src/trayicon.cpp" line="325"/>
-        <location filename="../src/trayicon.cpp" line="417"/>
-        <location filename="../src/trayicon.cpp" line="515"/>
+        <location filename="../src/trayicon.cpp" line="324"/>
+        <location filename="../src/trayicon.cpp" line="326"/>
+        <location filename="../src/trayicon.cpp" line="415"/>
+        <location filename="../src/trayicon.cpp" line="512"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="143"/>
-        <location filename="../src/trayicon.cpp" line="418"/>
+        <location filename="../src/trayicon.cpp" line="413"/>
+        <source>Break Now</source>
+        <translation>Перерыв сейчас</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="416"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="140"/>
-        <location filename="../src/trayicon.cpp" line="419"/>
+        <location filename="../src/trayicon.cpp" line="417"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="138"/>
-        <location filename="../src/trayicon.cpp" line="420"/>
+        <location filename="../src/trayicon.cpp" line="418"/>
         <source>Check for Updates</source>
         <oldsource>Check Update</oldsource>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="529"/>
-        <location filename="../src/trayicon.cpp" line="543"/>
+        <location filename="../src/trayicon.cpp" line="526"/>
+        <location filename="../src/trayicon.cpp" line="540"/>
         <source>Until break</source>
         <translation>До перерыва</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="196"/>
+        <location filename="../src/trayicon.cpp" line="197"/>
         <source>All work and no play
 makes Jack a dull boy.</source>
         <oldsource>All work and no play makes Jack a dull boy.</oldsource>
@@ -359,29 +328,28 @@ makes Jack a dull boy.</source>
 а потехе %continuous.</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="154"/>
-        <location filename="../src/trayicon.cpp" line="421"/>
+        <location filename="../src/trayicon.cpp" line="419"/>
         <source>Languages</source>
         <translation>Языки</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="88"/>
+        <location filename="../src/trayicon.cpp" line="90"/>
         <source>English</source>
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="311"/>
+        <location filename="../src/trayicon.cpp" line="312"/>
         <source>Unpause</source>
         <translation>Продолжить</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="543"/>
-        <location filename="../src/trayicon.cpp" line="591"/>
+        <location filename="../src/trayicon.cpp" line="540"/>
+        <location filename="../src/trayicon.cpp" line="590"/>
         <source>sec</source>
         <translation>сек</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="590"/>
+        <location filename="../src/trayicon.cpp" line="589"/>
         <source>min</source>
         <translation>мин</translation>
     </message>

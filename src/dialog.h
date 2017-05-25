@@ -32,8 +32,8 @@
 #include <QWinTaskbarButton>
 #include <QWinTaskbarProgress>
 
+#include "global.h"
 
-enum IconsMode {light, dark };
 
 class Dialog : public QDialog
 {
@@ -42,7 +42,7 @@ public:
     Dialog();
     void SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString ImagesPath_alt, QString imageAspectMode, bool isLogging,
                    bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, bool isStartupLink, QString Text,  IconsMode iconsmode);
-    void retranslate();
+    void Translate();
 
 private:
     void showEvent(QShowEvent *e);
