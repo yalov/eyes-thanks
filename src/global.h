@@ -16,6 +16,8 @@
 //      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       //
 //----------------------------------------------------------------------------------//
 
+#include <QString>
+
 
 #ifndef GLOBAL_H
 #define GLOBAL_H
@@ -33,5 +35,47 @@ enum ImageAspectMode
     Inside
 };
 
+
+struct Setting
+{
+    int counter;
+    int pauseInterval;
+    int pauseContinuous;
+    QString imagesPath;
+    QString imagesPathAlternative;
+    ImageAspectMode imageAspectMode;
+    IconsMode iconsMode;
+    bool isLogging;
+    bool isText;
+    bool isClock;
+    bool isMessage30sec;
+    bool isPrettyFont;
+    bool isStartupLink;
+    QString text;
+
+    Setting()
+    {}
+
+    Setting(int pauseinterval, int pausecontinuous,
+            QString imagespath, QString imagespath_alt, ImageAspectMode imageaspectmode, IconsMode iconsmode,
+            bool islogging, bool istext, bool isclock, bool ismessage30sec, bool isprettyfont, bool isstartuplink, QString _text
+    )
+    {
+        pauseInterval = pauseinterval;
+        pauseContinuous = pausecontinuous;
+        imagesPath = imagespath;
+        imagesPathAlternative = imagespath_alt;
+        imageAspectMode = imageaspectmode;
+        iconsMode = iconsmode;
+        isLogging = islogging;
+        isText = istext;
+        isClock = isclock;
+        isMessage30sec = ismessage30sec;
+        isPrettyFont = isprettyfont;
+        isStartupLink = isstartuplink;
+        text = _text;
+    }
+
+};
 
 #endif // GLOBAL_H

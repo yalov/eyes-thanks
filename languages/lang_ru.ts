@@ -28,35 +28,96 @@
     <name>App</name>
     <message>
         <location filename="../src/dialog.cpp" line="189"/>
-        <location filename="../src/trayicon.cpp" line="540"/>
+        <location filename="../src/trayicon.cpp" line="558"/>
         <location filename="../src/updater.cpp" line="24"/>
         <source>Eyes&apos; Thanks</source>
         <translation>Eyes&apos; Thanks</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="216"/>
-        <location filename="../src/trayicon.cpp" line="196"/>
-        <location filename="../src/view.cpp" line="150"/>
-        <source>Auto</source>
-        <translation>Автоматически</translation>
-    </message>
-    <message>
-        <location filename="../src/dialog.cpp" line="217"/>
-        <location filename="../src/view.cpp" line="149"/>
-        <source>Outside</source>
-        <translation>Описать</translation>
-    </message>
-    <message>
-        <location filename="../src/dialog.cpp" line="218"/>
-        <location filename="../src/view.cpp" line="132"/>
-        <location filename="../src/view.cpp" line="148"/>
-        <source>Inside</source>
-        <translation>Вписать</translation>
-    </message>
-    <message>
-        <location filename="../src/dialog.cpp" line="338"/>
-        <source>proverbs</source>
+        <location filename="../src/dialog.cpp" line="343"/>
+        <source>Proverbs.</source>
         <translation>Делу %interval, а потехе %continuous.
+
+Если каждые %interval проводить с пользой,
+то и вся жизнь будет наполненной.
+
+Жизненный путь состоит из множества %interval,
+где каждые %interval очень важны.
+
+Уделяя лишь %continuous каждые %interval какому либо делу, 
+можно добиться в нем больших успехов.
+
+%interval упустишь – годом не наверстаешь.
+
+Не торопи %interval и не упускай %continuous.
+
+Если не контролируешь свое время,
+то оно попросту ускользнет от тебя.
+
+Работы очень много.
+
+Совершенствуйся постоянно.
+
+Если вовремя не «посеешь»,
+то вовремя не «соберешь урожай»,
+и останешься «голодным».
+
+Если не «заготовишь дров»,
+то «замерзнешь».
+
+Век долог да час дорог.
+
+Иногда нужно сейчас, потому что потом уже не нужно.
+
+Обещанного три года ждут.
+
+Блажен, кто ожидает.
+
+Улита едет, да когда-то будет.
+
+Всё когда-либо заканчивается.
+
+Всякому овощу свое время.
+
+Делай всё вовремя.
+
+Солнышко всходит — часов не спрашивает.
+
+Лучше поздно, чем никогда.
+
+Счастливые часов не наблюдают.
+
+Иное время – иное бремя.
+
+Время разум дает.
+
+Время руками не удержишь.
+
+Всякое семя знает свое время.
+
+Время – деньги.
+
+Что упустишь, годом не наверстаешь.
+
+Минутка час бережет.
+
+Ум придет, да время уйдет.</translation>
+    </message>
+    <message>
+        <source>Auto</source>
+        <translation type="vanished">Автоматически</translation>
+    </message>
+    <message>
+        <source>Outside</source>
+        <translation type="vanished">Описать</translation>
+    </message>
+    <message>
+        <source>Inside</source>
+        <translation type="vanished">Вписать</translation>
+    </message>
+    <message>
+        <source>proverbs</source>
+        <translation type="vanished">Делу %interval, а потехе %continuous.
 
 Если каждые %interval проводить с пользой,
 то и вся жизнь будет наполненной.
@@ -127,12 +188,12 @@
 <context>
     <name>Dialog</name>
     <message>
-        <location filename="../src/dialog.cpp" line="225"/>
+        <location filename="../src/dialog.cpp" line="229"/>
         <source>Image Aspect Mode</source>
         <translation>Масштабирование изображений</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="220"/>
+        <location filename="../src/dialog.cpp" line="224"/>
         <source>Light</source>
         <translation>Светлый</translation>
     </message>
@@ -147,12 +208,12 @@
         <translation>Поменять надпись</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="221"/>
+        <location filename="../src/dialog.cpp" line="225"/>
         <source>Dark</source>
         <translation>Тёмный</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="230"/>
+        <location filename="../src/dialog.cpp" line="234"/>
         <source>Tray Icon Style</source>
         <translation>Стиль иконки трея</translation>
     </message>
@@ -234,39 +295,54 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>Поддерживаемые параметры: %interval, %continuous</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="223"/>
+        <location filename="../src/dialog.cpp" line="218"/>
+        <source>Auto</source>
+        <translation>Автоматически</translation>
+    </message>
+    <message>
+        <location filename="../src/dialog.cpp" line="219"/>
+        <source>Outside</source>
+        <translation>Описать</translation>
+    </message>
+    <message>
+        <location filename="../src/dialog.cpp" line="220"/>
+        <source>Inside</source>
+        <translation>Вписать</translation>
+    </message>
+    <message>
+        <location filename="../src/dialog.cpp" line="227"/>
         <source>Settings</source>
         <translation>Настройки отображения перерыва</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="226"/>
-        <location filename="../src/dialog.cpp" line="231"/>
+        <location filename="../src/dialog.cpp" line="230"/>
+        <location filename="../src/dialog.cpp" line="235"/>
         <source>Until break</source>
         <translation>До перерыва</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="227"/>
+        <location filename="../src/dialog.cpp" line="231"/>
         <source>Break continuous</source>
         <translation>Перерыв</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="229"/>
+        <location filename="../src/dialog.cpp" line="233"/>
         <source>System Settings</source>
         <translation>Системные настройки</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="233"/>
+        <location filename="../src/dialog.cpp" line="237"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="234"/>
+        <location filename="../src/dialog.cpp" line="238"/>
         <source>Close to notification area</source>
         <translation>Свернуть в область уведомлений</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="320"/>
-        <location filename="../src/dialog.cpp" line="329"/>
+        <location filename="../src/dialog.cpp" line="325"/>
+        <location filename="../src/dialog.cpp" line="334"/>
         <source>Open Directory</source>
         <translation>Папка с изображениями</translation>
     </message>
@@ -278,49 +354,49 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation type="vanished">Тест</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="414"/>
+        <location filename="../src/trayicon.cpp" line="434"/>
         <source>Setting</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="282"/>
-        <location filename="../src/trayicon.cpp" line="323"/>
-        <location filename="../src/trayicon.cpp" line="324"/>
-        <location filename="../src/trayicon.cpp" line="326"/>
-        <location filename="../src/trayicon.cpp" line="415"/>
-        <location filename="../src/trayicon.cpp" line="512"/>
+        <location filename="../src/trayicon.cpp" line="291"/>
+        <location filename="../src/trayicon.cpp" line="332"/>
+        <location filename="../src/trayicon.cpp" line="333"/>
+        <location filename="../src/trayicon.cpp" line="335"/>
+        <location filename="../src/trayicon.cpp" line="435"/>
+        <location filename="../src/trayicon.cpp" line="530"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="413"/>
+        <location filename="../src/trayicon.cpp" line="433"/>
         <source>Break Now</source>
         <translation>Перерыв сейчас</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="416"/>
+        <location filename="../src/trayicon.cpp" line="436"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="417"/>
+        <location filename="../src/trayicon.cpp" line="437"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="418"/>
+        <location filename="../src/trayicon.cpp" line="438"/>
         <source>Check for Updates</source>
         <oldsource>Check Update</oldsource>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="526"/>
-        <location filename="../src/trayicon.cpp" line="540"/>
+        <location filename="../src/trayicon.cpp" line="544"/>
+        <location filename="../src/trayicon.cpp" line="558"/>
         <source>Until break</source>
         <translation>До перерыва</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="197"/>
+        <location filename="../src/trayicon.cpp" line="199"/>
         <source>All work and no play
 makes Jack a dull boy.</source>
         <oldsource>All work and no play makes Jack a dull boy.</oldsource>
@@ -328,7 +404,7 @@ makes Jack a dull boy.</source>
 а потехе %continuous.</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="419"/>
+        <location filename="../src/trayicon.cpp" line="439"/>
         <source>Languages</source>
         <translation>Языки</translation>
     </message>
@@ -338,18 +414,18 @@ makes Jack a dull boy.</source>
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="312"/>
+        <location filename="../src/trayicon.cpp" line="321"/>
         <source>Unpause</source>
         <translation>Продолжить</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="540"/>
-        <location filename="../src/trayicon.cpp" line="590"/>
+        <location filename="../src/trayicon.cpp" line="558"/>
+        <location filename="../src/trayicon.cpp" line="608"/>
         <source>sec</source>
         <translation>сек</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="589"/>
+        <location filename="../src/trayicon.cpp" line="607"/>
         <source>min</source>
         <translation>мин</translation>
     </message>

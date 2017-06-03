@@ -213,10 +213,14 @@ void Dialog::Translate()
     TextEdit_Text->setToolTip(tr("Support params: %interval, %continuous"));
     ButtonGenerateText->setText(tr("Other text"));
 
-    Combobox_imageAspectMode->setItemText(0, qApp->translate("App", "Auto"));
-    Combobox_imageAspectMode->setItemText(1, qApp->translate("App", "Outside"));
-    Combobox_imageAspectMode->setItemText(2, qApp->translate("App", "Inside"));
+    Combobox_imageAspectMode->clear();
+    Combobox_imageAspectMode->addItems(QStringList() << "" << "" << "");
+    Combobox_imageAspectMode->setItemText(0, tr("Auto"));
+    Combobox_imageAspectMode->setItemText(1, tr("Outside"));
+    Combobox_imageAspectMode->setItemText(2, tr("Inside"));
 
+    Combobox_iconsMode->clear();
+    Combobox_iconsMode->addItems(QStringList() << "" << "");
     Combobox_iconsMode->setItemText(0, tr("Light"));
     Combobox_iconsMode->setItemText(1, tr("Dark"));
 
@@ -247,24 +251,25 @@ void Dialog::showEvent(QShowEvent *e)
 
 
 
-void Dialog::SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString ImagesPath_alt, QString imageAspectMode,
-                       bool isLogging, bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, bool isStartupLink, QString Text, IconsMode iconsmode)
+void Dialog::SetValues(Setting setting)
 {
-    Spinbox_RefreshmentInterval->setValue(pauseInterval / 1000 / 60);
-    Spinbox_RefreshmentContinuous->setValue(pauseContinuous / 1000);
-    LineEdit_Path->setText(ImagesPath);
-    LineEdit_Path_alt->setText(ImagesPath_alt);
-    Combobox_imageAspectMode->setCurrentText(imageAspectMode);
-    Combobox_iconsMode->setCurrentIndex(iconsmode);
-    CheckBox_Logging->setChecked(isLogging);
-    CheckBox_Text->setChecked(isText);
-    CheckBox_Clock->setChecked(isClock);
-    CheckBox_Message->setChecked(isMessage30sec);
-    CheckBox_PrettyFont->setChecked(isPrettyFont);
-    CheckBox_StartupLink->setChecked(isStartupLink);
-    TextEdit_Text->setEnabled(isText);
-    ButtonGenerateText->setEnabled(isText);
-    TextEdit_Text->setPlainText(Text);
+    Spinbox_RefreshmentInterval->setValue(setting.pauseInterval / 1000 / 60);
+    Spinbox_RefreshmentContinuous->setValue(setting.pauseContinuous / 1000);
+    LineEdit_Path->setText(setting.imagesPath);
+    LineEdit_Path_alt->setText(setting.imagesPathAlternative);
+
+    Combobox_imageAspectMode->setCurrentIndex(setting.imageAspectMode);
+    Combobox_iconsMode->setCurrentIndex(setting.iconsMode);
+
+    CheckBox_Logging->setChecked(setting.isLogging);
+    CheckBox_Text->setChecked(setting.isText);
+    CheckBox_Clock->setChecked(setting.isClock);
+    CheckBox_Message->setChecked(setting.isMessage30sec);
+    CheckBox_PrettyFont->setChecked(setting.isPrettyFont);
+    CheckBox_StartupLink->setChecked(setting.isStartupLink);
+    TextEdit_Text->setEnabled(setting.isText);
+    ButtonGenerateText->setEnabled(setting.isText);
+    TextEdit_Text->setPlainText(setting.text);
 
 
     emit TimerStatusRequest();
@@ -335,7 +340,7 @@ void Dialog::ButtonPath_alt_clicked()
 
 void Dialog::ButtonGenerateText_clicked()
 {
-    QStringList proverbs = qApp->translate("App", "proverbs").split("\n\n");
+    QStringList proverbs = qApp->translate("App", "Proverbs.").split("\n\n");
     TextEdit_Text->setPlainText(proverbs[rand() % proverbs.size()]);
 
 
@@ -346,8 +351,19 @@ void Dialog::SaveValues()
     //emit TimerStatusRequest();
     //Label_Timer->setText(QString("%1:00").arg(Spinbox_RefreshmentInterval->value(),2,10,QLatin1Char(' ')));
 
-    emit save(Spinbox_RefreshmentInterval->value() * 60 * 1000, Spinbox_RefreshmentContinuous->value() * 1000,
-              LineEdit_Path->text(), LineEdit_Path_alt->text(), Combobox_imageAspectMode->currentText(),
-              CheckBox_Logging->isChecked(), CheckBox_Text->isChecked(), CheckBox_Clock->isChecked(), CheckBox_Message->isChecked(),
-              CheckBox_PrettyFont->isChecked(), CheckBox_StartupLink->isChecked(), TextEdit_Text->toPlainText(), static_cast<IconsMode>(Combobox_iconsMode->currentIndex()));
+    Setting setting = Setting(Spinbox_RefreshmentInterval->value() * 60 * 1000,
+                              Spinbox_RefreshmentContinuous->value() * 1000,
+                              LineEdit_Path->text(),
+                              LineEdit_Path_alt->text(),
+                              static_cast<ImageAspectMode>(Combobox_imageAspectMode->currentIndex()),
+                              static_cast<IconsMode>(Combobox_iconsMode->currentIndex()),
+                              CheckBox_Logging->isChecked(),
+                              CheckBox_Text->isChecked(),
+                              CheckBox_Clock->isChecked(),
+                              CheckBox_Message->isChecked(),
+                              CheckBox_PrettyFont->isChecked(),
+                              CheckBox_StartupLink->isChecked(),
+                              TextEdit_Text->toPlainText());
+
+    emit save(setting);
 }

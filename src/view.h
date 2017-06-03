@@ -22,14 +22,15 @@
 #include <QtCore>
 #include <QCloseEvent>
 #include <QGraphicsView>
-
 #include <QProgressBar>
 #include <QLabel>
 #include <QPushButton>
 #include <QGraphicsTextItem>
 #include <QGraphicsProxyWidget>
-#include "timer.h"
+
 #include "graphicstextitemfixbound.h"
+#include "global.h"
+#include "timer.h"
 
 #define WidgetMode
 
@@ -41,7 +42,7 @@ public:
     View(QWidget *parent = 0);
     ~View();
 
-    void ShowRefreshment(QList<QString> pics_path, QString clock, QString ProgressBarText, bool isLogging, bool isPrettyFont, QString AspectMode);
+    void ShowRefreshment(QList<QString> pics_path, QString clock, QString ProgressBarText, bool isLogging, bool isPrettyFont, ImageAspectMode AspectMode);
     void UpdateValues(QString remains_str, double ratio);
 
 signals:

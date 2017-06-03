@@ -99,7 +99,7 @@ inline QString Tostr(QSize s)
     return QString("             [%3x%4]").arg(s.width(), 4).arg(s.height(), 4);
 }
 
-void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text, bool isLogging, bool isPrettyFont, QString AspectMode)
+void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text, bool isLogging, bool isPrettyFont, ImageAspectMode AspectMode)
 {
     QList<double> ratios_pic;
     QList<QPixmap> pics;
@@ -129,7 +129,7 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
     if (pics.size() > 0) {
         // find out which one of pic apropriate, if "inside" - comparison to def screen, if outside or auto - comparison to desk
         {
-            double ratio = (AspectMode == qApp->translate("App", "Inside")) ? ratio_default_screen : ratio_desk;
+            double ratio = (AspectMode == ImageAspectMode::Inside) ? ratio_default_screen : ratio_desk;
             double min_value = std::numeric_limits<double>::max();
             double min_index = 0;
 
@@ -145,12 +145,12 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
             ratio_pic = ratios_pic[min_index];
         }
 
-        if (AspectMode == qApp->translate("App", "Inside"))      ratio_case = "Default_screen Inside";
-        else if (AspectMode == qApp->translate("App", "Outside"))     ratio_case = "Full_desktop Outside";
-        else if (AspectMode == qApp->translate("App", "Auto")) {
+        if (AspectMode == ImageAspectMode::Inside)      ratio_case = "Default_screen Inside";
+        else if (AspectMode == ImageAspectMode::Outside)     ratio_case = "Full_desktop Outside";
+        else if (AspectMode == ImageAspectMode::Auto) {
             if (std::abs(ratio_desk - ratio_pic) <= std::abs(ratio_default_screen - ratio_pic)) { // Full_desktop
-                if (ratio_pic / ratio_desk < 0.7 || ratio_pic / ratio_desk > 1 / 0.7)  {ratio_case = "Full_desktop Inside"; qDebug() << ratio_pic << " " << ratio_desk; }
-                else                                                                   {ratio_case = "Full_desktop Outside"; qDebug() << ratio_pic << " " << ratio_desk;}
+                if (ratio_pic / ratio_desk < 0.7 || ratio_pic / ratio_desk > 1 / 0.7)                     {ratio_case = "Full_desktop Inside";  }
+                else                                                                                      {ratio_case = "Full_desktop Outside"; }
             } else { //Default_screen
                 if (ratio_pic / ratio_default_screen < 0.7 || ratio_pic / ratio_default_screen > 1 / 0.7)  ratio_case = "Default_screen Inside";
                 else                                                                                       ratio_case = "Default_screen Outside";
@@ -354,13 +354,14 @@ void View::setGradient(double hue_first)
     QRect default_screen = QApplication::desktop()->screenGeometry(-1);
     QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomRight());
     //QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomLeft());
+    //QLinearGradient linearGrad(default_screen.topLeft(), default_screen.topRight());
 
     QColor c1;
-    c1.setHsvF(fmod(hue_first,       1), 1, 0.3);
+    c1.setHsvF(fmod(hue_first,  1), 1, 0.3);
     QColor c2;
-    c2.setHsvF(fmod(hue_first + 0.1, 1), 1, 0.5);
+    c2.setHsvF(fmod(hue_first , 1), 1, 0.5);
     QColor c3;
-    c3.setHsvF(fmod(hue_first + 0.2, 1), 1, 0.3);
+    c3.setHsvF(fmod(hue_first , 1), 1, 0.3);
 
     linearGrad.setColorAt(0.1, c1);
     linearGrad.setColorAt(0.5, c2);

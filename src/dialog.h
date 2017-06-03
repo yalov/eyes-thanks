@@ -40,8 +40,7 @@ class Dialog : public QDialog
     Q_OBJECT
 public:
     Dialog();
-    void SetValues(int pauseInterval, int pauseContinuous, QString ImagesPath, QString ImagesPath_alt, QString imageAspectMode, bool isLogging,
-                   bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, bool isStartupLink, QString Text,  IconsMode iconsmode);
+    void SetValues(Setting setting);
     void Translate();
 
 private:
@@ -64,8 +63,7 @@ private slots:
 
 signals:
     void closedialog();
-    void save(int pauseInterval, int pauseContinuous, QString ImagesPath, QString ImagesPath_alt, QString imageAspectMode, bool isLogging,
-              bool isText, bool isClock, bool isMessage30sec, bool isPrettyFont, bool isStartupLink, QString Text, IconsMode iconmode);
+    void save(Setting setting);
     void TimerStatusRequest();
 
 private:

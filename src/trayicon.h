@@ -29,6 +29,7 @@
 
 #include <QAction>
 #include <QSystemTrayIcon>
+
 #include "view.h"
 #include "timer.h"
 #include "dialog.h"
@@ -61,8 +62,7 @@ private slots:
     void About();
     void ShowDialog();
     void CloseDialog();
-    void Save(int pauseinterval, int pausecontinuous, QString Imagespath, QString Imagespath_alt, QString imageaspectMode,
-              bool isLogging, bool istext, bool isclock, bool ismessage30sec, bool isPrettyFont, bool isstartuplink, QString text, IconsMode iconsmode);
+    void Save(Setting s);
 
     void TimerStatusSend();
     void slotLanguageChanged(QAction *action);  // this slot is called by the language menu actions
@@ -102,29 +102,16 @@ private:
 
     QIcon ipp, i00, i25, i50, i75, i87, i95;
 
-    int Counter;
-    int pauseInterval;
-    int pauseContinuous;
+    Setting setting;
+
     QString LangPath;
     QString LangCurrent;
-    QString ImagesPath;
-    QString ImagesPath_alt;
-    QString imageAspectMode;
-
-    bool isLogging;
-    bool isText;
-    bool isClock;
-    bool isMessage30sec;
-    bool isPrettyFont;
-    bool isStartupLink;
-    QString Text;
-    IconsMode iconsMode;
-
 
     bool TrayMessageShowed;
     QString TimeRemains;
     double CurrentIconRatio;
 
+    void CreateOrDeleteAppStartUpLink(bool create);
 };
 
 #endif // TRAYICON_H

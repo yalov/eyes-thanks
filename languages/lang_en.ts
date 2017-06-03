@@ -28,35 +28,73 @@
     <name>App</name>
     <message>
         <location filename="../src/dialog.cpp" line="189"/>
-        <location filename="../src/trayicon.cpp" line="540"/>
+        <location filename="../src/trayicon.cpp" line="558"/>
         <location filename="../src/updater.cpp" line="24"/>
         <source>Eyes&apos; Thanks</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="216"/>
-        <location filename="../src/trayicon.cpp" line="196"/>
-        <location filename="../src/view.cpp" line="150"/>
-        <source>Auto</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/dialog.cpp" line="217"/>
-        <location filename="../src/view.cpp" line="149"/>
-        <source>Outside</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/dialog.cpp" line="218"/>
-        <location filename="../src/view.cpp" line="132"/>
-        <location filename="../src/view.cpp" line="148"/>
-        <source>Inside</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/dialog.cpp" line="338"/>
-        <source>proverbs</source>
+        <location filename="../src/dialog.cpp" line="343"/>
+        <source>Proverbs.</source>
         <translation>All work and no play
+makes Jack a dull boy.
+
+All that really belongs to us is time;
+even he who has nothing else has that.
+
+Time is what we want most, but...
+what we use worst.
+
+We must use time as a tool,
+not as a crutch.
+
+If we take care of the moments, 
+the years will take care of themselves.
+
+Regret for wasted time
+is more wasted time.
+
+Yesterday&apos;s the past,
+tomorrow&apos;s the future,
+but today is a gift.
+That&apos;s why it&apos;s called the present.
+
+Time is the most valuable thing
+a man can spend.
+
+Time flies over us,
+but leaves its shadow behind.
+
+Those who make the worst use of their time 
+are the first to complain of its brevity.
+
+Time is an illusion.
+
+Time is a created thing.
+To say &apos;I don&apos;t have time,&apos;
+is like saying, &apos;I don&apos;t want to.
+
+Time takes it all,
+whether you want it to or not.
+
+Better three hours too soon,
+than one minute too late.
+
+Time is the wisest counselor of all.
+
+Nothing is a waste of time
+if you use the experience wisely.
+
+Time = life;
+therefore, waste your time and waste of your life,
+or master your time and master your life.
+
+The key is in not spending time,
+but in investing it.</translation>
+    </message>
+    <message>
+        <source>proverbs</source>
+        <translation type="vanished">All work and no play
 makes Jack a dull boy.
 
 All that really belongs to us is time;
@@ -196,59 +234,74 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>Change text</translation>
     </message>
     <message>
+        <location filename="../src/dialog.cpp" line="218"/>
+        <source>Auto</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/dialog.cpp" line="219"/>
+        <source>Outside</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../src/dialog.cpp" line="220"/>
+        <source>Inside</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/dialog.cpp" line="224"/>
         <source>Light</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="221"/>
+        <location filename="../src/dialog.cpp" line="225"/>
         <source>Dark</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="223"/>
+        <location filename="../src/dialog.cpp" line="227"/>
         <source>Settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="225"/>
+        <location filename="../src/dialog.cpp" line="229"/>
         <source>Image Aspect Mode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="226"/>
-        <location filename="../src/dialog.cpp" line="231"/>
+        <location filename="../src/dialog.cpp" line="230"/>
+        <location filename="../src/dialog.cpp" line="235"/>
         <source>Until break</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="227"/>
+        <location filename="../src/dialog.cpp" line="231"/>
         <source>Break continuous</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="229"/>
+        <location filename="../src/dialog.cpp" line="233"/>
         <source>System Settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="230"/>
+        <location filename="../src/dialog.cpp" line="234"/>
         <source>Tray Icon Style</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="233"/>
+        <location filename="../src/dialog.cpp" line="237"/>
         <source>Save</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="234"/>
+        <location filename="../src/dialog.cpp" line="238"/>
         <source>Close to notification area</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="320"/>
-        <location filename="../src/dialog.cpp" line="329"/>
+        <location filename="../src/dialog.cpp" line="325"/>
+        <location filename="../src/dialog.cpp" line="334"/>
         <source>Open Directory</source>
         <translation></translation>
     </message>
@@ -261,70 +314,70 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="414"/>
+        <location filename="../src/trayicon.cpp" line="434"/>
         <source>Setting</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="282"/>
-        <location filename="../src/trayicon.cpp" line="323"/>
-        <location filename="../src/trayicon.cpp" line="324"/>
-        <location filename="../src/trayicon.cpp" line="326"/>
-        <location filename="../src/trayicon.cpp" line="415"/>
-        <location filename="../src/trayicon.cpp" line="512"/>
+        <location filename="../src/trayicon.cpp" line="291"/>
+        <location filename="../src/trayicon.cpp" line="332"/>
+        <location filename="../src/trayicon.cpp" line="333"/>
+        <location filename="../src/trayicon.cpp" line="335"/>
+        <location filename="../src/trayicon.cpp" line="435"/>
+        <location filename="../src/trayicon.cpp" line="530"/>
         <source>Pause</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="418"/>
+        <location filename="../src/trayicon.cpp" line="438"/>
         <source>Check for Updates</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="417"/>
+        <location filename="../src/trayicon.cpp" line="437"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="416"/>
+        <location filename="../src/trayicon.cpp" line="436"/>
         <source>Quit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="419"/>
+        <location filename="../src/trayicon.cpp" line="439"/>
         <source>Languages</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="197"/>
+        <location filename="../src/trayicon.cpp" line="199"/>
         <source>All work and no play
 makes Jack a dull boy.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="312"/>
+        <location filename="../src/trayicon.cpp" line="321"/>
         <source>Unpause</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="413"/>
+        <location filename="../src/trayicon.cpp" line="433"/>
         <source>Break Now</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="526"/>
-        <location filename="../src/trayicon.cpp" line="540"/>
+        <location filename="../src/trayicon.cpp" line="544"/>
+        <location filename="../src/trayicon.cpp" line="558"/>
         <source>Until break</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="540"/>
-        <location filename="../src/trayicon.cpp" line="590"/>
+        <location filename="../src/trayicon.cpp" line="558"/>
+        <location filename="../src/trayicon.cpp" line="608"/>
         <source>sec</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="589"/>
+        <location filename="../src/trayicon.cpp" line="607"/>
         <source>min</source>
         <translation></translation>
     </message>
