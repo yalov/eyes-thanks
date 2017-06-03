@@ -6,4 +6,4 @@ The program frequently alerts you to take rest breaks by showing fullscreen imag
 
 It supports **multiple monitors system** and wide image for all monitors.
 
-More info — https://yalov.github.io/2016/eyes-thanks
+More info — https://yalov.github.io/projects/eyes-thanks
