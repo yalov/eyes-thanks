@@ -352,22 +352,35 @@ void View::setGradient(double hue_first)
 {
     //QRect desktop = QApplication::desktop()->geometry();
     QRect default_screen = QApplication::desktop()->screenGeometry(-1);
-    QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomRight());
+    //QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomRight());
     //QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomLeft());
-    //QLinearGradient linearGrad(default_screen.topLeft(), default_screen.topRight());
+    QLinearGradient linearGrad(default_screen.topLeft(), default_screen.topRight());
 
-    QColor c1;
-    c1.setHsvF(fmod(hue_first,  1), 1, 0.3);
-    QColor c2;
-    c2.setHsvF(fmod(hue_first , 1), 1, 0.5);
-    QColor c3;
-    c3.setHsvF(fmod(hue_first , 1), 1, 0.3);
+//    QColor c1;
+//    c1.setHsvF(fmod(hue_first,  1), 1, 0.5);
+//    QColor c2;
+//    c2.setHsvF(fmod(hue_first+0.1 , 1), 1, 0.5);
+//    QColor c3;
+//    c3.setHsvF(fmod(hue_first+0.2 , 1), 1, 0.5);
 
-    linearGrad.setColorAt(0.1, c1);
-    linearGrad.setColorAt(0.5, c2);
-    linearGrad.setColorAt(0.9, c3);
+   // linearGrad.setColorAt(0.4, c1);
+   // linearGrad.setColorAt(0.5, c2);
+   // linearGrad.setColorAt(0.6, c3);
 
-    myscene->setBackgroundBrush(QBrush(linearGrad));
+//    double j=0;
+//    for (double i=0; i <= 1 ;i += 32.0/default_screen.width())
+//    {
+//        QColor c;
+//        c.setHsvF(fmod(hue_first+j , 1), 1, 0.5);
+//        linearGrad.setColorAt(i, c);
+//        j+=0.02;
+//    }
+
+
+    //myscene->setBackgroundBrush(QBrush(linearGrad));
+    QColor c0;
+    c0.setHsvF(fmod(hue_first,  1), 1, 0.5);
+    myscene->setBackgroundBrush(c0);
 
 }
 

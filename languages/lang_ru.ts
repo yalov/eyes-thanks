@@ -200,7 +200,10 @@
     <message>
         <location filename="../src/dialog.cpp" line="192"/>
         <source>Leave both folder paths empty, if you want nice gradient instead of pictures.</source>
-        <translation>Если поля ввода папок оставить пустыми, то вместо изображений будет красивый градиент.</translation>
+        <translation>Укажите папку с изображениями (jpg, png, gif). 
+Случайное изображение из папки будет показываться во время перерыва.
+
+Если оба поля ввода папок оставить пустыми, то вместо изображений будет цветной переливающийся фон.</translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="214"/>
@@ -265,13 +268,13 @@ Ex. if sometimes you disconnect your FHD notebook from your FHD monitor,
 put 2FHD (3860×1080) pictures to “Pictures folder” and
 FHD (1920×1080) pictures to “Alternative pictures folder”).
 So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app use FHD folder.</source>
-        <translation>Изображения с альтернативным отношением сторон, 
-полезно если общее отношение сторон рабочей области иногда меняется.
+        <translation>Изображения с альтернативным отношением сторон. 
+Полезно, если общее отношение сторон рабочей области иногда меняется.
 
 Например, у вас FullHD ноутбук + FullHD стационарный монитор;
 широкие изображения на 2 экрана (3860×1080) в «папке с изображениями»,
-и обычные изобрашения (1920×1080) в «папке с альтернативными изображениями»,
-тогда при соединении и отсоединении ноутбука вы будете видеть случайные изображения только из соотвестсвующей папки.</translation>
+и обычные изображения (1920×1080) в «папке с альтернативными изображениями»,
+тогда при соединении и отсоединении ноутбука вы будете видеть случайные изображения только из соответствующей папки.</translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="207"/>

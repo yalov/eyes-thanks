@@ -33,17 +33,17 @@ Dialog::Dialog()
 
 #endif
 
-    Init();
+    InitWidgets();
     Translate();
 
 }
 
-void Dialog::Init()
+void Dialog::InitWidgets()
 {
     QVBoxLayout *TopLayout = new QVBoxLayout();
     setLayout(TopLayout);
 
-    label_Path = new QLabel();
+    Label_Path = new QLabel();
     LineEdit_Path = new QLineEdit();
     QPushButton *ButtonPath = new QPushButton("...");
     ButtonPath->setMaximumWidth(25);
@@ -72,10 +72,24 @@ void Dialog::Init()
     Combobox_imageAspectMode = new QComboBox();
     Combobox_iconsMode = new QComboBox();
 
-    SettingBreakShowing = new QGroupBox();
-    QVBoxLayout *layoutVertical_GroupBox = new QVBoxLayout();
-    SettingBreakShowing->setLayout(layoutVertical_GroupBox);
+    Label_ImageAspectMode = new QLabel();
+    Label_UntilBreak      = new QLabel();
+    Label_BreakContinuous = new QLabel();
+    Label_TrayIconStyle = new QLabel();
 
+    buttonSave = new QPushButton();
+    buttonSave->setIcon(QIcon(":/icons/save.png"));
+    buttonSave->setEnabled(false);
+    buttonMinimizeToSystemTray = new QPushButton();
+    //buttonMinimizeToSystemTray->setIcon(QIcon(":/icons/save.png"));
+    buttonSave->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    buttonMinimizeToSystemTray->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+
+
+    //-----------------------------
+    GroupBox_BreakSetting = new QGroupBox();
+    QVBoxLayout *layoutV_BreakSetting = new QVBoxLayout();
+    GroupBox_BreakSetting->setLayout(layoutV_BreakSetting);
 
     QHBoxLayout *layout_Path = new QHBoxLayout();
     layout_Path->addWidget(LineEdit_Path);
@@ -85,54 +99,57 @@ void Dialog::Init()
     layout_Path_alt->addWidget(LineEdit_Path_alt);
     layout_Path_alt->addWidget(ButtonPath_alt);
 
-    layoutVertical_GroupBox->addWidget(label_Path);
-    layoutVertical_GroupBox->addLayout(layout_Path);
+    layoutV_BreakSetting->addWidget(Label_Path);
+    layoutV_BreakSetting->addLayout(layout_Path);
+    layoutV_BreakSetting->addWidget(label_Path_alt);
+    layoutV_BreakSetting->addLayout(layout_Path_alt);
 
-    layoutVertical_GroupBox->addWidget(label_Path_alt);
-    layoutVertical_GroupBox->addLayout(layout_Path_alt);
+    QGridLayout *layoutGrid_BreakSetting = new QGridLayout();
+    layoutGrid_BreakSetting->addWidget(Label_ImageAspectMode,         0, 0);
+    layoutGrid_BreakSetting->addWidget(Combobox_imageAspectMode,      0, 1);
+    layoutGrid_BreakSetting->addWidget(Label_UntilBreak,              1, 0);
+    layoutGrid_BreakSetting->addWidget(Spinbox_RefreshmentInterval,   1, 1);
+    layoutGrid_BreakSetting->addWidget(Label_BreakContinuous,         2, 0);
+    layoutGrid_BreakSetting->addWidget(Spinbox_RefreshmentContinuous, 2, 1);
+    layoutGrid_BreakSetting->addWidget(CheckBox_PrettyFont,  7, 0, 1, 2);
+    layoutGrid_BreakSetting->addWidget(CheckBox_Clock,       8, 0, 1, 2);
+    layoutGrid_BreakSetting->addWidget(CheckBox_Text,        9, 0);
+    layoutGrid_BreakSetting->addWidget(ButtonGenerateText,   9, 1);
+    layoutGrid_BreakSetting->addWidget(TextEdit_Text,        10, 0, 1, 2);
 
-    //-----
-    Label_ImageAspectMode = new QLabel();
-    Label_UntilBreak      = new QLabel();
-    Label_BreakContinuous = new QLabel();
-    QGridLayout *layoutGrid_SettingBreakShowing = new QGridLayout();
-    layoutGrid_SettingBreakShowing->addWidget(Label_ImageAspectMode, 0, 0);
-    layoutGrid_SettingBreakShowing->addWidget(Combobox_imageAspectMode, 0, 1);
-    layoutGrid_SettingBreakShowing->addWidget(Label_UntilBreak, 1, 0);
-    layoutGrid_SettingBreakShowing->addWidget(Spinbox_RefreshmentInterval, 1, 1);
-    layoutGrid_SettingBreakShowing->addWidget(Label_BreakContinuous, 2, 0);
-    layoutGrid_SettingBreakShowing->addWidget(Spinbox_RefreshmentContinuous, 2, 1);
-    layoutGrid_SettingBreakShowing->addWidget(CheckBox_PrettyFont, 7, 0);
-    layoutGrid_SettingBreakShowing->addWidget(CheckBox_Clock, 8, 0);
-    layoutGrid_SettingBreakShowing->addWidget(CheckBox_Text, 9, 0);
-    layoutGrid_SettingBreakShowing->addWidget(ButtonGenerateText, 9, 1);
-    layoutGrid_SettingBreakShowing->addWidget(TextEdit_Text, 10, 0, 1, 2);
+    layoutGrid_BreakSetting->setColumnStretch(0,2);
+    layoutGrid_BreakSetting->setColumnStretch(1,1);
 
-    layoutVertical_GroupBox->addLayout(layoutGrid_SettingBreakShowing);
-    TopLayout->addWidget(SettingBreakShowing);
+    layoutV_BreakSetting->addLayout(layoutGrid_BreakSetting);
 
+    TopLayout->addWidget(GroupBox_BreakSetting);
 
     TopLayout->addSpacing(30);
     TopLayout->addStretch();
 
+    //----------
 
-    //-----
-    SettingSystem = new QGroupBox();
-    QGridLayout *Layout_SettingSystem = new QGridLayout();
-    Label_TrayIconStyle = new QLabel();
-    Layout_SettingSystem->addWidget(Label_TrayIconStyle, 0, 0);
-    Layout_SettingSystem->addWidget(Combobox_iconsMode, 0, 1);
-    Layout_SettingSystem->addWidget(CheckBox_StartupLink, 2, 0, 1, 2);
-    Layout_SettingSystem->addWidget(CheckBox_Message, 3, 0, 1, 2);
-    Layout_SettingSystem->addWidget(CheckBox_Logging, 4, 0);
+    GroupBox_SystemSetting = new QGroupBox();
+    QGridLayout *layoutGrid_SystemSetting = new QGridLayout();
+    GroupBox_SystemSetting->setLayout(layoutGrid_SystemSetting);
 
-    SettingSystem->setLayout(Layout_SettingSystem);
-    TopLayout->addWidget(SettingSystem);
+    layoutGrid_SystemSetting->addWidget(Label_TrayIconStyle,  0, 0);
+    layoutGrid_SystemSetting->addWidget(Combobox_iconsMode,   0, 1);
+    layoutGrid_SystemSetting->addWidget(CheckBox_StartupLink, 2, 0, 1, 2);
+    layoutGrid_SystemSetting->addWidget(CheckBox_Message,     3, 0, 1, 2);
+    layoutGrid_SystemSetting->addWidget(CheckBox_Logging,     4, 0, 1, 2);
+
+    layoutGrid_SystemSetting->setColumnStretch(0,2);
+    layoutGrid_SystemSetting->setColumnStretch(1,1);
+
+    TopLayout->addWidget(GroupBox_SystemSetting);
+
     TopLayout->addStretch();
     TopLayout->addSpacing(15);
 
-    //-----
-    QHBoxLayout *Layout_Label_timer = new QHBoxLayout();
+    //----------
+
+    QHBoxLayout *layout_Label_timer = new QHBoxLayout();
 
     Label_Timer_Prefix = new QLabel();
 
@@ -140,23 +157,27 @@ void Dialog::Init()
     QFont font;
     font.setPointSize(16);
     Label_Timer->setFont(font);
-    Label_Timer->setAlignment(Qt::AlignCenter);
-    Layout_Label_timer->addWidget(Label_Timer_Prefix);
-    Layout_Label_timer->addWidget(Label_Timer);
+    //Label_Timer->setAlignment(Qt::AlignCenter);
+    //Label_Timer_Prefix->setAlignment(Qt::AlignCenter);
+    Label_Timer->setAlignment(Qt::AlignLeft);
+    //Label_Timer_Prefix->setAlignment(Qt::AlignRight);
+
     Label_Timer_Prefix->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     Label_Timer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    TopLayout->addLayout(Layout_Label_timer);
+
+    layout_Label_timer->addWidget(Label_Timer_Prefix);
+    layout_Label_timer->addWidget(Label_Timer);
+    layout_Label_timer->setStretch(0,2);
+    layout_Label_timer->setStretch(1,1);
+
+    TopLayout->addLayout(layout_Label_timer);
     TopLayout->addStretch();
     TopLayout->addSpacing(15);
 
     //-----
     QHBoxLayout *layout_buttons = new QHBoxLayout();
 
-    buttonSave = new QPushButton();
-    buttonSave->setIcon(QIcon(":/icons/save.png"));
     layout_buttons->addWidget(buttonSave);
-
-    buttonMinimizeToSystemTray = new QPushButton();
     layout_buttons->addWidget(buttonMinimizeToSystemTray);
 
     TopLayout->addLayout(layout_buttons);
@@ -182,14 +203,90 @@ void Dialog::Init()
 
     connect(buttonSave, SIGNAL(clicked()), this, SLOT(SaveValues()));
     connect(buttonMinimizeToSystemTray, SIGNAL(clicked()), this, SLOT(close()));
+
+
+
+
 }
+
+void Dialog::InitConnectWidgetsChanged()
+{
+    // after ::SetValues
+    connect(buttonSave, SIGNAL(clicked(bool)), buttonSave, SLOT(setEnabled(bool)));
+
+    connect(LineEdit_Path,     SIGNAL(textChanged(QString)), this, SLOT(SaveButton_status()));
+    connect(LineEdit_Path_alt, SIGNAL(textChanged(QString)), this, SLOT(SaveButton_status()));
+    connect(TextEdit_Text,     SIGNAL(textChanged()), this, SLOT(SaveButton_status()));
+
+    connect(Combobox_imageAspectMode, SIGNAL(currentIndexChanged(int)), this, SLOT(SaveButton_status()));
+    connect(Combobox_iconsMode,       SIGNAL(currentIndexChanged(int)), this, SLOT(SaveButton_status()));
+
+    connect(Spinbox_RefreshmentInterval,   SIGNAL(valueChanged(int)), this, SLOT(SaveButton_status()));
+    connect(Spinbox_RefreshmentContinuous, SIGNAL(valueChanged(int)), this, SLOT(SaveButton_status()));
+
+    connect(CheckBox_Clock,       SIGNAL(clicked()), this, SLOT(SaveButton_status()));
+    connect(CheckBox_Message,     SIGNAL(clicked()), this, SLOT(SaveButton_status()));
+    connect(CheckBox_Logging,     SIGNAL(clicked()), this, SLOT(SaveButton_status()));
+    connect(CheckBox_PrettyFont,  SIGNAL(clicked()), this, SLOT(SaveButton_status()));
+    connect(CheckBox_Text,        SIGNAL(clicked()), this, SLOT(SaveButton_status()));
+    connect(CheckBox_StartupLink, SIGNAL(clicked()), this, SLOT(SaveButton_status()));
+}
+
+void Dialog::SaveButton_status()
+{
+    Setting s = Setting(
+                        setting.counter,
+                        Spinbox_RefreshmentInterval->value() * 60 * 1000,
+                        Spinbox_RefreshmentContinuous->value() * 1000,
+                        LineEdit_Path->text(),
+                        LineEdit_Path_alt->text(),
+                        static_cast<ImageAspectMode>(Combobox_imageAspectMode->currentIndex()),
+                        static_cast<IconsMode>(Combobox_iconsMode->currentIndex()),
+                        CheckBox_Logging->isChecked(),
+                        CheckBox_Text->isChecked(),
+                        CheckBox_Clock->isChecked(),
+                        CheckBox_Message->isChecked(),
+                        CheckBox_PrettyFont->isChecked(),
+                        CheckBox_StartupLink->isChecked(),
+                        TextEdit_Text->toPlainText()
+                       );
+
+
+    if (setting != s)
+        buttonSave->setEnabled(true);
+    else
+        buttonSave->setEnabled(false);
+
+//    if (
+//        setting.pauseInterval != Spinbox_RefreshmentInterval->value() * 60 * 1000 ||
+//        setting.pauseContinuous != Spinbox_RefreshmentContinuous->value() * 1000 ||
+//        setting.imagesPath != LineEdit_Path->text() ||
+//        setting.imagesPathAlternative != LineEdit_Path_alt->text() ||
+//        setting.imageAspectMode != static_cast<ImageAspectMode>(Combobox_imageAspectMode->currentIndex()) ||
+//        setting.iconsMode != static_cast<IconsMode>(Combobox_iconsMode->currentIndex()) ||
+//        setting.isLogging != CheckBox_Logging->isChecked() ||
+//        setting.isText != CheckBox_Text->isChecked() ||
+//        setting.isClock != CheckBox_Clock->isChecked() ||
+//        setting.isMessage30sec != CheckBox_Message->isChecked() ||
+//        setting.isPrettyFont != CheckBox_PrettyFont->isChecked() ||
+//        setting.isStartupLink != CheckBox_StartupLink->isChecked() ||
+//        setting.text != TextEdit_Text->toPlainText()
+//       )
+//        buttonSave->setEnabled(true);
+//    else
+//        buttonSave->setEnabled(false);
+
+    qDebug() << "SaveButton_status";
+
+}
+
 
 void Dialog::Translate()
 {
     setWindowTitle(qApp->translate("App", "Eyes' Thanks"));
 
-    label_Path->setText(tr("Pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
-    label_Path->setToolTip(tr("Leave both folder paths empty, if you want nice gradient instead of pictures."));
+    Label_Path->setText(tr("Pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
+    Label_Path->setToolTip(tr("Leave both folder paths empty, if you want nice gradient instead of pictures."));
 
     label_Path_alt->setText(tr("Alternative pictures folder") + "<img src=':/icons/tooltip.png'>" ":");
     label_Path_alt->setToolTip(tr("Use, if you have two different-ratio sets of monitors.\n\n"
@@ -224,13 +321,13 @@ void Dialog::Translate()
     Combobox_iconsMode->setItemText(0, tr("Light"));
     Combobox_iconsMode->setItemText(1, tr("Dark"));
 
-    SettingBreakShowing->setTitle(tr("Settings") + ":");
+    GroupBox_BreakSetting->setTitle(tr("Settings") + ":");
 
     Label_ImageAspectMode->setText(tr("Image Aspect Mode") + ":");
     Label_UntilBreak->setText(tr("Until break") + ":");
     Label_BreakContinuous->setText(tr("Break continuous") + ":");
 
-    SettingSystem->setTitle(tr("System Settings") + ":");
+    GroupBox_SystemSetting->setTitle(tr("System Settings") + ":");
     Label_TrayIconStyle->setText(tr("Tray Icon Style") + ":");
     Label_Timer_Prefix->setText(tr("Until break") + ": ");
 
@@ -253,6 +350,8 @@ void Dialog::showEvent(QShowEvent *e)
 
 void Dialog::SetValues(Setting setting)
 {
+    this->setting = setting;
+
     Spinbox_RefreshmentInterval->setValue(setting.pauseInterval / 1000 / 60);
     Spinbox_RefreshmentContinuous->setValue(setting.pauseContinuous / 1000);
     LineEdit_Path->setText(setting.imagesPath);
@@ -273,6 +372,7 @@ void Dialog::SetValues(Setting setting)
 
 
     emit TimerStatusRequest();
+    InitConnectWidgetsChanged();
 
     /*connect(LineEdit_Path, SIGNAL(textChanged(QString)), this, SLOT(SaveValues()));
     connect(Combobox_imageAspectMode, SIGNAL(currentIndexChanged(int)), this, SLOT(SaveValues()));
@@ -351,19 +451,22 @@ void Dialog::SaveValues()
     //emit TimerStatusRequest();
     //Label_Timer->setText(QString("%1:00").arg(Spinbox_RefreshmentInterval->value(),2,10,QLatin1Char(' ')));
 
-    Setting setting = Setting(Spinbox_RefreshmentInterval->value() * 60 * 1000,
-                              Spinbox_RefreshmentContinuous->value() * 1000,
-                              LineEdit_Path->text(),
-                              LineEdit_Path_alt->text(),
-                              static_cast<ImageAspectMode>(Combobox_imageAspectMode->currentIndex()),
-                              static_cast<IconsMode>(Combobox_iconsMode->currentIndex()),
-                              CheckBox_Logging->isChecked(),
-                              CheckBox_Text->isChecked(),
-                              CheckBox_Clock->isChecked(),
-                              CheckBox_Message->isChecked(),
-                              CheckBox_PrettyFont->isChecked(),
-                              CheckBox_StartupLink->isChecked(),
-                              TextEdit_Text->toPlainText());
+    setting = Setting(
+                      setting.counter,
+                      Spinbox_RefreshmentInterval->value() * 60 * 1000,
+                      Spinbox_RefreshmentContinuous->value() * 1000,
+                      LineEdit_Path->text(),
+                      LineEdit_Path_alt->text(),
+                      static_cast<ImageAspectMode>(Combobox_imageAspectMode->currentIndex()),
+                      static_cast<IconsMode>(Combobox_iconsMode->currentIndex()),
+                      CheckBox_Logging->isChecked(),
+                      CheckBox_Text->isChecked(),
+                      CheckBox_Clock->isChecked(),
+                      CheckBox_Message->isChecked(),
+                      CheckBox_PrettyFont->isChecked(),
+                      CheckBox_StartupLink->isChecked(),
+                      TextEdit_Text->toPlainText()
+                     );
 
     emit save(setting);
 }

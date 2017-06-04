@@ -46,10 +46,8 @@ public:
 private:
     void showEvent(QShowEvent *e);
     bool event(QEvent *event);
-    void Init();
-
-
-
+    void InitWidgets();
+    void InitConnectWidgetsChanged();
 
 public slots:
     void UpdateLabel(QString time, double ratio);
@@ -59,21 +57,22 @@ private slots:
     void ButtonPath_clicked();
     void ButtonPath_alt_clicked();
     void ButtonGenerateText_clicked();
-
-
+    void SaveButton_status();
 signals:
     void closedialog();
     void save(Setting setting);
     void TimerStatusRequest();
 
 private:
-    QLabel *label_Path;
+    Setting setting;
+
+    QLabel *Label_Path;
     QLabel *label_Path_alt;
-    QGroupBox *SettingBreakShowing;
+    QGroupBox *GroupBox_BreakSetting;
     QLabel *Label_ImageAspectMode;
     QLabel *Label_UntilBreak     ;
     QLabel *Label_BreakContinuous;
-    QGroupBox *SettingSystem;
+    QGroupBox *GroupBox_SystemSetting;
     QLabel *Label_TrayIconStyle;
     QLabel *Label_Timer_Prefix;
     QPushButton *buttonSave;

@@ -161,7 +161,7 @@ but in investing it.</translation>
     <message>
         <location filename="../src/dialog.cpp" line="192"/>
         <source>Leave both folder paths empty, if you want nice gradient instead of pictures.</source>
-        <translation></translation>
+        <translation>Leave both folder paths empty, if you want iridescent background instead of pictures.</translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="194"/>
@@ -297,7 +297,7 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
     <message>
         <location filename="../src/dialog.cpp" line="238"/>
         <source>Close to notification area</source>
-        <translation></translation>
+        <translation>Save and Close to notification area</translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="325"/>

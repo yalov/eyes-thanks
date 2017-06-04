@@ -289,8 +289,6 @@ void TrayIcon::Save(Setting s)
     WriteSettings();
     InitIcons();
 
-    setCurrentIcon(DialogTimer->ratio());
-
     if (fullrestart)
     {
         CurrentIconRatio = -1;
@@ -308,6 +306,8 @@ void TrayIcon::Save(Setting s)
 
         emit updateLabel(DialogTimer->remains_str(false), DialogTimer->ratio());
     }
+
+    setCurrentIconbyCurrentIconRatio();
 }
 
 void TrayIcon::Quit()

@@ -25,7 +25,7 @@
 #define UPDATE_PERIOD_1 40
 #endif
 
-#define UPDATE_PERIOD_2 500
+#define UPDATE_PERIOD_2 1000
 
 #include <QAction>
 #include <QSystemTrayIcon>
