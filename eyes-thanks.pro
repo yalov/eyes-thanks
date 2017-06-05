@@ -17,36 +17,37 @@
 #----------------------------------------------------------------------------------#
 
 VERSION = 1.1.0
+CONFIG += DEPLOY
 TARGET  = "Eyes\' Thanks"
-
-# no debug and release subfolder in debug and release folder
-CONFIG -= debug_and_release
-CONFIG += c++11
+NAME    = Alexander Yalov
+EMAIL   = alexander.yalov@gmail.com
 
 CONFIG(release, debug|release) {
 DESTDIR = ../EyesThanks
 }
+
+# no debug and release subfolder in debug and release folder
+CONFIG -= debug_and_release
+CONFIG += c++11
 
 OBJECTS_DIR = $$OUT_PWD/.obj
 MOC_DIR     = $$OUT_PWD/.moc
 RCC_DIR     = $$OUT_PWD/.qrc
 UI_DIR      = $$OUT_PWD/.ui
 
-
-
 QT     += core gui network widgets winextras
 
 win32:RC_ICONS += icons/icon.ico
 
-QMAKE_TARGET_DESCRIPTION = Eyes\' Thanks
-QMAKE_TARGET_COPYRIGHT   = Alexander Yalov
+QMAKE_TARGET_DESCRIPTION = $$TARGET
+QMAKE_TARGET_COPYRIGHT   = $$NAME
 
 DEFINES += REPOSITORY_PATH='"\\\"https://github.com/yalov/eyes-thanks\\\""'
 
-DEFINES += APP_VERSION='"\\\"$$VERSION\\\""'
-#DEFINES += APP_NAME='"\\\"$$TARGET\\\""'
-DEFINES += DEVELOP_NAME='"\\\"$$QMAKE_TARGET_COPYRIGHT\\\""'
-DEFINES += DEVELOP_EMAIL='"\\\"alexander.yalov@gmail.com\\\""'
+DEFINES +=   APP_VERSION='"\\\"$$VERSION\\\""'
+#DEFINES +=     APP_NAME='"\\\"$$TARGET\\\""'
+DEFINES +=  DEVELOP_NAME='"\\\"$$NAME\\\""'
+DEFINES += DEVELOP_EMAIL='"\\\"$$EMAIL\\\""'
 
 TEMPLATE = app
 
@@ -71,10 +72,10 @@ RESOURCES += resource.qrc
 
 
 
-# windeployqt only release with removing other
+# windeployqt only release and only DEPLOY variable
 CONFIG(release, debug|release) {
-
-    defineTest(WinDeployQt) {
+    DEPLOY {
+        message( "This is windeployqt" )
 
         # new line
         RETURN = $$escape_expand(\n\t)
@@ -108,8 +109,5 @@ CONFIG(release, debug|release) {
         QMAKE_POST_LINK += $$RETURN $$QMAKE_COPY $$quote($$LANGFILES) $$quote($$LANGDIR)
 
         export(QMAKE_POST_LINK)
-
     }
-    # uncomment for windeployqt:
-     WinDeployQt()
 }
