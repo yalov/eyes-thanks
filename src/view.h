@@ -55,7 +55,7 @@ private:
     void mouseReleaseEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-    void setGradient(double hue_first);
+    void SetBackground(double hue);
 
     QString picture_path;
 

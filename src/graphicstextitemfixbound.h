@@ -25,6 +25,7 @@
 
 class GraphicsTextItemFixBound : public QGraphicsTextItem
 {
+    Q_OBJECT
 private:
 
     int d1x;
