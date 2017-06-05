@@ -55,7 +55,7 @@ private:
     void mouseReleaseEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-    void setGradient(double hue_first);
+    void SetBackground(double hue_first);
 
     QString picture_path;
 
@@ -68,7 +68,11 @@ private:
     GraphicsTextItemFixBound *ProgressBarText;
     QRect ProgressBarRect;
     QGraphicsRectItem *ButtonRectItem;
+
     double Hue;
+    QGraphicsEllipseItem * Item;
+    QElapsedTimer * ElapsedTimerDot;
+    int Method;
 
 public:
     GraphicsTextItemFixBound *ButtonText;

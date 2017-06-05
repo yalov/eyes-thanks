@@ -61,6 +61,8 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     if (setting.counter == 0) ShowDialog();
 
+
+    RefreshmentStart();
 }
 
 TrayIcon::~TrayIcon()

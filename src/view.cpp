@@ -21,7 +21,7 @@
 #include <QDesktopWidget>
 #include <QGraphicsDropShadowEffect>
 
-View::View(QWidget *parent): QGraphicsView(parent), clockItem(NULL)
+View::View(QWidget *parent): QGraphicsView(parent), clockItem(NULL), Item(NULL), ElapsedTimerDot(NULL), Method(-1)
 {
     myscene = new QGraphicsScene();
     setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -182,7 +182,7 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
 
     } else { // pics.size()==0
         Hue = qrand() % 360 / 360.0;
-        setGradient(Hue);
+        SetBackground(Hue);
     }
 
     if (isLogging) {
@@ -342,45 +342,197 @@ void View::UpdateValues(QString remains_str, double ratio)
         clockItem->setPlainText(QTime::currentTime().toString("hh:mm"));
 
     if (picture_path.isEmpty()) {
-        setGradient(Hue + ratio);
+        SetBackground(Hue + ratio);
     }
 }
 
 
 
-void View::setGradient(double hue_first)
+void View::SetBackground(double hue_first)
 {
+    // HSV
+    // S - from uncolor to color
+    // V - from black to color or white
+    // 0 0 - black
+    // 0 0.5 grey
+    // 0 1 - white
+    // 1 0 - black
+    // 1 1 - color
+
+    //            QGraphicsEllipseItem * item1 = new QGraphicsEllipseItem(QRect(200,200,200,200));
+    //            item1->setBrush(QColor::fromHsvF(0.3,1,1));
+    //            item1->setPen(Qt::NoPen);
+    //            item1->setOpacity(0.5);
+    //            myscene->addItem(item1);
+
+    //            QGraphicsEllipseItem * item2 = new QGraphicsEllipseItem(QRect(200,300,200,200));
+    //            item2->setBrush(QColor::fromHsvF(0.6,1,1));
+    //            item2->setPen(Qt::NoPen);
+    //            item2->setOpacity(0.5);
+    //            myscene->addItem(item2);
+
+    //            QGraphicsEllipseItem * item3 = new QGraphicsEllipseItem(QRect(600,300,200,200));
+    //            item3->setBrush(QColor::fromHsvF(0.6,1,1));
+    //            item3->setPen(Qt::NoPen);
+    //            item3->setOpacity(0.5);
+    //            myscene->addItem(item3);
+
+    //            QGraphicsEllipseItem * item4 = new QGraphicsEllipseItem(QRect(600,200,200,200));
+    //            item4->setBrush(QColor::fromHsvF(0.3,1,1));
+    //            item4->setPen(Qt::NoPen);
+    //            item4->setOpacity(0.5);
+    //            myscene->addItem(item4);
+
+
+    //            QGraphicsEllipseItem * item5 = new QGraphicsEllipseItem(QRect(1000,300,200,200));
+    //            item5->setBrush(QColor::fromHsvF(0.6,1,1,0.5));
+    //            item5->setPen(Qt::NoPen);
+
+    //            myscene->addItem(item5);
+
+    //            QGraphicsEllipseItem * item6 = new QGraphicsEllipseItem(QRect(1000,200,200,200));
+    //            item6->setBrush(QColor::fromHsvF(0.3,1,1,0.5));
+    //            item6->setPen(Qt::NoPen);
+
+    //            myscene->addItem(item6);
+
+    //            myscene->setBackgroundBrush(Qt::transparent);
+
+
+    //            QImage image(myscene->sceneRect().size().toSize(), QImage::Format_ARGB32);  // Create the image with the exact size of the shrunk scene
+    //            image.fill(Qt::transparent);                                              // Start all pixels transparent
+
+    //            QPainter painter(&image);
+    //            myscene->render(&painter);
+    //            image.save("D://file_name.png");
+
+
+
+
+
     //QRect desktop = QApplication::desktop()->geometry();
     QRect default_screen = QApplication::desktop()->screenGeometry(-1);
-    //QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomRight());
-    //QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomLeft());
-    QLinearGradient linearGrad(default_screen.topLeft(), default_screen.topRight());
-
-//    QColor c1;
-//    c1.setHsvF(fmod(hue_first,  1), 1, 0.5);
-//    QColor c2;
-//    c2.setHsvF(fmod(hue_first+0.1 , 1), 1, 0.5);
-//    QColor c3;
-//    c3.setHsvF(fmod(hue_first+0.2 , 1), 1, 0.5);
-
-   // linearGrad.setColorAt(0.4, c1);
-   // linearGrad.setColorAt(0.5, c2);
-   // linearGrad.setColorAt(0.6, c3);
-
-//    double j=0;
-//    for (double i=0; i <= 1 ;i += 32.0/default_screen.width())
-//    {
-//        QColor c;
-//        c.setHsvF(fmod(hue_first+j , 1), 1, 0.5);
-//        linearGrad.setColorAt(i, c);
-//        j+=0.02;
-//    }
 
 
-    //myscene->setBackgroundBrush(QBrush(linearGrad));
-    QColor c0;
-    c0.setHsvF(fmod(hue_first,  1), 1, 0.5);
-    myscene->setBackgroundBrush(c0);
+    enum Methods {
+        UNICOLOROUS,
+        RANDOM_DOT,
+        RANDOM_DOTS,
+        RANDOM_DOTS_RANDOM_COLOR,
+        LINEAR_GRADIENT_DIAGONAL,
+        LINEAR_GRADIENT_DIAGONAL_THIN,
+        LINEAR_GRADIENT_GORIZONTAL_RAINBOW,
+        COUNT_OF_METHODS
+    };
+
+    if (Method == -1)
+        Method = RANDOM_DOT % COUNT_OF_METHODS;
+
+    switch (Method) {
+    case UNICOLOROUS: {
+        QColor c0 = QColor::fromHsvF(fmod(hue_first,  1), 1, 0.5);
+        myscene->setBackgroundBrush(c0);
+        break;
+    }
+    case LINEAR_GRADIENT_DIAGONAL: {
+        QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomRight());
+
+        QColor c1 = QColor::fromHsvF(fmod(hue_first,       1), 1, 0.3);
+        QColor c2 = QColor::fromHsvF(fmod(hue_first + 0.1, 1), 1, 0.5);
+        QColor c3 = QColor::fromHsvF(fmod(hue_first + 0.2, 1), 1, 0.3);
+        linearGrad.setColorAt(0.15, c1);
+        linearGrad.setColorAt(0.5, c2);
+        linearGrad.setColorAt(0.85, c3);
+        myscene->setBackgroundBrush(QBrush(linearGrad));
+        break;
+    }
+    case LINEAR_GRADIENT_DIAGONAL_THIN: {
+        QLinearGradient linearGrad(default_screen.topLeft(), default_screen.bottomRight());
+
+        QColor c1 = QColor::fromHsvF(fmod(hue_first, 1), 1, 1);
+        QColor c2 = QColor::fromHsvF(fmod(hue_first, 1), 1, 0.6);
+        QColor c3 = QColor::fromHsvF(fmod(hue_first, 1), 0.5, 0.5);
+
+        linearGrad.setColorAt(0.15, c1);
+        //linearGrad.setColorAt(0.5, c2);
+        linearGrad.setColorAt(0.85, c3);
+        myscene->setBackgroundBrush(QBrush(linearGrad));
+        break;
+    }
+
+    case LINEAR_GRADIENT_GORIZONTAL_RAINBOW: {
+        QLinearGradient linearGrad(default_screen.topLeft(), default_screen.topRight());
+
+        for (double ratio = 0, hue = 0; ratio <= 1.0; ratio += 64.0 / default_screen.width()) {
+            QColor c = QColor::fromHsvF(fmod(hue_first + hue, 1), 1, 0.5);
+            linearGrad.setColorAt(ratio, c);
+            hue += 0.04;
+        }
+        myscene->setBackgroundBrush(QBrush(linearGrad));
+        break;
+    }
+    case RANDOM_DOT: {
+        if (Item == NULL) {
+            Item = new QGraphicsEllipseItem();
+            myscene->addItem(Item);
+            ElapsedTimerDot = new QElapsedTimer();
+        }
+
+        if (!ElapsedTimerDot->isValid() || ElapsedTimerDot->elapsed() > 1000) {
+            int diameter_dot = 50;
+            ElapsedTimerDot->start();
+            QRect r(rand() % (default_screen.width() - diameter_dot),
+                    rand() % (default_screen.height() - diameter_dot), diameter_dot, diameter_dot);
+
+            Item->setRect(r);
+            Item->setBrush(QColor::fromHsvF(rand() % 256 / 256.0, 1, 1, 0.5));
+        }
+
+        myscene->setBackgroundBrush(Qt::black);
+        break;
+    }
+    case RANDOM_DOTS: {
+        if (ElapsedTimerDot == NULL) {
+            ElapsedTimerDot = new QElapsedTimer();
+        } else if (ElapsedTimerDot->elapsed() > 100) {
+            ElapsedTimerDot->start();
+
+            int diameter_dot = rand()%100+50;
+            QRect r(rand() % (default_screen.width() - diameter_dot),
+                    rand() % (default_screen.height() - diameter_dot), diameter_dot, diameter_dot);
+
+            QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
+            item->setBrush(QColor::fromHsvF(fmod(hue_first, 1), 1, 1));
+            item->setPen(Qt::NoPen);
+            item->setOpacity(0.5);
+            myscene->addItem(item);
+            qDebug() << myscene->items().size();
+        }
+        myscene->setBackgroundBrush(Qt::black);
+        break;
+    }
+
+    case RANDOM_DOTS_RANDOM_COLOR: {
+        if (ElapsedTimerDot == NULL) {
+            ElapsedTimerDot = new QElapsedTimer();
+        } else if (ElapsedTimerDot->elapsed() > 100) {
+            ElapsedTimerDot->start();
+
+            int diameter_dot = 75;
+            QRect r(rand() % (default_screen.width() - diameter_dot),
+                    rand() % (default_screen.height() - diameter_dot), diameter_dot, diameter_dot);
+
+            QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
+            item->setBrush(QColor::fromHsvF(rand() % 256 / 256.0, 1, 1));
+            item->setPen(Qt::NoPen);
+            item->setOpacity(0.5);
+            myscene->addItem(item);
+        }
+
+        myscene->setBackgroundBrush(Qt::black);
+        break;
+    }
+    }
 
 }
 
@@ -400,7 +552,7 @@ void View::keyReleaseEvent(QKeyEvent *event)
                     myscene->removeItem(item);
                     delete item;
                 }
-            setGradient(rand() % 360 / 360.);
+            SetBackground(rand() % 360 / 360.);
         }
     } else if (event->key() == Qt::Key_Escape) {
         close();
