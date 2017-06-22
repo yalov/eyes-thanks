@@ -1,33 +1,28 @@
 #----------------------------------------------------------------------------------#
 #      Copyright 2015 Alexander Yalov <alexander.yalov@gmail.com>                  #
+#      GNU General Public License 3                                                #
 #                                                                                  #
-#      This file is part of Eyes' Thanks.                                          #
-#                                                                                  #
-#      Eyes' Thanks is free software: you can redistribute it and/or modify        #
-#      it under the terms of the GNU General Public License either                 #
-#      version 3 of the License, or (at your option) any later version.            #
-#                                                                                  #
-#      Eyes' Thanks is distributed in the hope that it will be useful,             #
-#      but WITHOUT ANY WARRANTY; without even the implied warranty of              #
-#      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
-#      GNU General Public License for more details.                                #
-#                                                                                  #
-#      You should have received a copy of the GNU General Public License           #
-#      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       #
 #----------------------------------------------------------------------------------#
 
+include("files-commands.pri")
+StartProjectMESSAGE()
+
 VERSION = 1.1.0
-CONFIG += DEPLOY
+#CONFIG += DEPLOY
 TARGET  = "Eyes\' Thanks"
 NAME    = Alexander Yalov
 EMAIL   = alexander.yalov@gmail.com
+REPO    = https://github.com/yalov/eyes-thanks
 
 CONFIG(release, debug|release) {
-DESTDIR = ../EyesThanks
+DESTDIR = $$PWD/../EyesThanks
 }
+
 
 # no debug and release subfolder in debug and release folder
 CONFIG -= debug_and_release
+CONFIG -= debug_and_release_target
+
 CONFIG += c++11
 
 OBJECTS_DIR = $$OUT_PWD/.obj
@@ -42,8 +37,7 @@ win32:RC_ICONS += icons/icon.ico
 QMAKE_TARGET_DESCRIPTION = $$TARGET
 QMAKE_TARGET_COPYRIGHT   = $$NAME
 
-DEFINES += REPOSITORY_PATH='"\\\"https://github.com/yalov/eyes-thanks\\\""'
-
+DEFINES += REPOSITORY_PATH='"\\\"$$REPO\\\""'
 DEFINES +=   APP_VERSION='"\\\"$$VERSION\\\""'
 #DEFINES +=     APP_NAME='"\\\"$$TARGET\\\""'
 DEFINES +=  DEVELOP_NAME='"\\\"$$NAME\\\""'
@@ -67,47 +61,35 @@ HEADERS  += src/aboutwindow.h \
     src/updater.h \
     src/global.h
 
+DISTFILES    +=
 TRANSLATIONS += languages/lang_ru.ts languages/lang_en.ts
-RESOURCES += resource.qrc
-
-
+RESOURCES    += resource.qrc
 
 # windeployqt only release and only DEPLOY variable
 CONFIG(release, debug|release) {
     DEPLOY {
-        message( "This is windeployqt" )
+        message( "start windeployqt" )
 
-        # new line
-        RETURN = $$escape_expand(\n\t)
+        windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)
 
-        # windeployqt
-        QMAKE_POST_LINK += $$RETURN windeployqt --compiler-runtime \
-            --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle $$quote($$shell_path($$DESTDIR))
+        removeDirRecursive($$DESTDIR\bearer)
 
-        # remove bearer\ folder with files
-        DIR_TO_DEL = $$shell_path($$DESTDIR\bearer)
-        QMAKE_POST_LINK += $$RETURN $$QMAKE_DEL_TREE $$quote($$DIR_TO_DEL)
+        FILES_TO_DEL = $$DESTDIR/imageformats/qicns.dll \
+                       $$DESTDIR/imageformats/qico.dll \
+                       $$DESTDIR/imageformats/qtga.dll \
+                       $$DESTDIR/imageformats/qtiff.dll \
+                       $$DESTDIR/imageformats/qwbmp.dll \
+                       $$DESTDIR/imageformats/qwebp.dll
+        removeFiles($$FILES_TO_DEL)
 
-        # remove some file in imageformats\ folder
-        DIROFFILES_TO_DEL = $$shell_path($$DESTDIR/imageformats/)
-        FILES_TO_DEL = qicns.dll qico.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
-
-        for(FILE,FILES_TO_DEL){
-            QMAKE_POST_LINK += $$RETURN $$QMAKE_DEL_FILE $$quote($$DIROFFILES_TO_DEL$$FILE)
-        }
-
-        # copy OpenSSL dlls
-        OPENSSLFILES = $$shell_path($$PWD/../../openssl-1.0.2h-bin/*.dll)
-        DDIR = $$shell_path($$DESTDIR)
-        QMAKE_POST_LINK += $$RETURN $$QMAKE_COPY $$quote($$OPENSSLFILES) $$quote($$DDIR)
-
+        copyFilesToDESTDIR($$PWD/../../openssl-1.0.2h-bin/*.dll)
 
         # create language folder and copy *.qm
+        RETURN = $$escape_expand(\n\t)
         LANGFILES = $$shell_path($$PWD/languages/*.qm)
         LANGDIR = $$shell_path($$DESTDIR/languages/)
         QMAKE_POST_LINK += $$RETURN $$sprintf($$QMAKE_MKDIR_CMD, $$LANGDIR)
         QMAKE_POST_LINK += $$RETURN $$QMAKE_COPY $$quote($$LANGFILES) $$quote($$LANGDIR)
 
-        export(QMAKE_POST_LINK)
     }
 }

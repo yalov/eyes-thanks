@@ -16,28 +16,27 @@
 //      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       //
 //----------------------------------------------------------------------------------//
 
+#include <QFile>
 #include <QString>
+#include <QTextStream>
 
 
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-enum IconsMode
-{
+enum IconsMode {
     light,
     dark
 };
 
-enum ImageAspectMode
-{
+enum ImageAspectMode {
     Auto,
     Outside,
     Inside
 };
 
 
-struct Setting
-{
+struct Setting {
     int counter;
     int pauseInterval;
     int pauseContinuous;
@@ -59,7 +58,7 @@ struct Setting
     Setting(int _counter, int pauseinterval, int pausecontinuous,
             QString imagespath, QString imagespath_alt, ImageAspectMode imageaspectmode, IconsMode iconsmode,
             bool islogging, bool istext, bool isclock, bool ismessage30sec, bool isprettyfont, bool isstartuplink, QString _text
-    )
+           )
     {
         counter = _counter;
         pauseInterval = pauseinterval;
@@ -79,24 +78,35 @@ struct Setting
 
 };
 
-inline bool operator==(const Setting& lhs, const Setting& rhs){
-   return
-    lhs.counter               == rhs.counter               &&
-    lhs.pauseInterval         == rhs.pauseInterval         &&
-    lhs.pauseContinuous       == rhs.pauseContinuous       &&
-    lhs.imagesPath            == rhs.imagesPath            &&
-    lhs.imagesPathAlternative == rhs.imagesPathAlternative &&
-    lhs.imageAspectMode       == rhs.imageAspectMode       &&
-    lhs.iconsMode             == rhs.iconsMode             &&
-    lhs.isLogging             == rhs.isLogging             &&
-    lhs.isText                == rhs.isText                &&
-    lhs.isClock               == rhs.isClock               &&
-    lhs.isMessage30sec        == rhs.isMessage30sec        &&
-    lhs.isPrettyFont          == rhs.isPrettyFont          &&
-    lhs.isStartupLink         == rhs.isStartupLink         &&
-    lhs.text                  == rhs.text;
+inline bool operator==(const Setting &lhs, const Setting &rhs)
+{
+    return
+        lhs.counter               == rhs.counter               &&
+        lhs.pauseInterval         == rhs.pauseInterval         &&
+        lhs.pauseContinuous       == rhs.pauseContinuous       &&
+        lhs.imagesPath            == rhs.imagesPath            &&
+        lhs.imagesPathAlternative == rhs.imagesPathAlternative &&
+        lhs.imageAspectMode       == rhs.imageAspectMode       &&
+        lhs.iconsMode             == rhs.iconsMode             &&
+        lhs.isLogging             == rhs.isLogging             &&
+        lhs.isText                == rhs.isText                &&
+        lhs.isClock               == rhs.isClock               &&
+        lhs.isMessage30sec        == rhs.isMessage30sec        &&
+        lhs.isPrettyFont          == rhs.isPrettyFont          &&
+        lhs.isStartupLink         == rhs.isStartupLink         &&
+        lhs.text                  == rhs.text;
 }
 
-inline bool operator!=(const Setting& lhs, const Setting& rhs){ return !(lhs == rhs); }
+inline bool operator!=(const Setting &lhs, const Setting &rhs) { return !operator==(lhs, rhs);}
 
+
+inline static void LogToFile(QString filepath, QString text, bool append = true)
+{
+    QFile file(filepath);
+    if (file.open(append ? QIODevice::Append : QIODevice::WriteOnly)) {
+        QTextStream out(&file);
+        out << text << "\n";
+        file.close();
+    }
+}
 #endif // GLOBAL_H

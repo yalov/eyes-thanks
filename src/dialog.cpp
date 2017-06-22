@@ -257,26 +257,7 @@ void Dialog::SaveButton_status()
     else
         buttonSave->setEnabled(false);
 
-//    if (
-//        setting.pauseInterval != Spinbox_RefreshmentInterval->value() * 60 * 1000 ||
-//        setting.pauseContinuous != Spinbox_RefreshmentContinuous->value() * 1000 ||
-//        setting.imagesPath != LineEdit_Path->text() ||
-//        setting.imagesPathAlternative != LineEdit_Path_alt->text() ||
-//        setting.imageAspectMode != static_cast<ImageAspectMode>(Combobox_imageAspectMode->currentIndex()) ||
-//        setting.iconsMode != static_cast<IconsMode>(Combobox_iconsMode->currentIndex()) ||
-//        setting.isLogging != CheckBox_Logging->isChecked() ||
-//        setting.isText != CheckBox_Text->isChecked() ||
-//        setting.isClock != CheckBox_Clock->isChecked() ||
-//        setting.isMessage30sec != CheckBox_Message->isChecked() ||
-//        setting.isPrettyFont != CheckBox_PrettyFont->isChecked() ||
-//        setting.isStartupLink != CheckBox_StartupLink->isChecked() ||
-//        setting.text != TextEdit_Text->toPlainText()
-//       )
-//        buttonSave->setEnabled(true);
-//    else
-//        buttonSave->setEnabled(false);
-
-    qDebug() << "SaveButton_status";
+//    qDebug() << "SaveButton_status";
 
 }
 

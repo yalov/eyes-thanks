@@ -39,10 +39,29 @@ class View : public QGraphicsView
     Q_OBJECT
 
 public:
+    enum Methods {
+        UNICOLOROUS,
+        LINEAR_GRADIENT_DIAGONAL,
+        LINEAR_GRADIENT_TEST,
+        LINEAR_GRADIENT_RAINBOW,
+        LINEAR_GRADIENT_RAINBOW_2,
+        LINEAR_GRADIENT_STRIPES,
+        LINEAR_GRADIENT_STRIPES_2,
+        RAINBOWED_RECTANGLES,
+        RANDOM_DOT,
+        RANDOM_DOTS,
+        RANDOM_DOTS_2,
+        NEO,
+
+        COUNT_OF_METHODS
+    }; Q_ENUM(Methods)
+
+
+public:
     View(QWidget *parent = 0);
     ~View();
 
-    void ShowRefreshment(QList<QString> pics_path, QString clock, QString ProgressBarText, bool isLogging, bool isPrettyFont, ImageAspectMode AspectMode);
+    void ShowRefreshment(QList<QString> pics_path, QString clock, QString ProgressBarText, Setting _setting);
     void UpdateValues(QString remains_str, double ratio);
 
 signals:
@@ -53,26 +72,31 @@ private:
     void closeEvent(QCloseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-    void SetBackground(double hue_first);
+    void SetBackground(double hue_now);
+    void SaveSceneToFile(QString dir_path);
 
     QString picture_path;
 
     QGraphicsScene *myscene;
     QGraphicsTextItem *clockItem;
-
     QGraphicsRectItem *ProgressBar;
     QGraphicsRectItem *ProgressBarBound;
     QGraphicsRectItem *ProgressBarBackground;
     GraphicsTextItemFixBound *ProgressBarText;
     QRect ProgressBarRect;
     QGraphicsRectItem *ButtonRectItem;
+    Setting setting;
 
-    double Hue;
+    double Hue_start;
     QGraphicsEllipseItem * Item;
     QElapsedTimer * ElapsedTimerDot;
     int Method;
+    bool IsBackgroundUpdate;
+    bool RunnedFirstTime;
+
 
 public:
     GraphicsTextItemFixBound *ButtonText;

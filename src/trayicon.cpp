@@ -24,6 +24,7 @@
 TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
     dialog(NULL), TrayMessageShowed(false), TimeRemains(""), CurrentIconRatio(-1)
 {
+    qsrand(QTime::currentTime().msec());
     LangPath = "languages";
     Translator = new QTranslator();
 
@@ -586,13 +587,16 @@ void TrayIcon::RefreshmentStart()
 
 void TrayIcon::ShowView()
 {
+    QTime timer; timer.start();
+    qDebug().noquote() << QTime::currentTime().toString("ss.zzz") << "ShowView start";
+
     view = new View();
     connect(ViewTimer, SIGNAL(finished()),   view,        SIGNAL(view_close()));
     connect(view,      SIGNAL(view_close()), view,        SLOT(close()));
     connect(view,      SIGNAL(view_close()), DialogTimer, SLOT(start()));
     connect(view,      SIGNAL(view_close()), ViewTimer,   SLOT(stop()));
 
-
+    qDebug() << "TrayIcon::ShowView(), view constuctor in" << timer.elapsed() << "ms." ;
 
     QList<QString> pics_path;
 
@@ -619,7 +623,11 @@ void TrayIcon::ShowView()
     text.replace("%interval", QString::number(setting.pauseInterval / 1000 / 60) + " " + tr("min"));
     text.replace("%continuous", QString::number(setting.pauseContinuous / 1000) + " " + tr("sec"));
 
-    view->ShowRefreshment(pics_path, clock, text, setting.isLogging, setting.isPrettyFont, setting.imageAspectMode);
+    //qDebug() << QTime::currentTime().toString("ss.zzz") << "ShowView before ShowRefreshment" ;
+
+    view->ShowRefreshment(pics_path, clock, text, setting);
+
+    qDebug().noquote() << QTime::currentTime().toString("ss.zzz") << "ShowView end in" << timer.elapsed() << "ms." ;
 }
 
 
