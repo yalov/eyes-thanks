@@ -1,30 +1,23 @@
 //----------------------------------------------------------------------------------//
 //      Copyright 2015 Alexander Yalov <alexander.yalov@gmail.com>                  //
-//                                                                                  //
 //      This file is part of Eyes' Thanks.                                          //
-//                                                                                  //
-//      Eyes' Thanks is free software: you can redistribute it and/or modify        //
-//      it under the terms of the GNU General Public License either                 //
-//      version 3 of the License, or (at your option) any later version.            //
-//                                                                                  //
-//      Eyes' Thanks is distributed in the hope that it will be useful,             //
-//      but WITHOUT ANY WARRANTY; without even the implied warranty of              //
-//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               //
-//      GNU General Public License for more details.                                //
-//                                                                                  //
-//      You should have received a copy of the GNU General Public License           //
-//      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       //
+//      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
 #include "view.h"
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QGraphicsDropShadowEffect>
+#include "testitem.h"
 
 View::View(QWidget *parent): QGraphicsView(parent), clockItem(NULL), Item(NULL), ElapsedTimerDot(NULL), Method(-1), IsBackgroundUpdate(false), RunnedFirstTime(false)
 {
+    //setViewport(new QGLWidget);
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+
     myscene = new QGraphicsScene();
     //setWindowFlags(Qt::WindowStaysOnTopHint);
+    setAttribute(Qt::WA_DeleteOnClose);
     setRenderHint(QPainter::Antialiasing);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -320,7 +313,7 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
     }
 
     // SaveSceneToFile
-    SaveSceneToFile("c:/Users/User/Pictures/Screenshots/EyesThanks");
+    //SaveSceneToFile("c:/Users/User/Pictures/Screenshots/EyesThanks");
 
     qDebug().noquote()  << QTime::currentTime().toString("ss.zzz") << "ShowRefreshment before showFullScreen";
 
@@ -339,16 +332,18 @@ void View::SaveSceneToFile(QString dir_path)
 //    myscene->setBackgroundBrush(Qt::transparent);
     QTime timer;
     timer.start();
+
     QImage image(myscene->sceneRect().size().toSize(), QImage::Format_ARGB32);
     image.fill(Qt::transparent);
 
     QDir dir(dir_path);
     if (!dir.exists()) dir.mkpath(".");
+    QString methodName = QString(QMetaEnum::fromType<Methods>().valueToKey(Method));
 
     QPainter painter(&image);
     myscene->render(&painter);
-    bool done = image.save(dir_path + QDir::separator() + QString("M%1-%2.png")
-                           .arg(Method)
+    bool done = image.save(dir_path + QDir::separator() + QString("m%1-%2.png")
+                           .arg(methodName)
                            .arg(QDateTime::currentDateTime().toString("yyyyMMdd-HHmmss"))
                           );
     qDebug() << "SaveSceneToFile is" << done << "by" << timer.elapsed() << "ms.";
@@ -356,11 +351,10 @@ void View::SaveSceneToFile(QString dir_path)
 
 void View::UpdateValues(QString remains_str, double ratio)
 {
-    this->ProgressBarRect.setRight(qRound(ProgressBarBackground->rect().left() + ProgressBarBackground->rect().width() * (1 - ratio)));
+    ProgressBarRect.setRight(qRound(ProgressBarBackground->rect().left() + ProgressBarBackground->rect().width() * (1 - ratio)));
     ProgressBar->setRect(ProgressBarRect);
 
-
-    this->ProgressBarText->setPlainText(remains_str)  ;
+    ProgressBarText->setPlainText(remains_str)  ;
 
     if (clockItem != NULL)
         clockItem->setPlainText(QTime::currentTime().toString("hh:mm"));
@@ -390,7 +384,7 @@ void View::SetBackground(double hue_now)
     QRect screen = desktop;
 
     if (Method == -1) {
-        Method = RANDOM_DOTS_2 % COUNT_OF_METHODS;
+        Method = LINEAR_GRADIENT_DIAGONAL % COUNT_OF_METHODS;
 
         if (Method == UNICOLOROUS
          || Method == RANDOM_DOT
@@ -408,136 +402,42 @@ void View::SetBackground(double hue_now)
         myscene->setBackgroundBrush(c0);
         break;
     }
-//    case LINEAR_GRADIENT_DIAGONAL: {  // <2
-//        QLinearGradient linearGrad(screen.topLeft(), screen.topRight());
+    case LINEAR_GRADIENT_DIAGONAL: {  // <2
+        QLinearGradient linearGrad(screen.topLeft(), screen.bottomRight());
 
-//        QColor c1 = QColor::fromHsvF(fmod(hue_now*10,       1), 1, 0.3);
-//        QColor c2 = QColor::fromHsvF(fmod(hue_now*10 + 0.1, 1), 1, 0.5);
-//        QColor c3 = QColor::fromHsvF(fmod(hue_now*10 + 0.2, 1), 1, 0.3);
-//        linearGrad.setColorAt(0.15, c1);
-//        linearGrad.setColorAt(0.5, c2);
-//        linearGrad.setColorAt(0.85, c3);
-//        myscene->setBackgroundBrush(QBrush(linearGrad));
-//        break;
-//    }
-//    case LINEAR_GRADIENT_TEST: {
-        //QList<QLinearGradient> grads;
-        //grads.append(QLinearGradient (screen.topLeft(), screen.topRight()));
-        //grads.append(QLinearGradient (screen.topLeft(), screen.bottomLeft()));
-//        grads.append(QLinearGradient (screen.topLeft(), screen.bottomRight()));
-
-//        QList<QGraphicsEllipseItem *> items;
-
-//        for (int i=0; i<10;i++)
-//        {
-//            items.append(new QGraphicsEllipseItem(rand()%screen.width(),rand()%screen.height(),300,300));
-//            items[i]->setPen(Qt::NoPen);
-//            myscene->addItem(items[i]);
-//        }
-
-//        QList<QRadialGradient> rgs;
-//        for (auto &item:items)
-//        {
-//            rgs.append(QRadialGradient (item->rect().center(),item->rect().width()/2));
-//        }
-
-
-
-
-//      for (auto rg:rgs)
-//       for (int i=0, k=2; i<k; i++)
-//            rg.setColorAt((i)/double(k-1), QColor::fromRgbF(0,0,0,(i+1)%2*0.2));
-
-//       for (int i=0; i<items.size();i++)
-//        {
-//            items[i]->setBrush(rgs.at(i));
-
-//        }
-
-//        myscene->setBackgroundBrush(QColor::fromHsvF(0, 1, 0.5));
-
-//        for (int j = 0; j < 2; j++) {
-//            QPoint p(rand() % screen.width(), rand() % screen.height());
-//            QSize s(qMin(screen.width(), screen.height()), qMin(screen.width(), screen.height()));
-
-//            QRect r;
-//            r.moveCenter(p);
-//            r.setSize(s);
-
-//            QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
-
-//            item->setPen(Qt::NoPen);
-//            myscene->addItem(item);
-
-//            QRadialGradient rg = QRadialGradient(item->rect().center(), item->rect().width() / 2);
-//            for (int i = 0, k = 2; i < k; i++)
-//                rg.setColorAt((i) / double(k - 1), QColor::fromRgbF(rand() % 2, 0, 0, (i + 1) % 2 * 0.5));
-//            item->setBrush(rg);
-//        }
-
-
-//        for (int i=0, k=21; i<k; i++)
-//            grads[0].setColorAt((i+(rand()%100)/100.-0.5)/double(k-1), QColor::fromRgbF(0,0,0,(i+1)%2*0.5));
-
-//        for (int i=0, k=11; i<k; i++)
-//            grads[1].setColorAt((i+(rand()%100)/100.-0.5)/double(k-1), QColor::fromRgbF(0,0,0,(i+1)%2*0.5));
-
-
-//        QList<QGraphicsRectItem *> items;
-//        for (int i=0; i<2;i++)
-//        {
-//            items.append(new QGraphicsRectItem(screen));
-//            items.last()->setPen(Qt::NoPen);
-//            items.last()->setBrush(grads.at(i));
-//            myscene->addItem(items.last());
-//        }
-
-
-//        break;
-//    }
-    case LINEAR_GRADIENT_RAINBOW: {
-        QLinearGradient linearGrad(rand() % 2 ? screen.bottomLeft() : screen.topLeft(),
-                                   rand() % 2 ? screen.bottomRight() : screen.topRight());
-
-        for (double ratio = 0, hue = 0; ratio <= 1.0; ratio += 1. / 25) {
-            QColor c = QColor::fromHsvF(fmod(hue_now + hue * 0.8, 1), 1, 1);
-            linearGrad.setColorAt(1 - ratio, c);
-            hue += 1. / 25;
-        }
-
-        for (int i = 0; i < screen.width(); i = i + 100) {
-            QGraphicsLineItem *item = new QGraphicsLineItem(i, 0, i, screen.height());
-            item->setPen(QPen(QColor(Qt::black), 80));
-            myscene->addItem(item);
-        }
-
+        QColor c1 = QColor::fromHsvF(fmod(hue_now,       1), 1, 0.5);
+        QColor c2 = QColor::fromHsvF(fmod(hue_now + 0.1, 1), 1, 0.5);
+        QColor c3 = QColor::fromHsvF(fmod(hue_now + 0.2, 1), 1, 0.5);
+        linearGrad.setColorAt(0.15, c1);
+        linearGrad.setColorAt(0.5, c2);
+        linearGrad.setColorAt(0.85, c3);
         myscene->setBackgroundBrush(QBrush(linearGrad));
         break;
     }
-    case LINEAR_GRADIENT_RAINBOW_2: { // <6
-        QLinearGradient linearGrad(screen.topLeft(), screen.topRight());
+
+    case LINEAR_GRADIENT_RAINBOW: {
+//        QLinearGradient linearGrad(rand() % 2 ? screen.bottomLeft() : screen.topLeft(),
+//                                   rand() % 2 ? screen.bottomRight() : screen.topRight());
+
+        QLinearGradient rainbow(screen.topLeft(), screen.topRight());
 
         for (double ratio = 0, hue = 0; ratio <= 1.0; ratio += 1. / 25) {
             QColor c = QColor::fromHsvF(fmod(hue_now + hue * 0.8, 1), 1, 1);
-            linearGrad.setColorAt(1 - ratio, c);
+            rainbow.setColorAt(1 - ratio, c);
             hue += 1. / 25;
         }
+        myscene->setBackgroundBrush(QBrush(rainbow));
 
-
-        QLinearGradient grad(screen.topLeft(), screen.bottomLeft());
-        grad.setColorAt(0, QColor::fromRgbF(0, 0, 0, 1));
-        grad.setColorAt(0.5, QColor::fromRgbF(0, 0, 0, 0.1));
-        grad.setColorAt(1, QColor::fromRgbF(0, 0, 0, 1));
+        QLinearGradient vertical(screen.topLeft(), screen.bottomLeft());
+        vertical.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0.9));
+        vertical.setColorAt(0.5, QColor::fromRgbF(0, 0, 0, 0.1));
+        vertical.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0.9));
 
         QGraphicsRectItem *item = new QGraphicsRectItem(screen);
         item->setPen(Qt::NoPen);
-        item->setBrush(grad);
+        item->setBrush(vertical);
         myscene->addItem(item);
 
-
-
-
-        myscene->setBackgroundBrush(QBrush(linearGrad));
         break;
     }
     case LINEAR_GRADIENT_STRIPES: { //
@@ -551,19 +451,12 @@ void View::SetBackground(double hue_now)
 
         myscene->setBackgroundBrush(QBrush(linearGrad));
 
-
-//        for (int i=0; i<screen.width(); i=i+100) {
-//            QGraphicsLineItem *item = new QGraphicsLineItem(i,0,i,screen.height());
-//            item->setPen(QPen(QColor(Qt::black),80));
-//            item->setOpacity(0.8);
-//            myscene->addItem(item);
-//        }
-
         double ratio = double(screen.width())/screen.height();
         double standard_ratio = 16.0/9.0;
         double k = ratio/standard_ratio;
+        int stripes_count = 10;
 
-        int stripe_segment = screen.width()/int(7*k);
+        int stripe_segment = screen.width()/int(stripes_count*k);
         int stripe_width = stripe_segment*0.8;
 
         for (int i = -stripe_width/2; i < screen.width(); i = i + stripe_segment) {
@@ -595,8 +488,9 @@ void View::SetBackground(double hue_now)
         double ratio = double(screen.width())/screen.height();
         double standard_ratio = 16.0/9.0;
         double k = ratio/standard_ratio;
+        int stripes_count = 10;
 
-        int stripe_segment = screen.width()/int(7*k);
+        int stripe_segment = screen.width()/int(stripes_count*k);
         int stripe_width = stripe_segment*0.4;
 
         for (int i=0; i<screen.width(); i = i + stripe_segment) {
@@ -656,8 +550,15 @@ void View::SetBackground(double hue_now)
         break;
     }
     case RANDOM_DOTS: {
-        if (ElapsedTimerDot == NULL)
+        if (ElapsedTimerDot == NULL){
             ElapsedTimerDot = new QElapsedTimer();
+            //myscene->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+            //myscene->setItemIndexMethod(QGraphicsScene::NoIndex);
+            myscene->setBspTreeDepth(10);
+            refreshment = new TestItem(screen);
+            myscene->addItem(refreshment);
+
+        }
         else if (ElapsedTimerDot->elapsed() > 100) {
             ElapsedTimerDot->start();
 
@@ -665,12 +566,14 @@ void View::SetBackground(double hue_now)
             QRect r(qrand() % (screen.width() - diameter_dot),
                     qrand() % (screen.height() - diameter_dot), diameter_dot, diameter_dot);
 
-            QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
-            item->setBrush(QColor::fromHsvF(fmod(hue_now, 1), 1, 1));
-            item->setPen(Qt::NoPen);
-            item->setOpacity(0.5);
-            myscene->addItem(item);
-            qDebug() << myscene->items().size();
+            //QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
+            //item->setBrush(QColor::fromHsvF(fmod(hue_now, 1), 1, 1));
+            //item->setPen(Qt::NoPen);
+            //item->setOpacity(0.5);
+            //item->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+            //myscene->addItem(item);
+
+            refreshment->animate(fmod(hue_now, 1));
         }
         myscene->setBackgroundBrush(Qt::black);
         break;
@@ -782,6 +685,81 @@ void View::SetBackground(double hue_now)
         myscene->setBackgroundBrush(Qt::black);
         break;
     }
+//    case LINEAR_GRADIENT_TEST: {
+        //QList<QLinearGradient> grads;
+        //grads.append(QLinearGradient (screen.topLeft(), screen.topRight()));
+        //grads.append(QLinearGradient (screen.topLeft(), screen.bottomLeft()));
+//        grads.append(QLinearGradient (screen.topLeft(), screen.bottomRight()));
+
+//        QList<QGraphicsEllipseItem *> items;
+
+//        for (int i=0; i<10;i++)
+//        {
+//            items.append(new QGraphicsEllipseItem(rand()%screen.width(),rand()%screen.height(),300,300));
+//            items[i]->setPen(Qt::NoPen);
+//            myscene->addItem(items[i]);
+//        }
+
+//        QList<QRadialGradient> rgs;
+//        for (auto &item:items)
+//        {
+//            rgs.append(QRadialGradient (item->rect().center(),item->rect().width()/2));
+//        }
+
+
+
+
+//      for (auto rg:rgs)
+//       for (int i=0, k=2; i<k; i++)
+//            rg.setColorAt((i)/double(k-1), QColor::fromRgbF(0,0,0,(i+1)%2*0.2));
+
+//       for (int i=0; i<items.size();i++)
+//        {
+//            items[i]->setBrush(rgs.at(i));
+
+//        }
+
+//        myscene->setBackgroundBrush(QColor::fromHsvF(0, 1, 0.5));
+
+//        for (int j = 0; j < 2; j++) {
+//            QPoint p(rand() % screen.width(), rand() % screen.height());
+//            QSize s(qMin(screen.width(), screen.height()), qMin(screen.width(), screen.height()));
+
+//            QRect r;
+//            r.moveCenter(p);
+//            r.setSize(s);
+
+//            QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
+
+//            item->setPen(Qt::NoPen);
+//            myscene->addItem(item);
+
+//            QRadialGradient rg = QRadialGradient(item->rect().center(), item->rect().width() / 2);
+//            for (int i = 0, k = 2; i < k; i++)
+//                rg.setColorAt((i) / double(k - 1), QColor::fromRgbF(rand() % 2, 0, 0, (i + 1) % 2 * 0.5));
+//            item->setBrush(rg);
+//        }
+
+
+//        for (int i=0, k=21; i<k; i++)
+//            grads[0].setColorAt((i+(rand()%100)/100.-0.5)/double(k-1), QColor::fromRgbF(0,0,0,(i+1)%2*0.5));
+
+//        for (int i=0, k=11; i<k; i++)
+//            grads[1].setColorAt((i+(rand()%100)/100.-0.5)/double(k-1), QColor::fromRgbF(0,0,0,(i+1)%2*0.5));
+
+
+//        QList<QGraphicsRectItem *> items;
+//        for (int i=0; i<2;i++)
+//        {
+//            items.append(new QGraphicsRectItem(screen));
+//            items.last()->setPen(Qt::NoPen);
+//            items.last()->setBrush(grads.at(i));
+//            myscene->addItem(items.last());
+//        }
+
+
+//        break;
+//    }
     }
 
 
@@ -865,16 +843,22 @@ void View::mouseMoveEvent(QMouseEvent *event)
 
 void View::closeEvent(QCloseEvent *event)
 {
-    emit view_close();
+    //qDebug().noquote()  << QTime::currentTime().toString("ss.zzz") << "View::closeEvent";
     //for (auto item : myscene->items())
     //   if (item->zValue() == -1 || item->zValue() == -2) {
     //       myscene->removeItem(item);
     //       delete item;
     //   }
 
+    myscene->clear();
+    myscene->deleteLater();
+
+
+    emit view_close();
+    //close();
+
     //hide();
     //event->ignore();
-    //close();
 
     //QGraphicsView::close();
     QGraphicsView::closeEvent(event);

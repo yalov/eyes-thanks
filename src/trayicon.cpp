@@ -1,19 +1,7 @@
 //----------------------------------------------------------------------------------//
 //      Copyright 2015 Alexander Yalov <alexander.yalov@gmail.com>                  //
-//                                                                                  //
 //      This file is part of Eyes' Thanks.                                          //
-//                                                                                  //
-//      Eyes' Thanks is free software: you can redistribute it and/or modify        //
-//      it under the terms of the GNU General Public License either                 //
-//      version 3 of the License, or (at your option) any later version.            //
-//                                                                                  //
-//      Eyes' Thanks is distributed in the hope that it will be useful,             //
-//      but WITHOUT ANY WARRANTY; without even the implied warranty of              //
-//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               //
-//      GNU General Public License for more details.                                //
-//                                                                                  //
-//      You should have received a copy of the GNU General Public License           //
-//      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       //
+//      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
 #include "trayicon.h"
@@ -303,7 +291,7 @@ void TrayIcon::Save(Setting s)
         PauseAct->setIcon(QIcon::fromTheme("media-playback-pause"));
     #endif
         DialogTimer->restart(UPDATE_PERIOD_2, setting.pauseInterval);
-        ViewTimer->Init(UPDATE_PERIOD_1, setting.pauseContinuous);
+        ViewTimer->init(UPDATE_PERIOD_1, setting.pauseContinuous);
 
         TrayMessageShowed = false;
 
@@ -480,7 +468,6 @@ void TrayIcon::setCurrentIcon(double ratio)
 
 void TrayIcon::InitIcons()
 {
-
     if (setting.iconsMode == IconsMode::light) {
         ipp = QIcon(":icons/light/pp.png");
         i00 = QIcon(":icons/light/00.png");
@@ -507,7 +494,6 @@ void TrayIcon::InitIcons()
         i87 = QIcon(":icons/logo.png");
         i95 = QIcon(":icons/logo.png");
     }
-
 }
 
 
@@ -591,8 +577,8 @@ void TrayIcon::ShowView()
     qDebug().noquote() << QTime::currentTime().toString("ss.zzz") << "ShowView start";
 
     view = new View();
-    connect(ViewTimer, SIGNAL(finished()),   view,        SIGNAL(view_close()));
-    connect(view,      SIGNAL(view_close()), view,        SLOT(close()));
+    connect(ViewTimer, SIGNAL(finished()),   view,        SLOT(close())); // close() run view->closeEvent()
+    //connect(view,      SIGNAL(view_close()), view,        SLOT(close()));
     connect(view,      SIGNAL(view_close()), DialogTimer, SLOT(start()));
     connect(view,      SIGNAL(view_close()), ViewTimer,   SLOT(stop()));
 
@@ -634,5 +620,10 @@ void TrayIcon::ShowView()
 
 void TrayIcon::ViewUpdateTime()
 {
-    view->UpdateValues(ViewTimer->remains_str(false), ViewTimer->ratio());
+    if (view){
+        //qDebug().noquote()  << QTime::currentTime().toString("ss.zzz") << "TrayIcon::ViewUpdateTime" << ViewTimer->isActive << ViewTimer->elapsed();
+        view->UpdateValues(ViewTimer->remains_str(false), ViewTimer->ratio());
+    }
+    else
+        qDebug() << "trying to update nonexisting view";
 }

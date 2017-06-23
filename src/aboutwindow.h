@@ -1,40 +1,25 @@
 //----------------------------------------------------------------------------------//
 //      Copyright 2015 Alexander Yalov <alexander.yalov@gmail.com>                  //
-//                                                                                  //
 //      This file is part of Eyes' Thanks.                                          //
-//                                                                                  //
-//      Eyes' Thanks is free software: you can redistribute it and/or modify        //
-//      it under the terms of the GNU General Public License either                 //
-//      version 3 of the License, or (at your option) any later version.            //
-//                                                                                  //
-//      Eyes' Thanks is distributed in the hope that it will be useful,             //
-//      but WITHOUT ANY WARRANTY; without even the implied warranty of              //
-//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               //
-//      GNU General Public License for more details.                                //
-//                                                                                  //
-//      You should have received a copy of the GNU General Public License           //
-//      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       //
+//      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
 #ifndef ABOUT_H
 #define ABOUT_H
 
-
-#include <QMessageBox>
 #include <QWidget>
+#include <QDialog>
 #include <QFile>
 #include <QLabel>
 #include <QPushButton>
 #include <QTabWidget>
 #include <QTextBrowser>
-#include <QTextEdit>
 #include <QTextStream>
 #include <QVBoxLayout>
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QStyle>
 #include <QRegularExpression>
-
 #include "QtNetwork/QNetworkAccessManager"
 
 class AboutWindow : public QDialog
@@ -54,7 +39,6 @@ public:
         QString license_name = "GNU GPLv3";
         QString logo_path = ":icons/logo.png";
 
-
         QRegularExpression re("\\S+\\s+\\d+\\.\\d+\\.\\S+");
 
         QString OpenSSL_version_compile = re.match(QSslSocket::sslLibraryBuildVersionString()).captured();
@@ -63,10 +47,8 @@ public:
         if (OpenSSL_version_run == "")
             OpenSSL_version_run = "OpenSSL dlls are missing";
 
-
         QString Qt_version_compiletime = QString(QT_VERSION_STR);
         QString Qt_version_runtime = qVersion();
-
 
 
 #ifdef _WIN32
@@ -76,9 +58,7 @@ public:
         QIcon aboutIcon     = QIcon::fromTheme("help-about");       //QStyle::SP_MessageBoxInformation
 #endif
         setWindowIcon(aboutIcon);
-
         setWindowTitle(win_title);
-
 
         QVBoxLayout *TopLayout = new QVBoxLayout(this);
 

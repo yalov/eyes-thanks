@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------------#
 #      Copyright 2015 Alexander Yalov <alexander.yalov@gmail.com>                  #
+#      This file is part of Eyes' Thanks.                                          #
 #      GNU General Public License 3                                                #
-#                                                                                  #
 #----------------------------------------------------------------------------------#
 
 include("files-commands.pri")
@@ -50,7 +50,9 @@ SOURCES += \
     src/main.cpp \
     src/trayicon.cpp \
     src/view.cpp \
-    src/updater.cpp
+    src/updater.cpp \
+    src/testitemt.cpp \
+    src/timer.cpp
 
 HEADERS  += src/aboutwindow.h \
     src/dialog.h \
@@ -59,7 +61,8 @@ HEADERS  += src/aboutwindow.h \
     src/trayicon.h \
     src/view.h \
     src/updater.h \
-    src/global.h
+    src/global.h \
+    src/testitem.h
 
 DISTFILES    +=
 TRANSLATIONS += languages/lang_ru.ts languages/lang_en.ts
