@@ -50,8 +50,9 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     if (setting.counter == 0) ShowDialog();
 
-
+#ifndef DEPLOY
     RefreshmentStart();
+#endif
 }
 
 TrayIcon::~TrayIcon()
@@ -582,7 +583,7 @@ void TrayIcon::ShowView()
     connect(view,      SIGNAL(view_close()), DialogTimer, SLOT(start()));
     connect(view,      SIGNAL(view_close()), ViewTimer,   SLOT(stop()));
 
-    qDebug() << "TrayIcon::ShowView(), view constuctor in" << timer.elapsed() << "ms." ;
+    qDebug().noquote() << QTime::currentTime().toString("ss.zzz") << "TrayIcon::ShowView(), view constuctor in" << timer.elapsed() << "ms." ;
 
     QList<QString> pics_path;
 

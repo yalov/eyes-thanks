@@ -8,9 +8,12 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QGraphicsDropShadowEffect>
+#include <QOpenGLWidget>
 #include "testitem.h"
 
-View::View(QWidget *parent): QGraphicsView(parent), clockItem(NULL), Item(NULL), ElapsedTimerDot(NULL), Method(-1), IsBackgroundUpdate(false), RunnedFirstTime(false)
+View::View(QWidget *parent): QGraphicsView(parent),
+    clockItem(NULL), Item(NULL), ElapsedTimerDot(NULL), Method(-1), IsBackgroundUpdate(false), RunnedFirstTime(false),
+    testitem(NULL)
 {
     //setViewport(new QGLWidget);
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
@@ -32,6 +35,8 @@ View::View(QWidget *parent): QGraphicsView(parent), clockItem(NULL), Item(NULL),
     ProgressBarText->setFont(font);
     ProgressBarText->setDefaultTextColor(Qt::black);
     ProgressBarText->setZValue(3);
+    ProgressBarText->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+
     myscene->addItem(ProgressBarText);
 
     ProgressBar = new QGraphicsRectItem();
@@ -39,6 +44,8 @@ View::View(QWidget *parent): QGraphicsView(parent), clockItem(NULL), Item(NULL),
     ProgressBar->setBrush(Qt::white);
     ProgressBar->setOpacity(0.8);
     ProgressBar->setZValue(2);
+    ProgressBar->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+
     myscene->addItem(ProgressBar);
 
 
@@ -192,27 +199,24 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
         SetBackground(Hue_start);
     }
 
-    this->ProgressBarText->setPlainText("0:00");
+    {   // ProgressBar and ButtonRect
+        int label_height = this->ProgressBarText->boundingRect().height();
+        int label_y_pos = default_screen.height() - 25 - label_height;
+        int label_x_pos = default_screen.left() + 2.5 * default_screen.width() / 5 - this->ProgressBarText->boundingRect().width() / 2 + 10;
 
-    int label_height = this->ProgressBarText->boundingRect().height();
-    int label_y_pos = default_screen.height() - 25 - label_height;
-    int label_x_pos = default_screen.left() + 2.5 * default_screen.width() / 5 - this->ProgressBarText->boundingRect().width() / 2 + 10;
+        ProgressBarText->setPos(label_x_pos, label_y_pos);
+        ProgressBarText->setPlainText("0:30");
+        ProgressBarRect = QRect(default_screen.left() + default_screen.width() / 5, label_y_pos, 3 * default_screen.width() / 5, label_height);
+        ProgressBarBackground->setRect(ProgressBarRect);
+        ProgressBar->setRect(ProgressBarRect.adjusted(0, 0, -ProgressBarRect.width() / 2, 0));
+        ProgressBarBound->setRect(ProgressBarRect.adjusted(-1, -1, 0, 0));
 
-    this->ProgressBarText->setPos(label_x_pos, label_y_pos);
+        ButtonRectItem->setRect(QRect(ProgressBarBackground->boundingRect().right() + 25, label_y_pos, 100, label_height));
 
-    ProgressBarRect = QRect(default_screen.left() + default_screen.width() / 5, label_y_pos, 3 * default_screen.width() / 5, label_height);
-
-    ProgressBarBackground->setRect(ProgressBarRect);
-    ProgressBar->setRect(ProgressBarRect.adjusted(0, 0, -ProgressBarRect.width() / 2, 0));
-
-    ProgressBarBound->setRect(ProgressBarRect.adjusted(-1, -1, 0, 0));
-
-
-    ButtonRectItem->setRect(QRect(ProgressBarBackground->boundingRect().right() + 25, label_y_pos, 100, label_height));
-
-    QPointF p = ButtonRectItem->rect().center() -
-                QPoint(ButtonText->boundingRect().width(), ButtonText->boundingRect().height()) / 2;
-    ButtonText->setPos(p.x(), p.y());
+        QPointF p = ButtonRectItem->rect().center() -
+                    QPoint(ButtonText->boundingRect().width(), ButtonText->boundingRect().height()) / 2;
+        ButtonText->setPos(p.x(), p.y());
+    }
 
     if (isLogging) {
         QString Logging_str = "";
@@ -246,70 +250,51 @@ void View::ShowRefreshment(QList<QString> pics_path, QString clock, QString text
         LogToFile("LoggingDisplay.txt", Logging_str);
     }
 
-    if (!clock.isEmpty()) {
+    if (!clock.isEmpty() || !text.isEmpty()) {
+        int font_size = 30;
+        QFont font(isPrettyFont ? "UKIJ Diwani Yantu" : "PT Serif", font_size, QFont::Bold);
+        QColor fill_color(Qt::white);
+        QColor outline_color(Qt::black);
+        qreal opacity = 0.5;
 
-        clockItem = new QGraphicsTextItem();
-        clockItem->setPlainText(clock);
-        clockItem->setZValue(3);
-        clockItem->setDefaultTextColor(QColor(Qt::white));
-        clockItem->setFont(QFont(isPrettyFont ? "UKIJ Diwani Yantu" : "PT Serif", 30, 30));
-        clockItem->setPos(default_screen.topRight() + QPoint(-50 - clockItem->boundingRect().width(), 25));
-        clockItem->setOpacity(0.5);
+        if (!clock.isEmpty()) {
+            clockItem = new QGraphicsSimpleTextItem();
+            clockItem->setText(clock);
+            clockItem->setFont(font);
+            clockItem->setPos(default_screen.topRight() + QPoint(-50 - clockItem->boundingRect().width(), 25));
+            clockItem->setZValue(3);
+            clockItem->setBrush(fill_color);
+            clockItem->setPen(outline_color);
+            clockItem->setOpacity(opacity);
+            myscene->addItem(clockItem);
+        }
 
-        //QGraphicsDropShadowEffect * shadow1 = new QGraphicsDropShadowEffect();
-        //shadow1->setColor(QColor(0,0,0));
-        //shadow1->setOffset( 0, 0 );
-        //shadow1->setBlurRadius( 20 );
-        //clockItem->setGraphicsEffect(shadow1);
+        if (!text.isEmpty()) {
+            QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem();
+            textItem->setText(text);
+            textItem->setFont(font); //PT Serif
+            textItem->setPos(default_screen.topLeft() + QPoint(50, 25));
+            textItem->setZValue(3);
+            textItem->setBrush(fill_color);
+            textItem->setPen(outline_color);
+            textItem->setOpacity(opacity);
+            myscene->addItem(textItem);
 
+//            QGraphicsRectItem *textItemRect = new QGraphicsRectItem();
+//            textItemRect->setRect(textItem->boundingRect());
+//            textItemRect->setPos(textItem->pos());
+//            textItemRect->setZValue(2);
+//            textItemRect->setPen(Qt::NoPen);
+//            textItemRect->setBrush(Qt::black);
+//            textItemRect->setOpacity(0.5);
 
-        QGraphicsRectItem *clockItemRect = new QGraphicsRectItem();
-        clockItemRect->setRect(clockItem->boundingRect());
-        clockItemRect->setPos(clockItem->pos());
-        clockItemRect->setZValue(2);
-        clockItemRect->setPen(Qt::NoPen);
-        clockItemRect->setBrush(Qt::black);
-        clockItemRect->setOpacity(0.5);
+//            QGraphicsBlurEffect *blur = new QGraphicsBlurEffect();
+//            blur->setBlurRadius(20);
+//            textItemRect->setGraphicsEffect(blur);
 
-        QGraphicsBlurEffect *blur = new QGraphicsBlurEffect();
-        blur->setBlurRadius(20);
-        clockItemRect->setGraphicsEffect(blur);
+            //myscene->addItem(textItemRect);
 
-        myscene->addItem(clockItemRect);
-        myscene->addItem(clockItem);
-    }
-
-    if (!text.isEmpty()) {
-        QGraphicsTextItem *textItem = new QGraphicsTextItem();
-        textItem->setPlainText(text);
-        textItem->setPos(default_screen.topLeft() + QPoint(50, 25));
-        textItem->setZValue(3);
-        textItem->setDefaultTextColor(QColor(255, 255, 255, 255));
-        textItem->setFont(QFont(isPrettyFont ? "UKIJ Diwani Yantu" : "PT Serif", 30, 30));
-
-        //PT Serif
-        //QGraphicsDropShadowEffect * shadow = new QGraphicsDropShadowEffect();
-        //shadow->setColor(QColor(0,0,0));
-        //shadow->setOffset( 0, 0 );
-        //shadow->setBlurRadius( 20 );
-        //textItem->setGraphicsEffect(shadow);
-
-        textItem->setOpacity(0.5);
-
-        QGraphicsRectItem *textItemRect = new QGraphicsRectItem();
-        textItemRect->setRect(textItem->boundingRect());
-        textItemRect->setPos(textItem->pos());
-        textItemRect->setZValue(2);
-        textItemRect->setPen(Qt::NoPen);
-        textItemRect->setBrush(Qt::black);
-        textItemRect->setOpacity(0.5);
-
-        QGraphicsBlurEffect *blur = new QGraphicsBlurEffect();
-        blur->setBlurRadius(20);
-        textItemRect->setGraphicsEffect(blur);
-
-        myscene->addItem(textItemRect);
-        myscene->addItem(textItem);
+        }
     }
 
     // SaveSceneToFile
@@ -357,7 +342,7 @@ void View::UpdateValues(QString remains_str, double ratio)
     ProgressBarText->setPlainText(remains_str)  ;
 
     if (clockItem != NULL)
-        clockItem->setPlainText(QTime::currentTime().toString("hh:mm"));
+        clockItem->setText(QTime::currentTime().toString("hh:mm"));
 
     if (picture_path.isEmpty() && IsBackgroundUpdate)
         SetBackground(Hue_start + ratio);
@@ -384,12 +369,13 @@ void View::SetBackground(double hue_now)
     QRect screen = desktop;
 
     if (Method == -1) {
-        Method = LINEAR_GRADIENT_DIAGONAL % COUNT_OF_METHODS;
+        Method = OPENGLDOTS % COUNT_OF_METHODS;
 
         if (Method == UNICOLOROUS
-         || Method == RANDOM_DOT
-         || Method == RANDOM_DOTS
-         //|| Method == RANDOM_DOTS_RANDOM_COLOR
+                || Method == RANDOM_DOT
+                || Method == RANDOM_DOTS
+                //|| Method == RANDOM_DOTS_RANDOM_COLOR
+                || Method == OPENGLDOTS
 
            )
             IsBackgroundUpdate = true;
@@ -451,15 +437,15 @@ void View::SetBackground(double hue_now)
 
         myscene->setBackgroundBrush(QBrush(linearGrad));
 
-        double ratio = double(screen.width())/screen.height();
-        double standard_ratio = 16.0/9.0;
-        double k = ratio/standard_ratio;
+        double ratio = double(screen.width()) / screen.height();
+        double standard_ratio = 16.0 / 9.0;
+        double k = ratio / standard_ratio;
         int stripes_count = 10;
 
-        int stripe_segment = screen.width()/int(stripes_count*k);
-        int stripe_width = stripe_segment*0.8;
+        int stripe_segment = screen.width() / int(stripes_count * k);
+        int stripe_width = stripe_segment * 0.8;
 
-        for (int i = -stripe_width/2; i < screen.width(); i = i + stripe_segment) {
+        for (int i = -stripe_width / 2; i < screen.width(); i = i + stripe_segment) {
 
             QGraphicsRectItem *item = new QGraphicsRectItem(i, 0, stripe_width, screen.height());
             QLinearGradient grad(item->rect().topLeft(), item->rect().topRight());
@@ -485,17 +471,17 @@ void View::SetBackground(double hue_now)
         myscene->setBackgroundBrush(QBrush(linearGrad));
 
 
-        double ratio = double(screen.width())/screen.height();
-        double standard_ratio = 16.0/9.0;
-        double k = ratio/standard_ratio;
+        double ratio = double(screen.width()) / screen.height();
+        double standard_ratio = 16.0 / 9.0;
+        double k = ratio / standard_ratio;
         int stripes_count = 10;
 
-        int stripe_segment = screen.width()/int(stripes_count*k);
-        int stripe_width = stripe_segment*0.4;
+        int stripe_segment = screen.width() / int(stripes_count * k);
+        int stripe_width = stripe_segment * 0.4;
 
-        for (int i=0; i<screen.width(); i = i + stripe_segment) {
-            QGraphicsLineItem *item = new QGraphicsLineItem(i,0,i,screen.height());
-            item->setPen(QPen(QColor(Qt::black),stripe_width));
+        for (int i = 0; i < screen.width(); i = i + stripe_segment) {
+            QGraphicsLineItem *item = new QGraphicsLineItem(i, 0, i, screen.height());
+            item->setPen(QPen(QColor(Qt::black), stripe_width));
             item->setOpacity(0.7);
             myscene->addItem(item);
         }
@@ -549,14 +535,37 @@ void View::SetBackground(double hue_now)
         myscene->setBackgroundBrush(Qt::black);
         break;
     }
+
+
+    case OPENGLDOTS: {
+        if (ElapsedTimerDot == NULL) {
+            ElapsedTimerDot = new QElapsedTimer();
+            testitem = new TestItem(screen);
+            connect(this, SIGNAL(opengl_update(double, int)),testitem, SLOT(animate(double,int)));
+            QGraphicsProxyWidget * proxy = new QGraphicsProxyWidget();
+            proxy->setWidget(testitem);
+            myscene->addItem(proxy);
+        }
+        else if (ElapsedTimerDot->elapsed() > 100) {
+            ElapsedTimerDot->start();
+
+            int diameter_dot = qrand() % 100 + 50;
+            //testitem->animate(fmod(hue_now,1), diameter_dot);
+            emit opengl_update(fmod(hue_now,1), diameter_dot);
+
+
+        }
+        myscene->setBackgroundBrush(Qt::black);
+        break;
+    }
+
     case RANDOM_DOTS: {
-        if (ElapsedTimerDot == NULL){
+        if (ElapsedTimerDot == NULL) {
             ElapsedTimerDot = new QElapsedTimer();
             //myscene->setCacheMode(QGraphicsItem::ItemCoordinateCache);
             //myscene->setItemIndexMethod(QGraphicsScene::NoIndex);
-            myscene->setBspTreeDepth(10);
-            refreshment = new TestItem(screen);
-            myscene->addItem(refreshment);
+            //myscene->setBspTreeDepth(10);
+            //setViewport(new QOpenGLWidget);
 
         }
         else if (ElapsedTimerDot->elapsed() > 100) {
@@ -566,14 +575,21 @@ void View::SetBackground(double hue_now)
             QRect r(qrand() % (screen.width() - diameter_dot),
                     qrand() % (screen.height() - diameter_dot), diameter_dot, diameter_dot);
 
-            //QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
-            //item->setBrush(QColor::fromHsvF(fmod(hue_now, 1), 1, 1));
-            //item->setPen(Qt::NoPen);
-            //item->setOpacity(0.5);
-            //item->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-            //myscene->addItem(item);
+            QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
+            item->setBrush(QColor::fromHsvF(fmod(hue_now, 1), 1, 1));
+            item->setPen(Qt::NoPen);
+            item->setOpacity(0.5);
+            item->setData(1, hue_now);
+            item->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+            myscene->addItem(item);
 
-            refreshment->animate(fmod(hue_now, 1));
+            for (auto i : myscene->items())
+                if (i->data(1).toDouble() < hue_now-0.2 && i->type() == 4) // 4 - type of QGraphicsEllipseItem
+                {
+                    qDebug() << i->type();
+                    myscene->removeItem(i);
+                }
+
         }
         myscene->setBackgroundBrush(Qt::black);
         break;
@@ -582,9 +598,9 @@ void View::SetBackground(double hue_now)
         //if (ElapsedTimerDot == NULL)
         //    ElapsedTimerDot = new QElapsedTimer();
         //else if (ElapsedTimerDot->elapsed() > 2000) {
-         //   ElapsedTimerDot->start();
+        //   ElapsedTimerDot->start();
 
-            for (int i=0;i<1000;i++) {
+        for (int i = 0; i < 1000; i++) {
 
             int diameter_dot = 75;
             QRect r(qrand() % (screen.width() - diameter_dot),
@@ -595,7 +611,7 @@ void View::SetBackground(double hue_now)
             item->setPen(Qt::NoPen);
             item->setOpacity(0.5);
             myscene->addItem(item);
-            }
+        }
         //}
 
         myscene->setBackgroundBrush(Qt::black);
@@ -766,15 +782,17 @@ void View::SetBackground(double hue_now)
     if (setting.isLogging) {
         QMetaEnum metaEnum = QMetaEnum::fromType<Methods>();
 
-        QString timer_string = QString("Method %1: %2 ms.").arg(metaEnum.valueToKey(Method)).arg(timer.elapsed());
-        qDebug().noquote() << timer_string;
-        LogToFile("LoggingSetBackground.txt", timer_string);
+        QString timer_string = QString("Method %1: %2 ms, items %3")
+                .arg(metaEnum.valueToKey(Method)).arg(timer.elapsed()).arg(myscene->items().size());
+        //qDebug().noquote() << timer_string;
+        //LogToFile("LoggingSetBackground.txt", timer_string);
     }
     else {
-        QString timer_string = QString("Method %1: %2 ms.").arg(Method).arg(timer.elapsed());
-        qDebug().noquote() << timer_string;
+        QString timer_string = QString("Method %1: %2 ms, items %3")
+                .arg(Method).arg(timer.elapsed()).arg(myscene->items().size());
+        //qDebug().noquote() << timer_string;
     }
-    // qDebug() << QTime::currentTime().toString("ss.zzz") <<"SetBackground end";
+
     qDebug() << "items" << myscene->items().size();
 
 }

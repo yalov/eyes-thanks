@@ -3,14 +3,12 @@
 //      This file is part of Eyes' Thanks.                                          //
 //      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
+#ifndef GLOBAL_H
+#define GLOBAL_H
 
 #include <QFile>
 #include <QString>
 #include <QTextStream>
-
-
-#ifndef GLOBAL_H
-#define GLOBAL_H
 
 enum IconsMode {
     light,

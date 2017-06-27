@@ -6,7 +6,6 @@
 
 #include "trayicon.h"
 #include <QApplication>
-//QT_NO_DEBUG_OUTPUT
 
 int main(int argc, char *argv[])
 {

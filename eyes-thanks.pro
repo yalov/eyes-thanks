@@ -7,7 +7,7 @@
 include("files-commands.pri")
 StartProjectMESSAGE()
 
-VERSION = 1.1.0
+VERSION = 1.2.0
 #CONFIG += DEPLOY
 TARGET  = "Eyes\' Thanks"
 NAME    = Alexander Yalov
@@ -31,6 +31,9 @@ RCC_DIR     = $$OUT_PWD/.qrc
 UI_DIR      = $$OUT_PWD/.ui
 
 QT     += core gui network widgets winextras
+QT += opengl
+LIBS += -LC:\Qt\5.9\mingw53_32\lib\libQt5OpenGL.a -lopengl32
+#LIBS += -lGLU
 
 win32:RC_ICONS += icons/icon.ico
 
@@ -51,8 +54,8 @@ SOURCES += \
     src/trayicon.cpp \
     src/view.cpp \
     src/updater.cpp \
-    src/testitemt.cpp \
-    src/timer.cpp
+    src/timer.cpp \
+    src/testitem.cpp
 
 HEADERS  += src/aboutwindow.h \
     src/dialog.h \
@@ -71,6 +74,8 @@ RESOURCES    += resource.qrc
 # windeployqt only release and only DEPLOY variable
 CONFIG(release, debug|release) {
     DEPLOY {
+        message( "qt_no_debug_output" )
+        DEFINES += QT_NO_DEBUG_OUTPUT DEPLOY
         message( "start windeployqt" )
 
         windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)

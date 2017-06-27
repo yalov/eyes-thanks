@@ -39,6 +39,7 @@ public:
         RANDOM_DOT,
         RANDOM_DOTS,
         RANDOM_DOTS_2,
+        OPENGLDOTS,
         NEO,
 
         COUNT_OF_METHODS
@@ -54,6 +55,7 @@ public:
 
 signals:
     void view_close();
+    void opengl_update(double, int);
 
 
 private:
@@ -69,7 +71,7 @@ private:
     QString picture_path;
 
     QGraphicsScene *myscene;
-    QGraphicsTextItem *clockItem;
+    QGraphicsSimpleTextItem *clockItem;
     QGraphicsRectItem *ProgressBar;
     QGraphicsRectItem *ProgressBarBound;
     QGraphicsRectItem *ProgressBarBackground;
@@ -85,6 +87,7 @@ private:
     int Method;
     bool IsBackgroundUpdate;
     bool RunnedFirstTime;
+    TestItem * testitem;
 
 
 public:

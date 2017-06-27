@@ -4,42 +4,29 @@
 //      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
-#ifndef REFRESHMENT_H
-#define REFRESHMENT_H
-#include <QtGui>
-#include <QtCore>
-#include <QCloseEvent>
-#include <QGraphicsView>
-#include <QProgressBar>
-#include <QLabel>
-#include <QPushButton>
-#include <QGraphicsTextItem>
-#include <QGraphicsProxyWidget>
-
-#include "graphicstextitemfixbound.h"
-#include "global.h"
-#include "timer.h"
-
-#include <QWidget>
+#ifndef TESTITEM_H
+#define TESTITEM_H
+#include <QOpenGLWidget>
 
 
-#define WidgetMode
 
-class TestItem : public QGraphicsItem
+class TestItem : public QOpenGLWidget
 {
-
+Q_OBJECT
 public:
-
     TestItem(QRect screen);
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-               QWidget *widget) override;
-    void animate(double hue);
+public slots:
+    void animate(double _hue, int _diameter);
+
+private:
+    void paintGL();
+    void resizeGL(int w, int h);
+    void initializeGL();
+
     double hue;
+    int diameter;
     QRect screen;
-    QRectF boundingRect() const override;
-
-
 };
 
 #endif // REFRESHMENT_H
