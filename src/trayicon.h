@@ -8,7 +8,7 @@
 #define TRAYICON_H
 
 #if defined _WIN32
-#define UPDATE_PERIOD_1 40
+#define UPDATE_PERIOD_1 100
 #else
 #define UPDATE_PERIOD_1 40
 #endif
@@ -34,12 +34,9 @@ public:
     ~TrayIcon();
 
 signals:
-    void updateLabel(QString text, double ratio);
+    void updateLabel(const QString &text, const double &ratio);
 
 private slots:
-
-
-
     void ShowView();
     void RefreshmentStart();
     void ViewUpdateTime();
@@ -50,25 +47,25 @@ private slots:
     void About();
     void ShowDialog();
     void CloseDialog();
-    void Save(Setting s);
+    void Save(const Setting &s);
 
     void TimerStatusSend();
-    void slotLanguageChanged(QAction *action);  // this slot is called by the language menu actions
+    void LanguageChanged(QAction *action);  // this slot is called by the language menu actions
 
 private:
-    void ReadSettings();
-    void WriteSettings();
+    void readSettings();
+    void writeSettings();
 
-    void InitIcons();
+    void initIcons();
     void setCurrentIcon(double ratio);
     void setPauseIcon();
     void setCurrentIconbyCurrentIconRatio();
-    void Translate();
-    void LoadLanguage(const QString &rLanguage);  // loads a language by the given language shortcur (e.g. de, en)
+    void translate();
+    void loadLanguage(const QString &rLanguage);  // loads a language by the given language shortcur (e.g. de, en)
     void createContextMenu();
     void createLangActionGroup();
     void createActions();
-
+    void createOrDeleteAppStartUpLink(bool create);
 
 private:
     View *view;
@@ -98,8 +95,6 @@ private:
     bool TrayMessageShowed;
     QString TimeRemains;
     double CurrentIconRatio;
-
-    void CreateOrDeleteAppStartUpLink(bool create);
 };
 
 #endif // TRAYICON_H

@@ -28,7 +28,7 @@ class Dialog : public QDialog
     Q_OBJECT
 public:
     Dialog();
-    void SetValues(Setting setting);
+    void SetValues(const Setting &setting);
     void Translate();
 
 private:
@@ -38,7 +38,7 @@ private:
     void InitConnectWidgetsChanged();
 
 public slots:
-    void UpdateLabel(QString time, double ratio);
+    void UpdateLabel(const QString &time, const double &ratio);
 
 private slots:
     void SaveValues();
@@ -48,7 +48,7 @@ private slots:
     void SaveButton_status();
 signals:
     void closedialog();
-    void save(Setting setting);
+    void save(const Setting &setting);
     void TimerStatusRequest();
 
 private:

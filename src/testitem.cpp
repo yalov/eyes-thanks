@@ -53,14 +53,29 @@ void TestItem::paintGL()
 
 //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+//    QPainter * painter = new QPainter(this);
+//    //painter->setRenderHint(QPainter::Antialiasing);
+//    for (int i=0; i<200; i++)
+//    {
+//    painter->setBrush(QColor::fromHsvF(fmod(hue+ rand()%100/100.0,1),1,1,0.5));
+//    painter->setPen(Qt::NoPen);
+//    diameter = /*rand()%50+50*/100;
+//    QRect r(qrand() % (screen.width() - diameter),
+//            qrand() % (screen.height() - diameter), diameter, diameter);
+//    painter->drawEllipse(r);
+//    }
+//    painter->end();
+
 
     QPainter * painter = new QPainter(this);
-//    painter->setRenderHint(QPainter::Antialiasing);
-    painter->setBrush(QColor::fromHsvF(hue,1,1,0.5));
+    //painter->setRenderHint(QPainter::Antialiasing);
+    painter->setBrush(QColor::fromHsvF(fmod(hue,1),1,1,0.5));
     painter->setPen(Qt::NoPen);
+
     QRect r(qrand() % (screen.width() - diameter),
             qrand() % (screen.height() - diameter), diameter, diameter);
     painter->drawEllipse(r);
+
     painter->end();
 }
 

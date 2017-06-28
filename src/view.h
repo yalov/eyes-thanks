@@ -30,16 +30,13 @@ class View : public QGraphicsView
 public:
     enum Methods {
         UNICOLOROUS,
-        LINEAR_GRADIENT_DIAGONAL,
 //        LINEAR_GRADIENT_TEST,
         LINEAR_GRADIENT_RAINBOW,
         LINEAR_GRADIENT_STRIPES,
-        LINEAR_GRADIENT_STRIPES_2,
         RAINBOWED_RECTANGLES,
         RANDOM_DOT,
         RANDOM_DOTS,
-        RANDOM_DOTS_2,
-        OPENGLDOTS,
+        //OPENGLDOTS,
         NEO,
 
         COUNT_OF_METHODS
@@ -50,8 +47,8 @@ public:
     View(QWidget *parent = 0);
     ~View();
 
-    void ShowRefreshment(QList<QString> pics_path, QString clock, QString ProgressBarText, Setting _setting);
-    void UpdateValues(QString remains_str, double ratio);
+    void ShowRefreshment(const QList<QString>& pics_path,const QString &clock, const QString &ProgressBarText, const Setting &_setting);
+    void UpdateValues(const QString &remains_str, const double &ratio);
 
 signals:
     void view_close();
@@ -72,6 +69,7 @@ private:
 
     QGraphicsScene *myscene;
     QGraphicsSimpleTextItem *clockItem;
+    QGraphicsSimpleTextItem *textItem;
     QGraphicsRectItem *ProgressBar;
     QGraphicsRectItem *ProgressBarBound;
     QGraphicsRectItem *ProgressBarBackground;
@@ -82,7 +80,7 @@ private:
 
     double Hue_start;
     QGraphicsEllipseItem * Item;
-    TestItem * refreshment;
+    QGraphicsItemGroup *group;
     QElapsedTimer * ElapsedTimerDot;
     int Method;
     bool IsBackgroundUpdate;

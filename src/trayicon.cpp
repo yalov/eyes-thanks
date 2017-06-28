@@ -10,7 +10,7 @@
 #include <QMessageBox>
 
 TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
-    dialog(NULL), TrayMessageShowed(false), TimeRemains(""), CurrentIconRatio(-1)
+    dialog(nullptr), TrayMessageShowed(false), TimeRemains(""), CurrentIconRatio(-1)
 {
     qsrand(QTime::currentTime().msec());
     LangPath = "languages";
@@ -21,14 +21,13 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
     createActions();
     createContextMenu();
 
-
-    ReadSettings();
+    readSettings();
 
     for (auto f : QDir(":fonts").entryInfoList())
         QFontDatabase::addApplicationFont(f.absoluteFilePath());
     //UKIJ Diwani Yantu
 
-    InitIcons();
+    initIcons();
 
     setCurrentIcon(0.0);
 
@@ -64,7 +63,7 @@ void TrayIcon::createLangActionGroup()
 {
     LangActGroup = new QActionGroup(this);
     LangActGroup->setExclusive(true); // Mutually exclusive checking
-    connect(LangActGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotLanguageChanged(QAction *)));
+    connect(LangActGroup, SIGNAL(triggered(QAction *)), this, SLOT(LanguageChanged(QAction *)));
 
     QDir dir(LangPath);
     QStringList fileNames = dir.entryList(QStringList("lang_*.qm"));
@@ -155,13 +154,13 @@ void TrayIcon::createContextMenu()
     setContextMenu(ContextMenu);
 }
 
-void TrayIcon::ReadSettings()
+void TrayIcon::readSettings()
 {
     QSettings settings("settings.ini", QSettings::IniFormat);
     settings.setIniCodec("utf8");
 
     settings.beginGroup("Settings");
-    LoadLanguage(settings.value("lang", QLocale::system().name().split('_').front()).toString());
+    loadLanguage(settings.value("lang", QLocale::system().name().split('_').front()).toString());
     setting.counter         = settings.value("counter", 0).toInt();
     setting.pauseInterval   = settings.value("interval", 60 * 60 * 1000).toInt();
     setting.pauseContinuous = settings.value("continuous", 60 * 1000).toInt();
@@ -193,7 +192,7 @@ void TrayIcon::ReadSettings()
     settings.endGroup();
 }
 
-void TrayIcon::WriteSettings()
+void TrayIcon::writeSettings()
 {
     QSettings qsettings("settings.ini", QSettings::IniFormat);
     qsettings.setIniCodec("utf8");
@@ -226,38 +225,33 @@ void TrayIcon::WriteSettings()
 
 void TrayIcon::CloseDialog()
 {
-
     ShowSettingAct->setEnabled(true);
-    //dialog->closedialog();
-    //dialog->close();
-    dialog = NULL;
-
+    dialog = nullptr;
 }
 
 
-void TrayIcon::CreateOrDeleteAppStartUpLink(bool create)
+void TrayIcon::createOrDeleteAppStartUpLink(bool create)
 {
 
-        QString startup_lnk =  QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
-                               QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk";
+    QString startup_lnk =  QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
+                           QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk";
 
-        if (create)
-            QFile::link(QApplication::applicationFilePath(), startup_lnk);
-        else
-            QFile::remove(startup_lnk);
+    if (create)
+        QFile::link(QApplication::applicationFilePath(), startup_lnk);
+    else
+        QFile::remove(startup_lnk);
 }
 
-void TrayIcon::Save(Setting s)
+void TrayIcon::Save(const Setting & s)
 {
     bool fullrestart = false;
     if (setting.pauseInterval != s.pauseInterval ||
-        setting.pauseContinuous != s.pauseContinuous)
+            setting.pauseContinuous != s.pauseContinuous)
         fullrestart = true;
 
     // create and delete StartUp Icon, at save time.
-    if (setting.isStartupLink != s.isStartupLink) {
-        CreateOrDeleteAppStartUpLink(s.isStartupLink);
-    }
+    if (setting.isStartupLink != s.isStartupLink)
+        createOrDeleteAppStartUpLink(s.isStartupLink);
 
     setting.pauseInterval = s.pauseInterval;
     setting.pauseContinuous = s.pauseContinuous;
@@ -278,19 +272,18 @@ void TrayIcon::Save(Setting s)
 
 
 
-    WriteSettings();
-    InitIcons();
+    writeSettings();
+    initIcons();
 
-    if (fullrestart)
-    {
+    if (fullrestart) {
         CurrentIconRatio = -1;
 
         PauseAct->setText(tr("Pause"));
-    #ifdef _WIN32
+#ifdef _WIN32
         PauseAct->setIcon(QIcon(":icons/media-playback-pause.png"));
-    #else
+#else
         PauseAct->setIcon(QIcon::fromTheme("media-playback-pause"));
-    #endif
+#endif
         DialogTimer->restart(UPDATE_PERIOD_2, setting.pauseInterval);
         ViewTimer->init(UPDATE_PERIOD_1, setting.pauseContinuous);
 
@@ -305,7 +298,7 @@ void TrayIcon::Save(Setting s)
 void TrayIcon::Quit()
 {
     setting.counter++;
-    WriteSettings();
+    writeSettings();
     qApp->quit();
 }
 
@@ -331,7 +324,8 @@ void TrayIcon::Pause()
         setPauseIcon();
         setToolTip(toolTip() + " (" + tr("Pause") + ")");
         emit updateLabel(DialogTimer->remains_str(false) +  " (" + tr("Pause") + ")", -DialogTimer->ratio());
-    } else {
+    }
+    else {
         PauseAct->setText(tr("Pause"));
 #ifdef _WIN32
         PauseAct->setIcon(QIcon(":icons/media-playback-pause.png"));
@@ -380,18 +374,18 @@ void TrayIcon::setCurrentIconbyCurrentIconRatio()
 
 //-----------------------------------------------------------------
 // Called every time, when a menu entry of the language menu is called
-void TrayIcon::slotLanguageChanged(QAction *action)
+void TrayIcon::LanguageChanged(QAction *action)
 {
     if (0 != action) {
         // load the language dependant on the action content
-        LoadLanguage(action->data().toString());
-        WriteSettings();
+        loadLanguage(action->data().toString());
+        writeSettings();
     }
 }
 
 // Called by ReadSetting
 //-----------------------------------------------------------------
-void TrayIcon::LoadLanguage(const QString &rLanguage)
+void TrayIcon::loadLanguage(const QString &rLanguage)
 {
     if (LangCurrent != rLanguage && !rLanguage.isEmpty()) {
 
@@ -418,17 +412,16 @@ void TrayIcon::LoadLanguage(const QString &rLanguage)
         qApp->removeTranslator(Translator);
 
         bool load = Translator->load(QString("lang_%1.qm").arg(LangCurrent), LangPath);
-        if (load) {
+        if (load)
             qApp->installTranslator(Translator);
-        }
 
-        Translate();
+        translate();
     }
 }
 
 
 //-----------------------------------------------------------------
-void TrayIcon::Translate()
+void TrayIcon::translate()
 {
     TestAct->setText(tr("Break Now"));
     ShowSettingAct->setText(tr("Setting"));
@@ -449,25 +442,30 @@ void TrayIcon::setCurrentIcon(double ratio)
     if (CurrentIconRatio == -1) {
         setIcon(i00);
         CurrentIconRatio = 0;
-    } else if (ratio > 0.25 && CurrentIconRatio == 0) {
+    }
+    else if (ratio > 0.25 && CurrentIconRatio == 0) {
         setIcon(i25);
         CurrentIconRatio = 0.25;
-    } else if (ratio > 0.50 && CurrentIconRatio == 0.25) {
+    }
+    else if (ratio > 0.50 && CurrentIconRatio == 0.25) {
         setIcon(i50);
         CurrentIconRatio = 0.5;
-    } else if (ratio > 0.75 && CurrentIconRatio == 0.5) {
+    }
+    else if (ratio > 0.75 && CurrentIconRatio == 0.5) {
         setIcon(i75);
         CurrentIconRatio = 0.75;
-    } else if (ratio > 0.87 && CurrentIconRatio == 0.75) {
+    }
+    else if (ratio > 0.87 && CurrentIconRatio == 0.75) {
         setIcon(i87);
         CurrentIconRatio = 0.87;
-    } else if (ratio > 0.95 && CurrentIconRatio == 0.87) {
+    }
+    else if (ratio > 0.95 && CurrentIconRatio == 0.87) {
         setIcon(i95);
         CurrentIconRatio = 0.95;
     }
 }
 
-void TrayIcon::InitIcons()
+void TrayIcon::initIcons()
 {
     if (setting.iconsMode == IconsMode::light) {
         ipp = QIcon(":icons/light/pp.png");
@@ -478,7 +476,8 @@ void TrayIcon::InitIcons()
         i87 = QIcon(":icons/light/87.png");
         i95 = QIcon(":icons/light/95.png");
 
-    } else if (setting.iconsMode == IconsMode::dark) {
+    }
+    else if (setting.iconsMode == IconsMode::dark) {
         ipp = QIcon(":icons/dark/pp.png");
         i00 = QIcon(":icons/dark/00.png");
         i25 = QIcon(":icons/dark/25.png");
@@ -486,7 +485,8 @@ void TrayIcon::InitIcons()
         i75 = QIcon(":icons/dark/75.png");
         i87 = QIcon(":icons/dark/87.png");
         i95 = QIcon(":icons/dark/95.png");
-    } else {
+    }
+    else {
         ipp = QIcon(":icons/logo.png");
         i00 = QIcon(":icons/logo.png");
         i25 = QIcon(":icons/logo.png");
@@ -621,7 +621,7 @@ void TrayIcon::ShowView()
 
 void TrayIcon::ViewUpdateTime()
 {
-    if (view){
+    if (view) {
         //qDebug().noquote()  << QTime::currentTime().toString("ss.zzz") << "TrayIcon::ViewUpdateTime" << ViewTimer->isActive << ViewTimer->elapsed();
         view->UpdateValues(ViewTimer->remains_str(false), ViewTimer->ratio());
     }
