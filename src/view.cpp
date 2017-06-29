@@ -14,20 +14,22 @@
 #include <QTextCursor>
 
 View::View(QWidget *parent): QGraphicsView(parent),
-    clockItem(nullptr),textItem(nullptr), Item(nullptr), ElapsedTimerDot(nullptr), Method(-1), IsBackgroundUpdate(false), RunnedFirstTime(false),
+    clockItem(nullptr), textItem(nullptr), Item(nullptr), ElapsedTimerDot(nullptr), Method(-1), IsBackgroundUpdate(false), RunnedFirstTime(false),
     testitem(nullptr)
 {
-    //setViewport(new QGLWidget);
+#ifdef DEPLOY
+    setWindowFlags(Qt::WindowStaysOnTopHint);
+#endif
+
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
-    myscene = new QGraphicsScene();
-    //setWindowFlags(Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_DeleteOnClose);
     setRenderHint(QPainter::Antialiasing);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setStyleSheet("QGraphicsView { border-style: none; }");
 
+    myscene = new QGraphicsScene();
     setScene(myscene);
 
 
@@ -38,7 +40,6 @@ View::View(QWidget *parent): QGraphicsView(parent),
     ProgressBarText->setDefaultTextColor(Qt::black);
     ProgressBarText->setZValue(3);
     ProgressBarText->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-
     myscene->addItem(ProgressBarText);
 
     ProgressBar = new QGraphicsRectItem();
@@ -47,9 +48,7 @@ View::View(QWidget *parent): QGraphicsView(parent),
     ProgressBar->setOpacity(0.8);
     ProgressBar->setZValue(2);
     ProgressBar->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-
     myscene->addItem(ProgressBar);
-
 
     ProgressBarBackground = new QGraphicsRectItem();
     ProgressBarBackground->setPen(Qt::NoPen);
@@ -63,7 +62,6 @@ View::View(QWidget *parent): QGraphicsView(parent),
     ProgressBarBound->setBrush(Qt::NoBrush);
     ProgressBarBound->setZValue(2.5);
     myscene->addItem(ProgressBarBound);
-
 
     ButtonText = new GraphicsTextItemFixBound();
     font.setPointSize(14);
@@ -79,7 +77,6 @@ View::View(QWidget *parent): QGraphicsView(parent),
     ButtonRectItem->setOpacity(0.4);
     ButtonRectItem->setZValue(2);
     myscene->addItem(ButtonRectItem);
-
 }
 
 
@@ -100,7 +97,7 @@ inline QString Tostr(QSize s)
     return QString("             [%3x%4]").arg(s.width(), 4).arg(s.height(), 4);
 }
 
-void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock, const QString &text,const  Setting &_setting)
+void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock, const QString &text, const  Setting &_setting)
 {
     //qDebug() << QTime::currentTime().toString("ss.zzz") << "ShowRefreshment start" ;
     setting = _setting;
@@ -302,8 +299,10 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
         LogToFile("LoggingDisplay.txt", Logging_str);
     }
 
+#ifndef DEPLOY
     // SaveSceneToFile
     SaveSceneToFile("c:/Users/User/Pictures/Screenshots/EyesThanks");
+#endif
 
     qDebug().noquote()  << QTime::currentTime().toString("ss.zzz") << "ShowRefreshment before showFullScreen";
 
@@ -374,7 +373,7 @@ void View::SetBackground(double hue_now)
     QRect screen = desktop;
 
     if (Method == -1) {
-        Method = NEO % COUNT_OF_METHODS;
+        Method = rand() % COUNT_OF_METHODS;
 
         if (Method == UNICOLOROUS
                 || Method == RANDOM_DOT
@@ -437,10 +436,9 @@ void View::SetBackground(double hue_now)
         int stripe_segment = screen.width() / int(stripes_count * k);
         int stripe_width = stripe_segment * 0.8;
 
-        bool stripes_gradient = rand()%2;
+        bool stripes_gradient = rand() % 2;
 
-        if (stripes_gradient)
-        {
+        if (stripes_gradient) {
             for (int i = -stripe_width / 2; i < screen.width(); i = i + stripe_segment) {
 
                 QGraphicsRectItem *item = new QGraphicsRectItem(i, 0, stripe_width, screen.height());
@@ -453,11 +451,10 @@ void View::SetBackground(double hue_now)
                 myscene->addItem(item);
             }
         }
-        else
-        {
+        else {
             stripe_width = stripe_segment * 0.4;
             for (int i = -stripe_width / 2; i < screen.width(); i = i + stripe_segment) {
-                QGraphicsLineItem *item = new QGraphicsLineItem(i+ stripe_width/2, 0, i+ stripe_width/2, screen.height());
+                QGraphicsLineItem *item = new QGraphicsLineItem(i + stripe_width / 2, 0, i + stripe_width / 2, screen.height());
                 item->setPen(QPen(QColor(Qt::black), stripe_width));
                 item->setOpacity(0.7);
                 myscene->addItem(item);
@@ -465,7 +462,7 @@ void View::SetBackground(double hue_now)
         }
 
         break;
-    }  
+    }
     case RAINBOWED_RECTANGLES: {
 
         int w = qrand() % 50 + 7;
@@ -502,7 +499,7 @@ void View::SetBackground(double hue_now)
         }
         else if (ElapsedTimerDot->elapsed() > 500) {
             ElapsedTimerDot->start();
-            int diameter_dot = qMin(screen.width(), screen.height())/10;
+            int diameter_dot = qMin(screen.width(), screen.height()) / 10;
             QRect r(qrand() % (screen.width() - diameter_dot),
                     qrand() % (screen.height() - diameter_dot), diameter_dot, diameter_dot);
 
@@ -591,16 +588,14 @@ void View::SetBackground(double hue_now)
             centerText->setPos(default_screen.center() - QPoint(centerText->boundingRect().width(), centerText->boundingRect().height()) / 2);
         }
 
-
-        if (clockItem){
+        if (clockItem) {
             clockItem->setBrush(QColor(0, 152, 0));
             clockItem->setPen(Qt::NoPen);
             clockItem->setFont(QFont("PT Serif", clockItem->font().pointSize()));
             clockItem->setOpacity(1);
         }
-        if (textItem) {
+        if (textItem)
             myscene->removeItem(textItem);
-        }
 
 
         QFont font_background("PT Serif", 14);
@@ -612,41 +607,78 @@ void View::SetBackground(double hue_now)
         QFontMetrics fm(font_background);
         int line_height =  fm.boundingRect("a").height();
 
-        QVector<QVector<int>> unicode_limits = {
-            {0x0250,0x02AF}, // 0 IPA
-            {0x16A0,0x16EF}, // 1 Runic                  (0x16F0 - 0x16FF - not every font)
-          //  {0x0410,0x044f}, // 2 Cyrillic Russian
-            {0x0400,0x045f}, // 3 Cyrillic Russian+
-        };
-        
-        QVector<QVector<int>> unicode_limits_cyrillic = {
-            {0x0400,0x0482}, // 4 Cyrillic (1)            = 82
-            {0x048A,0x04ff}, // 5 Cyrillic (2)            = 75
-            {0x0500,0x052F}, // 6 Cyrillic Supplement     = 2F
-            {0xA640,0xA672}, // 7 Cyrillic Extended-B (1) = 32
-            {0xA680,0xA69B}  // 8 Cyrillic Extended-B (2) = 1B
-        };
-        int unicode_set = rand()%(unicode_limits.size() + 1);
-
-        int first, last;
-        QList<int> limits;
-
-        if (unicode_set < unicode_limits.size()) {
-            first = unicode_limits[unicode_set][0];
-            last  = unicode_limits[unicode_set][1];
-        }
-        else { // unicode_set == 4 Cyrillic
-            int limit=0;
-            limits.append(limit);
-            for (int i=0; i<unicode_limits_cyrillic.size(); i++)
+        const QVector<QVector<QVector<qint64>>> unicode_limits = {
+            {{0x0250, 0x02AF}},         // 0 IPA                       = 5F
+            {{0x16A0, 0x16EF}},         // 1 Runic                     = 4F
+            {{0x20A0, 0x20BE}},         // 2  Currency Symbols  = 1E
+            // {{0x0410, 0x044f}},          // 2 Cyrillic Russian          = 3F
+            {{0x0400, 0x045f}},         // 3 Cyrillic Russian+         = 5F
             {
-                limit+=unicode_limits_cyrillic[i][1] - unicode_limits_cyrillic[i][0] + 1;
-                limits.append(limit);
-            }
+                {0x0400, 0x0482},       // 4 Cyrillic (1)            = 82
+                {0x048A, 0x04ff},       //   Cyrillic (2)            = 75
+                {0x0500, 0x052F},       //   Cyrillic Supplement     = 2F
+                {0xA640, 0xA672},       //   Cyrillic Extended-B (1) = 32
+                {0xA680, 0xA69B}        //   Cyrillic Extended-B (2) = 1B
+            },
+            {
+                {0x2C00, 0x2C2E},       // 5 Глаголица  uppercase       = 2F
+                {0x2C30, 0x2C5E}        //   Глаголица  lowercase       = 2F
+            },
+            {
+                {0x0041, 0x005A},       // 6 A-Z            = 1A
+                {0x0061, 0x007A},       //   a-z            = 1A
+            },
+            {
+                {0x0041, 0x005A},       // 7 A-Z            = 1A
+                {0x0061, 0x007A},       //   a-z            = 1A
+                // {0x00C0, 0x00D6},       //   Latin-1 Supplement (1)
+                // {0x00D8, 0x00DD},       //   Latin-1 Supplement (2)
+                {0x00DE, 0x00F6},       //   Latin-1 Supplement (3)
+                // {0x00F8, 0x00FF},       //   Latin-1 Supplement (4)
+                // {0x0100, 0x017F},       //   Latin Extended-A
+                // {0x0180, 0x024F},       //   Latin Extended-B
+            },
+
+            {
+                // 8 Greek
+                {0x391, 0x3A1},         //  Greek uppercase
+                {0x393, 0x3A9},         //  Greek uppercase
+                {0x3B1, 0x3C9},         //  Greek lowercase
+                {0x3D8, 0x3E1},         //  Greek archaic koppa, stigma, digamma, koppa, sampi.
+            },
+
+            {
+                // 9  Miscellaneous Symbols
+                {0x262D, 0x262E},       // hammer and sickle, peace
+                {0x263D, 0x2653},       // planets and zodiak
+                {0x26B2, 0x26B8},       // astrology
+                {0x26E6, 0x26E7},       // pentagrams
+                //{0x2669,0x266F},        // music
+            },
+
+            {{0x0030, 0x0039}},         // 10 0-9            = A
+
+            {
+                {0x2160, 0x2169},       // 11  Roman numerals 1-10
+                {0x216C, 0x216F},       //     Roman numerals L C D M
+                //{0x2180,0x2182},
+                //{0x2185,0x2186}
+            },
+        };
+
+        int unicode_set = rand() % (unicode_limits.size());
+
+        int limit = 0;
+        QVector<int> limits;
+        limits.reserve(unicode_limits[unicode_set].size() + 1);
+        limits.append(limit);
+        for (int i = 0; i < unicode_limits[unicode_set].size(); i++) {
+            limit += unicode_limits[unicode_set][i][1] - unicode_limits[unicode_set][i][0] + 1;
+            limits.append(limit);
         }
 
-
-        {   // every item, FullHD 63 ms.
+        {
+            // every item, FullHD 63 ms.
             for (int column_pos_x = 0; column_pos_x < screen.width();) {
                 int char_max = (screen.height() - basic_height) / line_height + 2;
                 int char_count = 1.0 / 4.0 * char_max + 3.0 / 4.0 * (qrand() % char_max);
@@ -656,25 +688,21 @@ void View::SetBackground(double hue_now)
                     item->setBrush(QColor(0, 128, 0));
                     item->setPen(Qt::NoPen);
                     item->setFont(font_background);
-                    if (unicode_set < unicode_limits.size()) {
-                        item->setText(QChar(first + qrand() % (last - first + 1)));
-                    }
-                    else { // cyrillic
-                        int unicode = rand() % limits.last();
 
-                        for (int i=1; i<limits.size();i++)
-                            if (limits[i-1]<=unicode && unicode< limits[i])
-                                unicode = unicode - limits[i-1] + unicode_limits_cyrillic[i-1][0];
+                    int unicode = rand() % limits.last();
 
-                        item->setText(QChar(unicode));
-                    }
-                    item->setPos(column_pos_x - item->boundingRect().width()/2, char_index * line_height);
+                    for (int i = 1; i < limits.size(); i++)
+                        if (limits[i - 1] <= unicode && unicode < limits[i])
+                            unicode = unicode - limits[i - 1] + unicode_limits[unicode_set][i - 1][0];
+
+                    item->setText(QChar(unicode));
+                    item->setPos(column_pos_x - item->boundingRect().width() / 2, char_index * line_height);
                 }
                 column_pos_x += basic_width * 3;
             }
         }
 
-//        // for test cyrillic        
+//        // for test cyrillic
 //        static int unicode = 0;
 //        int u;
 //        if (unicode++ < borders.last()){

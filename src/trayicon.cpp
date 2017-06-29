@@ -289,7 +289,7 @@ void TrayIcon::Save(const Setting & s)
 
         TrayMessageShowed = false;
 
-        emit updateLabel(DialogTimer->remains_str(false), DialogTimer->ratio());
+        emit updateLabel(DialogTimer->remains_str(), DialogTimer->ratio());
     }
 
     setCurrentIconbyCurrentIconRatio();
@@ -323,7 +323,7 @@ void TrayIcon::Pause()
 
         setPauseIcon();
         setToolTip(toolTip() + " (" + tr("Pause") + ")");
-        emit updateLabel(DialogTimer->remains_str(false) +  " (" + tr("Pause") + ")", -DialogTimer->ratio());
+        emit updateLabel(DialogTimer->remains_str() +  " (" + tr("Pause") + ")", -DialogTimer->ratio());
     }
     else {
         PauseAct->setText(tr("Pause"));
@@ -337,7 +337,7 @@ void TrayIcon::Pause()
 
         setCurrentIconbyCurrentIconRatio();
 
-        emit updateLabel(DialogTimer->remains_str(false), DialogTimer->ratio());
+        emit updateLabel(DialogTimer->remains_str(), DialogTimer->ratio());
     }
 }
 
@@ -523,9 +523,9 @@ void TrayIcon::ShowDialog()
 void TrayIcon::TimerStatusSend()
 {
     if (DialogTimer->isActive)
-        emit updateLabel(DialogTimer->remains_str(false), DialogTimer->ratio());
+        emit updateLabel(DialogTimer->remains_str(), DialogTimer->ratio());
     else
-        emit updateLabel(DialogTimer->remains_str(false) +  " (" + tr("Pause") + ")", -DialogTimer->ratio());
+        emit updateLabel(DialogTimer->remains_str() +  " (" + tr("Pause") + ")", -DialogTimer->ratio());
 }
 
 
@@ -533,7 +533,7 @@ void TrayIcon::TimerStatusSend()
 void TrayIcon::DialogUpdateTime()
 {
     qint64 remains =  DialogTimer->remains();;
-    TimeRemains = DialogTimer->remains_str(false);
+    TimeRemains = DialogTimer->remains_str();
     double ratio = DialogTimer->ratio();
 
 
@@ -543,20 +543,15 @@ void TrayIcon::DialogUpdateTime()
 
     if (setting.isMessage30sec && remains < 30000 && !TrayMessageShowed) {
         if (setting.isLogging) {
-            QFile file("Logging.txt");
-            if (file.open(QIODevice::Append)) {
-                QTextStream out(&file);
-                out << QString("%1, message. remains = %2; ")
+            QString message = QString("%1, 30sec'message. remains = %2;")
                     .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
                     .arg(remains);
-                file.close();
-            }
-        }
 
+            LogToFile("LoggingTimer.txt", message);
+        }
         showMessage(qApp->translate("App", "Eyes' Thanks"), QString(tr("Until break") + " %1 " + tr("sec")).arg(qRound(remains / 1000.)));
         TrayMessageShowed = true;
     }
-
 
     setCurrentIcon(ratio);
 }
@@ -623,7 +618,7 @@ void TrayIcon::ViewUpdateTime()
 {
     if (view) {
         //qDebug().noquote()  << QTime::currentTime().toString("ss.zzz") << "TrayIcon::ViewUpdateTime" << ViewTimer->isActive << ViewTimer->elapsed();
-        view->UpdateValues(ViewTimer->remains_str(false), ViewTimer->ratio());
+        view->UpdateValues(ViewTimer->remains_str(), ViewTimer->ratio());
     }
     else
         qDebug() << "trying to update nonexisting view";

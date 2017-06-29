@@ -8,7 +8,7 @@ include("files-commands.pri")
 StartProjectMESSAGE()
 
 VERSION = 1.2.0
-#CONFIG += DEPLOY
+CONFIG += DEPLOY
 TARGET  = "Eyes\' Thanks"
 NAME    = Alexander Yalov
 EMAIL   = alexander.yalov@gmail.com

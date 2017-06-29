@@ -55,10 +55,8 @@ void  Timer::restart(int updateinterval, int finishedinterval)
 void Timer::qtimer_timeout()
 {
     if (elapsed() > interval) {
-        //qDebug().noquote()  << QTime::currentTime().toString("ss.zzz") << "Timer::slot_timeout" << isActive << elapsed();
-        //qDebug() <<"Timer "<< Logging;
         if (Logging) {
-            QFile file("Logging.txt");
+            QFile file("LoggingTimer.txt");
             if (file.open(QIODevice::Append)) {
                 QTextStream out(&file);
                 out << QString("%1, start view, elapsed = %2, elapsed_summand = %3\n")
@@ -68,7 +66,6 @@ void Timer::qtimer_timeout()
         }
         stop();
         emit finished();
-        //restart();
     }
     else
         emit update();
@@ -107,6 +104,15 @@ double Timer::ratio()
     return double(elapsed()) / interval;
 }
 
+QString Timer::remains_str()
+{
+    qint64 r = remains();
+
+    return QString("%1:%2")
+                    .arg((r + 500) / 60000, 2, 10, QLatin1Char(' '))
+                    .arg((r + 500) / 1000 % 60, 2, 10, QLatin1Char('0'));
+}
+
 QString Timer::remains_str(bool isDeciSec)
 {
     qint64 r = remains();
@@ -116,7 +122,5 @@ QString Timer::remains_str(bool isDeciSec)
                               .arg(r / 1000 % 60, 2, 10, QLatin1Char('0'))
                               .arg(r / 100 % 10);
 
-    else return QString("%1:%2")
-                    .arg((r + 500) / 60000, 2, 10, QLatin1Char(' '))
-                    .arg((r + 500) / 1000 % 60, 2, 10, QLatin1Char('0'));
+    else return remains_str();
 }
