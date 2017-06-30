@@ -12,7 +12,7 @@
 #include <GL/glu.h>
 
 
-TestItem::TestItem(QRect _screen) : QOpenGLWidget()
+TestItem::TestItem(const QRect &_screen) : QOpenGLWidget()
 {
     //setAttribute(Qt::WA_OpaquePaintEvent);
     //setUpdatesEnabled(false);
@@ -86,3 +86,28 @@ void TestItem::resizeGL(int w, int h)
     qDebug() << "resizeGL";
 //    glViewport(0, 0, w, h);
 }
+
+
+
+//        case OPENGLDOTS: {
+//            if (ElapsedTimerDot == nullptr) {
+//                ElapsedTimerDot = new QElapsedTimer();
+//                testitem = new TestItem(screen);
+//                connect(this, SIGNAL(opengl_update(double, int)), testitem, SLOT(animate(double, int)));
+//                QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget();
+//                proxy->setWidget(testitem);
+//                myscene->addItem(proxy);
+
+//                int diameter_dot = qrand() % 100 + 50;
+//                emit opengl_update(fmod(hue_now, 1), diameter_dot);
+
+//            }
+//            else if (ElapsedTimerDot->elapsed() > 100) {
+//                ElapsedTimerDot->start();
+
+//                int diameter_dot = qrand() % 100 + 50;
+//                //testitem->animate(fmod(hue_now,1), diameter_dot);
+//                emit opengl_update(fmod(hue_now, 1), diameter_dot);
+//            }
+//            break;
+//        }

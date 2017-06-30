@@ -8,20 +8,18 @@
 #define TRAYICON_H
 
 #if defined _WIN32
-#define UPDATE_PERIOD_1 100
+#define UPDATE_PERIOD_1 40
 #else
 #define UPDATE_PERIOD_1 40
 #endif
 
 #define UPDATE_PERIOD_2 1000
 
-#include <QAction>
 #include <QSystemTrayIcon>
 
 #include "view.h"
 #include "timer.h"
 #include "dialog.h"
-#include "aboutwindow.h"
 #include "updater.h"
 
 

@@ -8,17 +8,16 @@
 #define GRAPHICSTEXTITEMFIXBOUND_H
 
 #include <QtGui>
-#include <QtCore>
 #include <QGraphicsTextItem>
 
 class GraphicsTextItemFixBound : public QGraphicsTextItem
 {
 private:
 
-    int d1x;
-    int d1y;
-    int d2x;
-    int d2y;
+    int d1x = 0;
+    int d1y = 0;
+    int d2x = 0;
+    int d2y = 0;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
     {
@@ -28,11 +27,6 @@ private:
     }
 
 public:
-
-    GraphicsTextItemFixBound() : QGraphicsTextItem()
-    {
-    }
-
     void setFont(QFont f)
     {
 

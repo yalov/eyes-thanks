@@ -7,7 +7,6 @@
 #define GLOBAL_H
 
 #include <QFile>
-#include <QString>
 #include <QTextStream>
 
 enum IconsMode {

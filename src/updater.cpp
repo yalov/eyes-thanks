@@ -6,12 +6,8 @@
 
 #include "updater.h"
 
-#include "QDebug"
-#include <QElapsedTimer>
 #include <QRegularExpression>
-#include <QDesktopServices>
 #include <QCoreApplication>
-#include <QSpacerItem>
 #include <QGridLayout>
 
 
@@ -21,7 +17,6 @@ UpdateAction::UpdateAction(const QIcon &icon, const QString &text, QObject *pare
 {
     connect(this, SIGNAL(triggered()), this, SLOT(showmessagebox()));
     connect(this, SIGNAL(triggered()), this, SLOT(update()));
-
 
 }
 
@@ -35,7 +30,6 @@ void UpdateAction::showmessagebox()
 
     downloadProcess->show();
     QCoreApplication::processEvents();
-
 
 }
 

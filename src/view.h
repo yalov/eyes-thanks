@@ -19,7 +19,6 @@
 #include "graphicstextitemfixbound.h"
 #include "global.h"
 #include "timer.h"
-#include "testitem.h"
 
 #define WidgetMode
 
@@ -28,26 +27,23 @@ class View : public QGraphicsView
     Q_OBJECT
 
 public:
+    explicit View(QWidget *parent = 0);
+
     enum Methods {
         UNICOLOROUS,
 //        LINEAR_GRADIENT_TEST,
-        LINEAR_GRADIENT_RAINBOW,
-        LINEAR_GRADIENT_STRIPES,
+        RAINBOW,
+        RAINBOW_STRIPES,
         RAINBOWED_RECTANGLES,
-        RANDOM_DOT,
-        RANDOM_DOTS,
+        RANDOM_CIRCLE,
+        RANDOM_CIRCLES,
         //OPENGLDOTS,
         NEO,
 
         COUNT_OF_METHODS
     }; Q_ENUM(Methods)
 
-
-public:
-    View(QWidget *parent = 0);
-    ~View();
-
-    void ShowRefreshment(const QList<QString>& pics_path,const QString &clock, const QString &ProgressBarText, const Setting &_setting);
+    void ShowRefreshment(const QList<QString>& pics_path,const QString &clock, const QString &ProgressBarText, const Setting & setting);
     void UpdateValues(const QString &remains_str, const double &ratio);
 
 signals:
@@ -62,7 +58,7 @@ private:
     void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-    void SetBackground(double hue_now);
+    int SetBackground(double hue_now);
     void SaveSceneToFile(QString dir_path);
 
     QString picture_path;
@@ -76,20 +72,16 @@ private:
     GraphicsTextItemFixBound *ProgressBarText;
     QRect ProgressBarRect;
     QGraphicsRectItem *ButtonRectItem;
+    GraphicsTextItemFixBound *ButtonText;
+
     Setting setting;
 
-    double Hue_start;
     QGraphicsEllipseItem * Item;
-    QGraphicsItemGroup *group;
     QElapsedTimer * ElapsedTimerDot;
     int Method;
+    double Hue_start;
     bool IsBackgroundUpdate;
     bool RunnedFirstTime;
-    TestItem * testitem;
-
-
-public:
-    GraphicsTextItemFixBound *ButtonText;
 };
 
 

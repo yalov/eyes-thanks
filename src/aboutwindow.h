@@ -7,18 +7,13 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
-#include <QWidget>
 #include <QDialog>
 #include <QFile>
 #include <QLabel>
 #include <QPushButton>
 #include <QTabWidget>
 #include <QTextBrowser>
-#include <QTextStream>
 #include <QVBoxLayout>
-#include <QDesktopWidget>
-#include <QApplication>
-#include <QStyle>
 #include <QRegularExpression>
 #include "QtNetwork/QNetworkAccessManager"
 
@@ -29,7 +24,7 @@ public:
     AboutWindow(QWidget *parent = 0): QDialog(parent)
     {
         QString win_title = tr("About Eyes' Thanks");
-        QString app_name = "Eyes' Thanks"; //QString(APP_NAME);
+        QString app_name = QString(APP_NAME);
         QString app_version = QString(APP_VERSION);
         QString dev_name = QString(DEVELOP_NAME);
         QString dev_email = QString(DEVELOP_EMAIL);

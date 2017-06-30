@@ -14,7 +14,7 @@ class TestItem : public QOpenGLWidget
 {
 Q_OBJECT
 public:
-    TestItem(QRect screen);
+    explicit TestItem(const QRect &screen);
 
 public slots:
     void animate(double _hue, int _diameter);
@@ -24,8 +24,8 @@ private:
     void resizeGL(int w, int h);
     void initializeGL();
 
-    double hue;
-    int diameter;
+    double hue = 0;
+    int diameter = 0;
     QRect screen;
 };
 

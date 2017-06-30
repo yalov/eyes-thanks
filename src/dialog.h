@@ -10,12 +10,10 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialog>
-#include <QEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QSpinBox>
-#include <QDebug>
 #include <QGroupBox>
 #include <QWinTaskbarButton>
 #include <QWinTaskbarProgress>

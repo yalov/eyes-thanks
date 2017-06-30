@@ -4,7 +4,7 @@
 #      GNU General Public License 3                                                #
 #----------------------------------------------------------------------------------#
 
-include("files-commands.pri")
+include("functions.pri")
 StartProjectMESSAGE()
 
 VERSION = 1.2.0
@@ -18,6 +18,11 @@ CONFIG(release, debug|release) {
 DESTDIR = $$PWD/../EyesThanks
 }
 
+# subfolders in debug and release folder
+OBJECTS_DIR = $$OUT_PWD/.obj
+MOC_DIR     = $$OUT_PWD/.moc
+RCC_DIR     = $$OUT_PWD/.qrc
+UI_DIR      = $$OUT_PWD/.ui
 
 # no debug and release subfolder in debug and release folder
 CONFIG -= debug_and_release
@@ -25,14 +30,9 @@ CONFIG -= debug_and_release_target
 
 CONFIG += c++11
 
-OBJECTS_DIR = $$OUT_PWD/.obj
-MOC_DIR     = $$OUT_PWD/.moc
-RCC_DIR     = $$OUT_PWD/.qrc
-UI_DIR      = $$OUT_PWD/.ui
-
 QT     += core gui network widgets winextras
-QT += opengl
-LIBS += -LC:\Qt\5.9\mingw53_32\lib\libQt5OpenGL.a -lopengl32
+#QT += opengl
+#LIBS += -LC:\Qt\5.9\mingw53_32\lib\libQt5OpenGL.a -lopengl32
 #LIBS += -lGLU
 
 win32:RC_ICONS += icons/icon.ico
@@ -42,7 +42,7 @@ QMAKE_TARGET_COPYRIGHT   = $$NAME
 
 DEFINES += REPOSITORY_PATH='"\\\"$$REPO\\\""'
 DEFINES +=   APP_VERSION='"\\\"$$VERSION\\\""'
-#DEFINES +=     APP_NAME='"\\\"$$TARGET\\\""'
+DEFINES +=     APP_NAME='"\\\"$$TARGET\\\""'
 DEFINES +=  DEVELOP_NAME='"\\\"$$NAME\\\""'
 DEFINES += DEVELOP_EMAIL='"\\\"$$EMAIL\\\""'
 
@@ -67,7 +67,6 @@ HEADERS  += src/aboutwindow.h \
     src/global.h \
     src/testitem.h
 
-DISTFILES    +=
 TRANSLATIONS += languages/lang_ru.ts languages/lang_en.ts
 RESOURCES    += resource.qrc
 

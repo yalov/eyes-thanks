@@ -7,8 +7,7 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
-#include <QObject>
-#include <qaction.h>
+#include <QAction>
 #include <QMessageBox>
 #include <QtNetwork/QNetworkReply>
 

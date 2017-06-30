@@ -3,11 +3,11 @@
 //      This file is part of Eyes' Thanks.                                          //
 //      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
-
+#include "aboutwindow.h"
 #include "trayicon.h"
 
 #include <QMenu>
-#include <QMessageBox>
+#include <QApplication>
 
 TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
     dialog(nullptr), TrayMessageShowed(false), TimeRemains(""), CurrentIconRatio(-1)
@@ -242,7 +242,7 @@ void TrayIcon::createOrDeleteAppStartUpLink(bool create)
         QFile::remove(startup_lnk);
 }
 
-void TrayIcon::Save(const Setting & s)
+void TrayIcon::Save(const Setting &s)
 {
     bool fullrestart = false;
     if (setting.pauseInterval != s.pauseInterval ||
@@ -544,8 +544,8 @@ void TrayIcon::DialogUpdateTime()
     if (setting.isMessage30sec && remains < 30000 && !TrayMessageShowed) {
         if (setting.isLogging) {
             QString message = QString("%1, 30sec'message. remains = %2;")
-                    .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
-                    .arg(remains);
+                              .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
+                              .arg(remains);
 
             LogToFile("LoggingTimer.txt", message);
         }
@@ -569,7 +569,8 @@ void TrayIcon::RefreshmentStart()
 
 void TrayIcon::ShowView()
 {
-    QTime timer; timer.start();
+
+    QElapsedTimer timer; timer.start();
     qDebug().noquote() << QTime::currentTime().toString("ss.zzz") << "ShowView start";
 
     view = new View();
@@ -595,12 +596,12 @@ void TrayIcon::ShowView()
     }
 
     QString clock;
-    if (setting.isClock)  clock = QTime::currentTime().toString("hh:mm");
-    else          clock = "";
+    if (setting.isClock)   clock = QTime::currentTime().toString("hh:mm");
+    else                   clock = "";
 
     QString text;
     if (setting.isText)    text = setting.text;
-    else           text = "";
+    else                   text = "";
 
     text.replace("%interval", QString::number(setting.pauseInterval / 1000 / 60) + " " + tr("min"));
     text.replace("%continuous", QString::number(setting.pauseContinuous / 1000) + " " + tr("sec"));
@@ -616,10 +617,8 @@ void TrayIcon::ShowView()
 
 void TrayIcon::ViewUpdateTime()
 {
-    if (view) {
-        //qDebug().noquote()  << QTime::currentTime().toString("ss.zzz") << "TrayIcon::ViewUpdateTime" << ViewTimer->isActive << ViewTimer->elapsed();
+    if (view)
         view->UpdateValues(ViewTimer->remains_str(), ViewTimer->ratio());
-    }
     else
         qDebug() << "trying to update nonexisting view";
 }

@@ -3,26 +3,19 @@
 //      This file is part of Eyes' Thanks.                                          //
 //      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
-
-#include "view.h"
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QGraphicsDropShadowEffect>
-#include <QOpenGLWidget>
-#include "testitem.h"
-#include <QTextFormat>
-#include <QTextCursor>
+
+#include "view.h"
 
 View::View(QWidget *parent): QGraphicsView(parent),
-    clockItem(nullptr), textItem(nullptr), Item(nullptr), ElapsedTimerDot(nullptr), Method(-1), IsBackgroundUpdate(false), RunnedFirstTime(false),
-    testitem(nullptr)
+    clockItem(nullptr), textItem(nullptr), setting(), Item(nullptr), ElapsedTimerDot(nullptr), Method(-1), Hue_start(0), IsBackgroundUpdate(false), RunnedFirstTime(false)
 {
 #ifdef DEPLOY
     setWindowFlags(Qt::WindowStaysOnTopHint);
 #endif
 
-    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     setAttribute(Qt::WA_DeleteOnClose);
     setRenderHint(QPainter::Antialiasing);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -30,6 +23,7 @@ View::View(QWidget *parent): QGraphicsView(parent),
     setStyleSheet("QGraphicsView { border-style: none; }");
 
     myscene = new QGraphicsScene();
+    myscene->setBackgroundBrush(Qt::black);
     setScene(myscene);
 
 
@@ -80,13 +74,6 @@ View::View(QWidget *parent): QGraphicsView(parent),
 }
 
 
-
-View::~View()
-{
-
-}
-
-
 inline QString Tostr(QRect r)
 {
     return QString("(%1,%2)[%3x%4]").arg(r.x(), 5).arg(r.y(), 5).arg(r.width(), 4).arg(r.height(), 4);
@@ -97,22 +84,17 @@ inline QString Tostr(QSize s)
     return QString("             [%3x%4]").arg(s.width(), 4).arg(s.height(), 4);
 }
 
-void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock, const QString &text, const  Setting &_setting)
+void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock, const QString &text, const  Setting &setting)
 {
-    //qDebug() << QTime::currentTime().toString("ss.zzz") << "ShowRefreshment start" ;
-    setting = _setting;
-
-    bool isLogging = setting.isLogging;
-    bool isPrettyFont = setting.isPrettyFont;
-    ImageAspectMode AspectMode = setting.imageAspectMode;
-
-    QRect desktop = QApplication::desktop()->geometry();
+    QElapsedTimer timer; timer.start();
     QRect default_screen = QApplication::desktop()->screenGeometry(-1);
+    QRect desktop = QApplication::desktop()->geometry();
+    myscene->setSceneRect(desktop);
     double ratio_desk = double(desktop.width()) / desktop.height();
     double ratio_default_screen = double(default_screen.width()) / default_screen.height();
 
+    // ProgressBar and ButtonRect
     {
-        // ProgressBar and ButtonRect
         int label_height = this->ProgressBarText->boundingRect().height();
         int label_y_pos = default_screen.height() - 25 - label_height;
         int label_x_pos = default_screen.left() + 2.5 * default_screen.width() / 5 - this->ProgressBarText->boundingRect().width() / 2 + 10;
@@ -134,7 +116,7 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
     // ClockItem and TextItem
     if (!clock.isEmpty() || !text.isEmpty()) {
         int font_size = 30;
-        QFont font(isPrettyFont ? "UKIJ Diwani Yantu" : "PT Serif", font_size, QFont::Bold);
+        QFont font(setting.isPrettyFont ? "UKIJ Diwani Yantu" : "PT Serif", font_size, QFont::Bold);
         QColor fill_color(Qt::white);
         QColor outline_color(Qt::black);
         qreal opacity = 0.5;
@@ -193,59 +175,53 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
         }
     }
 
-    QPixmap pic;
 
-    myscene->setSceneRect(desktop);
-    myscene->setBackgroundBrush(Qt::black);
-    QString ratio_case = "No image";
-    double ratio_pic = 0.0;
-
+    QString display_case = "No image";
+    int Method = -1;
 
     if (pics.size() > 0) {
         // find out which one of pic apropriate, if "inside" - comparison to def screen, if outside or auto - comparison to desk
-        {
-            double ratio = (AspectMode == ImageAspectMode::Inside) ? ratio_default_screen : ratio_desk;
-            double min_value = std::numeric_limits<double>::max();
-            double min_index = 0;
+        double ratio = (setting.imageAspectMode == ImageAspectMode::Inside) ? ratio_default_screen : ratio_desk;
+        double min_value = std::numeric_limits<double>::max();
+        double min_index = 0;
 
-            for (int i = 0; i < pics.size(); i++) {
-                if (abs(ratios_pic[i] - ratio) < min_value) {
-                    min_value = abs(ratios_pic[i] - ratio);
-                    min_index = i;
-                }
+        for (int i = 0; i < pics.size(); i++) {
+            if (abs(ratios_pic[i] - ratio) < min_value) {
+                min_value = abs(ratios_pic[i] - ratio);
+                min_index = i;
             }
-
-            picture_path = pics_path_confirmed[min_index];
-            pic = pics[min_index];
-            ratio_pic = ratios_pic[min_index];
         }
 
-        if (AspectMode == ImageAspectMode::Inside)      ratio_case = "Default_screen Inside";
-        else if (AspectMode == ImageAspectMode::Outside)     ratio_case = "Full_desktop Outside";
-        else if (AspectMode == ImageAspectMode::Auto) {
+        picture_path = pics_path_confirmed[min_index];
+        QPixmap pic = pics[min_index];
+        double ratio_pic = ratios_pic[min_index];
+
+        if (setting.imageAspectMode == ImageAspectMode::Inside)      display_case = "Default_screen Inside";
+        else if (setting.imageAspectMode == ImageAspectMode::Outside)     display_case = "Full_desktop Outside";
+        else if (setting.imageAspectMode == ImageAspectMode::Auto) {
             if (std::abs(ratio_desk - ratio_pic) <= std::abs(ratio_default_screen - ratio_pic)) { // Full_desktop
-                if (ratio_pic / ratio_desk < 0.7 || ratio_pic / ratio_desk > 1 / 0.7)                     ratio_case = "Full_desktop Inside";
-                else                                                                                      ratio_case = "Full_desktop Outside";
+                if (ratio_pic / ratio_desk < 0.7 || ratio_pic / ratio_desk > 1 / 0.7)                     display_case = "Full_desktop Inside";
+                else                                                                                      display_case = "Full_desktop Outside";
             }
             else {   //Default_screen
-                if (ratio_pic / ratio_default_screen < 0.7 || ratio_pic / ratio_default_screen > 1 / 0.7)  ratio_case = "Default_screen Inside";
-                else                                                                                       ratio_case = "Default_screen Outside";
+                if (ratio_pic / ratio_default_screen < 0.7 || ratio_pic / ratio_default_screen > 1 / 0.7)  display_case = "Default_screen Inside";
+                else                                                                                       display_case = "Default_screen Outside";
             }
         }
 
         QGraphicsPixmapItem *pic_item;
-        if (ratio_case == "Full_desktop Outside") {
+        if (display_case == "Full_desktop Outside") {
             pic = pic.scaled(desktop.size(), Qt::KeepAspectRatioByExpanding);
             pic_item = new QGraphicsPixmapItem(pic);
             pic_item->setPos(desktop.topLeft() + QPoint(desktop.width() - pic.width(), desktop.height() - pic.height()) / 2);
         }
-        else if (ratio_case == "Default_screen Outside") {
+        else if (display_case == "Default_screen Outside") {
             pic = pic.scaled(default_screen.size(), Qt::KeepAspectRatioByExpanding);
             pic_item = new QGraphicsPixmapItem(pic);
             pic_item->setPos(default_screen.topLeft() + QPoint(default_screen.width() - pic.width(), default_screen.height() - pic.height()) / 2);
 
         }
-        else if (ratio_case == "Full_desktop Inside") {
+        else if (display_case == "Full_desktop Inside") {
             pic = pic.scaled(desktop.size(), Qt::KeepAspectRatio);
             pic_item = new QGraphicsPixmapItem(pic);
             pic_item->setPos(desktop.topLeft() + QPoint(desktop.width() - pic.width(), desktop.height() - pic.height()) / 2);
@@ -263,38 +239,50 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
     else {   // pics.size()==0
         Hue_start = qrand() % 360 / 360.0;
 
-        SetBackground(Hue_start);
+        Method = SetBackground(Hue_start);
     }
 
     // Logging
-    if (isLogging) {
+    if (setting.isLogging) {
         QString Logging_str = "";
+
+        if (Method != -1) {
+            QMetaEnum metaEnum = QMetaEnum::fromType<Methods>();
+            display_case = metaEnum.valueToKey(Method);
+        }
+        Logging_str += QString("%1 Display case = %2, %3 ms., items = %4\n")
+                .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
+                .arg(display_case).arg(timer.restart()).arg(myscene->items().size());
+
+        qDebug().noquote()  << QTime::currentTime().toString("mm.ss.zzz") << Logging_str;
 
         for (int i = 0; i < pics.size(); i++) {
             if (picture_path == pics_path_confirmed[i])
-                Logging_str += QString("image showing      %1  %2 %3\n").arg(ratios_pic[i], 4, 'f', 2).arg(Tostr(pics[i].size())).arg(pics_path_confirmed[i]);
+                Logging_str += QString(" - image showing      %1  %2 %3\n").arg(ratios_pic[i], 4, 'f', 2).arg(Tostr(pics[i].size())).arg(pics_path_confirmed[i]);
             else
-                Logging_str += QString("image              %1  %2 %3\n").arg(ratios_pic[i], 4, 'f', 2).arg(Tostr(pics[i].size())).arg(pics_path_confirmed[i]);
-
+                Logging_str += QString(" - image              %1  %2 %3\n").arg(ratios_pic[i], 4, 'f', 2).arg(Tostr(pics[i].size())).arg(pics_path_confirmed[i]);
         }
 
-        Logging_str += QString("full desktop       %3  %4\n").arg(ratio_desk, 4, 'f', 2).arg(Tostr(desktop.size()));
+        if (default_screen == desktop)
+            Logging_str += QString(" - single screen      %3  %4\n").arg(ratio_desk, 4, 'f', 2).arg(Tostr(desktop.size()));
+        else {
+            Logging_str += QString(" - full desktop       %3  %4\n").arg(ratio_desk, 4, 'f', 2).arg(Tostr(desktop.size()));
 
-        for (int i = 0; i < QApplication::desktop()->screenCount(); i++) {
-            if (QApplication::desktop()->primaryScreen() == i) {
-                Logging_str += QString("default screen #%1  %2  %3\n").arg(i)
-                               .arg(ratio_default_screen, 4, 'f', 2)
-                               .arg(Tostr(default_screen));
-            }
-            else {
-                QRect scr_i = QApplication::desktop()->screenGeometry(i);
-                Logging_str += QString("        screen #%1  %2  %3\n").arg(i)
-                               .arg((double)scr_i.width() / scr_i.height(), 4, 'f', 2)
-                               .arg(Tostr(scr_i));
+            for (int i = 0; i < QApplication::desktop()->screenCount(); i++) {
+                if (QApplication::desktop()->primaryScreen() == i) {
+                    Logging_str += QString(" - - default screen #%1  %2  %3\n").arg(i)
+                                   .arg(ratio_default_screen, 4, 'f', 2)
+                                   .arg(Tostr(default_screen));
+                }
+                else {
+                    QRect scr_i = QApplication::desktop()->screenGeometry(i);
+                    Logging_str += QString(" - -         screen #%1  %2  %3\n").arg(i)
+                                   .arg((double)scr_i.width() / scr_i.height(), 4, 'f', 2)
+                                   .arg(Tostr(scr_i));
+                }
             }
         }
 
-        Logging_str += QString("Ratio case = %1").arg(ratio_case);
 
         LogToFile("LoggingDisplay.txt", Logging_str);
     }
@@ -304,22 +292,24 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
     SaveSceneToFile("c:/Users/User/Pictures/Screenshots/EyesThanks");
 #endif
 
-    qDebug().noquote()  << QTime::currentTime().toString("ss.zzz") << "ShowRefreshment before showFullScreen";
+    qDebug().noquote()  << QTime::currentTime().toString("ss.zzz") << "ShowRefreshment saving by" << timer.restart() << "ms.";
 
 #ifdef __linux__ // showFullScreen() doesn't work
     setWindowFlags(Qt::X11BypassWindowManagerHint);
     show();
     setGeometry(desktop);
 #else
-    showFullScreen();
     setGeometry(desktop);
+    activateWindow();
+    showFullScreen();
+    setFocus();
 #endif
 }
 
 void View::SaveSceneToFile(QString dir_path)
 {
 //    myscene->setBackgroundBrush(Qt::transparent);
-    QTime timer;
+    QElapsedTimer timer;
     timer.start();
 
     QImage image(myscene->sceneRect().size().toSize(), QImage::Format_ARGB32);
@@ -343,7 +333,7 @@ void View::UpdateValues(const QString &remains_str, const double &ratio)
     ProgressBarRect.setRight(qRound(ProgressBarBackground->rect().left() + ProgressBarBackground->rect().width() * (1 - ratio)));
     ProgressBar->setRect(ProgressBarRect);
 
-    ProgressBarText->setPlainText(remains_str)  ;
+    ProgressBarText->setPlainText(remains_str);
 
     if (clockItem != nullptr)
         clockItem->setText(QTime::currentTime().toString("hh:mm"));
@@ -361,7 +351,7 @@ void View::UpdateValues(const QString &remains_str, const double &ratio)
 // 0 1 - white
 // 1 0 - black
 // 1 1 - color
-void View::SetBackground(double hue_now)
+int View::SetBackground(double hue_now)
 {
     //qDebug() << QTime::currentTime().toString("ss.zzz") <<"SetBackground start";
     QElapsedTimer timer;
@@ -376,11 +366,7 @@ void View::SetBackground(double hue_now)
         Method = rand() % COUNT_OF_METHODS;
 
         if (Method == UNICOLOROUS
-                || Method == RANDOM_DOT
-                || Method == RANDOM_DOTS
-
-                //|| Method == OPENGLDOTS
-
+                || Method == RANDOM_CIRCLE
            )
             IsBackgroundUpdate = true;
     }
@@ -392,10 +378,7 @@ void View::SetBackground(double hue_now)
         myscene->setBackgroundBrush(c0);
         break;
     }
-    case LINEAR_GRADIENT_RAINBOW: {
-//        QLinearGradient linearGrad(rand() % 2 ? screen.bottomLeft() : screen.topLeft(),
-//                                   rand() % 2 ? screen.bottomRight() : screen.topRight());
-
+    case RAINBOW: {
         QLinearGradient rainbow(screen.topLeft(), screen.topRight());
 
         for (double ratio = 0, hue = 0; ratio <= 1.0; ratio += 1. / 25) {
@@ -417,16 +400,15 @@ void View::SetBackground(double hue_now)
 
         break;
     }
-    case LINEAR_GRADIENT_STRIPES: { //
-        QLinearGradient linearGrad(screen.topLeft(), screen.topRight());
+    case RAINBOW_STRIPES: { //
+        QLinearGradient rainbow(screen.topLeft(), screen.topRight());
 
         for (double ratio = 0, hue = 0; ratio <= 1.0; ratio += 1. / 25) {
             QColor c = QColor::fromHsvF(fmod(hue_now + hue * 0.8, 1), 1, 1);
-            linearGrad.setColorAt(1 - ratio, c);
+            rainbow.setColorAt(1 - ratio, c);
             hue += 1. / 25;
         }
-
-        myscene->setBackgroundBrush(QBrush(linearGrad));
+        myscene->setBackgroundBrush(QBrush(rainbow));
 
         double ratio = double(screen.width()) / screen.height();
         double standard_ratio = 16.0 / 9.0;
@@ -490,12 +472,11 @@ void View::SetBackground(double hue_now)
         break;
     }
 
-    case RANDOM_DOT: {
+    case RANDOM_CIRCLE: {
         if (ElapsedTimerDot == nullptr) {
             Item = new QGraphicsEllipseItem();
             myscene->addItem(Item);
             ElapsedTimerDot = new QElapsedTimer();
-            myscene->setBackgroundBrush(Qt::black);
         }
         else if (ElapsedTimerDot->elapsed() > 500) {
             ElapsedTimerDot->start();
@@ -508,85 +489,43 @@ void View::SetBackground(double hue_now)
         }
         break;
     }
-    case RANDOM_DOTS: {
-        if (ElapsedTimerDot == nullptr) {
-            ElapsedTimerDot = new QElapsedTimer();
-            //myscene->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-            //myscene->setItemIndexMethod(QGraphicsScene::NoIndex);
-            //myscene->setBspTreeDepth(10);
-            //setViewport(new QOpenGLWidget);
-            group =  new QGraphicsItemGroup();
-            myscene->addItem(group);
-            myscene->setBackgroundBrush(Qt::black);
-        }
-        else if (ElapsedTimerDot->elapsed() > 100) {
-            ElapsedTimerDot->start();
+    case RANDOM_CIRCLES: {
+        QGraphicsItemGroup *group =  new QGraphicsItemGroup();
+        myscene->addItem(group);
 
+        int count_item = screen.height() * screen.width() / (1920.0 * 1080.0) * 100;
+        for (int i = 0; i < count_item; i++) {
             int diameter_dot = qrand() % 100 + 50;
             QRect r(qrand() % (screen.width() - diameter_dot),
                     qrand() % (screen.height() - diameter_dot), diameter_dot, diameter_dot);
 
             QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
-            item->setBrush(QColor::fromHsvF(fmod(hue_now, 1), 1, 1));
+            item->setBrush(QColor::fromHsvF(fmod(hue_now + double(i) / count_item / 2, 1), 1, 1));
             item->setPen(Qt::NoPen);
-            item->setOpacity(0.5);
-            item->setData(0, hue_now);
-            //item->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+            item->setOpacity(double(i) / count_item / 2);
             group->addToGroup(item);
-
-            for (auto i : group->childItems()) {
-                if (i->opacity() < 0.02)
-                    myscene->removeItem(i);
-                i->setOpacity(i->opacity() - 0.002);
-            }
         }
 
         break;
     }
 
-//    case OPENGLDOTS: {
-//        if (ElapsedTimerDot == nullptr) {
-//            ElapsedTimerDot = new QElapsedTimer();
-//            testitem = new TestItem(screen);
-//            connect(this, SIGNAL(opengl_update(double, int)), testitem, SLOT(animate(double, int)));
-//            QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget();
-//            proxy->setWidget(testitem);
-//            myscene->addItem(proxy);
-//            myscene->setBackgroundBrush(Qt::black);
-
-//            int diameter_dot = qrand() % 100 + 50;
-//            emit opengl_update(fmod(hue_now, 1), diameter_dot);
-
-//        }
-//        else if (ElapsedTimerDot->elapsed() > 100) {
-//            ElapsedTimerDot->start();
-
-//            int diameter_dot = qrand() % 100 + 50;
-//            //testitem->animate(fmod(hue_now,1), diameter_dot);
-//            emit opengl_update(fmod(hue_now, 1), diameter_dot);
-//        }
-//        break;
-//    }
-
     case NEO: {
         QString name = qgetenv("USER");
         if (name.isEmpty()) name = qgetenv("USERNAME");
-        if (name.isEmpty() || name == "User") name = "Neo";
+        if (name.isEmpty() || name == "User" || name.size() > 10) name = "Neo";
+
+        QFont font_background("PT Serif", 14);
+        QFont font_foreground("PT Serif", 100);
 
         QGraphicsSimpleTextItem *centerText = new QGraphicsSimpleTextItem();
         myscene->addItem(centerText);
         centerText->setText(QString("Wake up, %1...").arg(name));
         centerText->setBrush(QColor(0, 32, 0));
         centerText->setPen(QColor(0, 255, 0));
-        centerText->setFont(QFont("PT Serif", 100));
+        centerText->setFont(font_foreground);
         centerText->setZValue(3);
 
-        if (centerText->boundingRect().width() < default_screen.width())
-            centerText->setPos(default_screen.center() - QPoint(centerText->boundingRect().width(), centerText->boundingRect().height()) / 2);
-        else {
-            centerText->setText(QString("Wake up,\n%1...").arg(name));
-            centerText->setPos(default_screen.center() - QPoint(centerText->boundingRect().width(), centerText->boundingRect().height()) / 2);
-        }
+        centerText->setPos(default_screen.center() - QPoint(centerText->boundingRect().width(), centerText->boundingRect().height()) / 2);
 
         if (clockItem) {
             clockItem->setBrush(QColor(0, 152, 0));
@@ -597,8 +536,6 @@ void View::SetBackground(double hue_now)
         if (textItem)
             myscene->removeItem(textItem);
 
-
-        QFont font_background("PT Serif", 14);
 
         QGraphicsSimpleTextItem *test = new QGraphicsSimpleTextItem("A");
         test->setFont(font_background);
@@ -677,6 +614,9 @@ void View::SetBackground(double hue_now)
             limits.append(limit);
         }
 
+        QGraphicsItemGroup *group =  new QGraphicsItemGroup();
+        myscene->addItem(group);
+
         {
             // every item, FullHD 63 ms.
             for (int column_pos_x = 0; column_pos_x < screen.width();) {
@@ -684,7 +624,7 @@ void View::SetBackground(double hue_now)
                 int char_count = 1.0 / 4.0 * char_max + 3.0 / 4.0 * (qrand() % char_max);
                 for (int char_index = 0; char_index < char_count; char_index++) {
                     QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
-                    myscene->addItem(item);
+                    group->addToGroup(item);
                     item->setBrush(QColor(0, 128, 0));
                     item->setPen(Qt::NoPen);
                     item->setFont(font_background);
@@ -702,7 +642,8 @@ void View::SetBackground(double hue_now)
             }
         }
 
-//        // for test cyrillic
+        {
+            // for test cyrillic
 //        static int unicode = 0;
 //        int u;
 //        if (unicode++ < borders.last()){
@@ -713,8 +654,10 @@ void View::SetBackground(double hue_now)
 //        }
 //        else
 //            item->setText(QChar(0x20));
+        }
 
-//        {  // columnItem, FullHD 55ms.
+        {
+            // columnItem, FullHD 55ms.
 //            for (int column_pos_x = 0; column_pos_x < screen.width();) {
 //                QGraphicsSimpleTextItem *columnItem = new  QGraphicsSimpleTextItem();
 //                myscene->addItem(columnItem);
@@ -737,12 +680,10 @@ void View::SetBackground(double hue_now)
 //                columnItem->setText(column_text);
 //                column_pos_x += columnItem->boundingRect().width() * 2;
 //            }
-//        }
+        }
 
-
-
-
-//        {   // textItem    18ms
+        {
+            // textItem    18ms
 //            int line_width =  fm.boundingRect("a\t\t").width();
 //            int row_count = (screen.height() - basic_height)/line_height+2;
 //            int column_count = screen.width()/line_width;
@@ -759,102 +700,47 @@ void View::SetBackground(double hue_now)
 //            textItem->setBrush(QColor(0, 255, 0, 128));
 //            textItem->setFont(font_background);
 //            textItem->setText(text);
-//        }
-
+        }
         myscene->setBackgroundBrush(Qt::black);
         break;
     }
-//    case LINEAR_GRADIENT_TEST: {
-        //QList<QLinearGradient> grads;
-        //grads.append(QLinearGradient (screen.topLeft(), screen.topRight()));
-        //grads.append(QLinearGradient (screen.topLeft(), screen.bottomLeft()));
-//        grads.append(QLinearGradient (screen.topLeft(), screen.bottomRight()));
+    default: {
+//        case RANDOM_DOTS_DYNAMIC: {
+//            if (ElapsedTimerDot == nullptr) {
+//                ElapsedTimerDot = new QElapsedTimer();
+//                //myscene->setItemIndexMethod(QGraphicsScene::NoIndex);
+//                //myscene->setBspTreeDepth(10);
+//                QGraphicsItemGroup *group =  new QGraphicsItemGroup();
+//                myscene->addItem(group);
+//            }
+//            else if (ElapsedTimerDot->elapsed() > 100) {
+//                ElapsedTimerDot->start();
 
-//        QList<QGraphicsEllipseItem *> items;
+//                int diameter_dot = qrand() % 100 + 50;
+//                QRect r(qrand() % (screen.width() - diameter_dot),
+//                        qrand() % (screen.height() - diameter_dot), diameter_dot, diameter_dot);
 
-//        for (int i=0; i<10;i++)
-//        {
-//            items.append(new QGraphicsEllipseItem(rand()%screen.width(),rand()%screen.height(),300,300));
-//            items[i]->setPen(Qt::NoPen);
-//            myscene->addItem(items[i]);
+//                QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
+//                item->setBrush(QColor::fromHsvF(fmod(hue_now, 1), 1, 1));
+//                item->setPen(Qt::NoPen);
+//                item->setOpacity(0.5);
+//                item->setData(0, hue_now);
+//                group->addToGroup(item);
+
+//                for (auto i : group->childItems()) {
+//                    if (i->opacity() < 0.02)
+//                        myscene->removeItem(i);
+//                    i->setOpacity(i->opacity() - 0.005);
+//                }
+//            }
+
+//            break;
 //        }
-
-//        QList<QRadialGradient> rgs;
-//        for (auto &item:items)
-//        {
-//            rgs.append(QRadialGradient (item->rect().center(),item->rect().width()/2));
-//        }
-
-
-
-
-//      for (auto rg:rgs)
-//       for (int i=0, k=2; i<k; i++)
-//            rg.setColorAt((i)/double(k-1), QColor::fromRgbF(0,0,0,(i+1)%2*0.2));
-
-//       for (int i=0; i<items.size();i++)
-//        {
-//            items[i]->setBrush(rgs.at(i));
-
-//        }
-
-//        myscene->setBackgroundBrush(QColor::fromHsvF(0, 1, 0.5));
-
-//        for (int j = 0; j < 2; j++) {
-//            QPoint p(rand() % screen.width(), rand() % screen.height());
-//            QSize s(qMin(screen.width(), screen.height()), qMin(screen.width(), screen.height()));
-
-//            QRect r;
-//            r.moveCenter(p);
-//            r.setSize(s);
-
-//            QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
-
-//            item->setPen(Qt::NoPen);
-//            myscene->addItem(item);
-
-//            QRadialGradient rg = QRadialGradient(item->rect().center(), item->rect().width() / 2);
-//            for (int i = 0, k = 2; i < k; i++)
-//                rg.setColorAt((i) / double(k - 1), QColor::fromRgbF(rand() % 2, 0, 0, (i + 1) % 2 * 0.5));
-//            item->setBrush(rg);
-//        }
-
-
-//        for (int i=0, k=21; i<k; i++)
-//            grads[0].setColorAt((i+(rand()%100)/100.-0.5)/double(k-1), QColor::fromRgbF(0,0,0,(i+1)%2*0.5));
-
-//        for (int i=0, k=11; i<k; i++)
-//            grads[1].setColorAt((i+(rand()%100)/100.-0.5)/double(k-1), QColor::fromRgbF(0,0,0,(i+1)%2*0.5));
-
-
-//        QList<QGraphicsRectItem *> items;
-//        for (int i=0; i<2;i++)
-//        {
-//            items.append(new QGraphicsRectItem(screen));
-//            items.last()->setPen(Qt::NoPen);
-//            items.last()->setBrush(grads.at(i));
-//            myscene->addItem(items.last());
-//        }
-
-
-//        break;
-//    }
+    }
     }
 
+    return Method;
 
-    if (setting.isLogging) {
-        QMetaEnum metaEnum = QMetaEnum::fromType<Methods>();
-
-        QString timer_string = QString("Method %1: %2 ms, items %3")
-                               .arg(metaEnum.valueToKey(Method)).arg(timer.elapsed()).arg(myscene->items().size());
-        qDebug().noquote() << timer_string;
-        LogToFile("LoggingSetBackground.txt", timer_string);
-    }
-    else {
-        QString timer_string = QString("Method %1: %2 ms, items %3")
-                               .arg(Method).arg(timer.elapsed()).arg(myscene->items().size());
-        qDebug().noquote() << timer_string;
-    }
 }
 
 
@@ -887,10 +773,8 @@ void View::keyReleaseEvent(QKeyEvent *event)
 void View::mousePressEvent(QMouseEvent *event)
 {
     for (auto i : items(event->pos())) {
-        if (ButtonRectItem == i) {
-            //ButtonRectItem->setBrush(Qt::green);
+        if (ButtonRectItem == i)
             ButtonRectItem->setOpacity(1);
-        }
     }
 }
 
@@ -921,16 +805,8 @@ void View::mouseMoveEvent(QMouseEvent *event)
 
 void View::closeEvent(QCloseEvent *event)
 {
-    //qDebug().noquote()  << QTime::currentTime().toString("ss.zzz") << "View::closeEvent";
-    //for (auto item : myscene->items())
-    //   if (item->zValue() == -1 || item->zValue() == -2) {
-    //       myscene->removeItem(item);
-    //       delete item;
-    //   }
-
     myscene->clear();
     myscene->deleteLater();
-
 
     emit view_close();
     //close();
