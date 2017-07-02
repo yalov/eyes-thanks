@@ -31,14 +31,13 @@ public:
 
     enum Methods {
         UNICOLOROUS,
-//        LINEAR_GRADIENT_TEST,
         RAINBOW,
         RAINBOW_STRIPES,
         RAINBOWED_RECTANGLES,
         RANDOM_CIRCLE,
         RANDOM_CIRCLES,
-        //OPENGLDOTS,
         NEO,
+//        LINEAR_GRADIENT_TEST,
 
         COUNT_OF_METHODS
     }; Q_ENUM(Methods)
@@ -50,7 +49,6 @@ signals:
     void view_close();
     void opengl_update(double, int);
 
-
 private:
     void closeEvent(QCloseEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -60,6 +58,9 @@ private:
     void keyReleaseEvent(QKeyEvent *event);
     int SetBackground(double hue_now);
     void SaveSceneToFile(QString dir_path);
+
+    const QRect default_screen;
+    const QRect desktop;
 
     QString picture_path;
 

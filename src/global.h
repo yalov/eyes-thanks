@@ -65,6 +65,7 @@ inline static void LogToFile(QString filepath, QString text, bool append = true)
     QFile file(filepath);
     if (file.open(append ? QIODevice::Append : QIODevice::WriteOnly)) {
         QTextStream out(&file);
+        out.setCodec("UTF-8");
         out << text << "\n";
         file.close();
     }

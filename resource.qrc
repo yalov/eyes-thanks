@@ -28,5 +28,7 @@
         <file>icons/tooltip.png</file>
         <file>icons/save.png</file>
         <file>fonts/pt-serif.regular.ttf</file>
+        <file>fonts/NotoSansGlagolitic-Regular.ttf</file>
+        <file>fonts/NotoSansRunic-Regular.ttf</file>
     </qresource>
 </RCC>
