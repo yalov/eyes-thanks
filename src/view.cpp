@@ -6,7 +6,10 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QGraphicsBlurEffect>
 #include "view.h"
+#include "timer.h"
+#include "transliteration-iso9a.h"
 
 View::View(QWidget *parent): QGraphicsView(parent),
     default_screen(QApplication::desktop()->screenGeometry(-1)),
@@ -89,37 +92,17 @@ inline QString Tostr(QSize s)
     return QString("             [%3x%4]").arg(s.width(), 4).arg(s.height(), 4);
 }
 
-void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock, const QString &text, const  Setting &setting)
+void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock, const QString &text, const  Setting &setting, Timer *viewtimer)
 {
     QElapsedTimer timer; timer.start();
     myscene->setSceneRect(desktop);
     double ratio_desk = double(desktop.width()) / desktop.height();
     double ratio_default_screen = double(default_screen.width()) / default_screen.height();
 
-    // ProgressBar and ButtonRect
-    {
-        int label_height = this->ProgressBarText->boundingRect().height();
-        int label_y_pos = default_screen.height() - 25 - label_height;
-        int label_x_pos = default_screen.left() + 2.5 * default_screen.width() / 5 - this->ProgressBarText->boundingRect().width() / 2 + 10;
-
-        ProgressBarText->setPos(label_x_pos, label_y_pos);
-        ProgressBarText->setPlainText("0:30");
-        ProgressBarRect = QRect(default_screen.left() + default_screen.width() / 5, label_y_pos, 3 * default_screen.width() / 5, label_height);
-        ProgressBarBackground->setRect(ProgressBarRect);
-        ProgressBar->setRect(ProgressBarRect.adjusted(0, 0, -ProgressBarRect.width() / 2, 0));
-        ProgressBarBound->setRect(ProgressBarRect.adjusted(-1, -1, 0, 0));
-
-        ButtonRectItem->setRect(QRect(ProgressBarBackground->boundingRect().right() + 25, label_y_pos, 100, label_height));
-
-        QPointF p = ButtonRectItem->rect().center() -
-                    QPoint(ButtonText->boundingRect().width(), ButtonText->boundingRect().height()) / 2;
-        ButtonText->setPos(p.x(), p.y());
-    }
-
     // ClockItem and TextItem
     if (!clock.isEmpty() || !text.isEmpty()) {
         int font_size = 30;
-        QFont font(setting.isPrettyFont ? "UKIJ Diwani Yantu" : "PT Serif", font_size, QFont::Bold);
+        QFont font(setting.isPrettyFont ? "UKIJ Diwani Yantu" : "FreeSerif Mod", font_size, QFont::Bold);
         QColor fill_color(Qt::white);
         QColor outline_color(Qt::black);
         qreal opacity = 0.5;
@@ -139,7 +122,7 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
         if (!text.isEmpty()) {
             textItem = new QGraphicsSimpleTextItem();
             textItem->setText(text);
-            textItem->setFont(font); //PT Serif
+            textItem->setFont(font);
             textItem->setPos(default_screen.topLeft() + QPoint(50, 25));
             textItem->setZValue(3);
             textItem->setBrush(fill_color);
@@ -241,8 +224,26 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
     }
     else {   // pics.size()==0
         Hue_start = qrand() % 360 / 360.0;
-
         Method = SetBackground(Hue_start);
+    }
+
+    // ProgressBar and ButtonRect
+    {
+        ProgressBarText->setPlainText(viewtimer->remains_str());
+        QPoint textsize = QPoint(ProgressBarText->boundingRect().width(),ProgressBarText->boundingRect().height());
+        int y_pos = default_screen.height() - textsize.y() - 25 ;
+        ProgressBarRect = QRect(default_screen.left() + default_screen.width() / 5, y_pos,
+                                3 * default_screen.width() / 5, textsize.y());
+
+        ProgressBarBackground->setRect(ProgressBarRect);
+        ProgressBar->setRect(ProgressBarRect.adjusted(0, 0, 0/*-ProgressBarRect.width() / 2*/, 0));
+        ProgressBarBound->setRect(ProgressBarRect.adjusted(-1, -1, 0, 0));
+        ButtonRectItem->setRect(QRect(ProgressBarBackground->boundingRect().right() + 25, y_pos, 100, textsize.y()));
+        ProgressBarText->setPos(ProgressBarRect.center() - textsize/2);
+
+        QPointF p = ButtonRectItem->rect().center() -
+                    QPoint(ButtonText->boundingRect().width(), ButtonText->boundingRect().height()) / 2;
+        ButtonText->setPos(p.x(), p.y());
     }
 
     // Logging
@@ -312,71 +313,26 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
 #endif
 }
 
-void View::SaveSceneToFile(QString dir_path)
-{
-//    myscene->setBackgroundBrush(Qt::transparent);
-    QElapsedTimer timer;
-    timer.start();
-
-    QImage image(myscene->sceneRect().size().toSize(), QImage::Format_ARGB32);
-    image.fill(Qt::transparent);
-
-    QDir dir(dir_path);
-    if (!dir.exists()) dir.mkpath(".");
-    QString methodName = QString(QMetaEnum::fromType<Methods>().valueToKey(Method));
-
-    QPainter painter(&image);
-    myscene->render(&painter);
-    bool done = image.save(dir_path + QDir::separator() + QString("m%1-%2.png")
-                           .arg(methodName)
-                           .arg(QDateTime::currentDateTime().toString("yyyyMMdd-HHmmss"))
-                          );
-    qDebug() << "SaveSceneToFile is" << done << "by" << timer.elapsed() << "ms.";
-}
-
-void View::UpdateValues(const QString &remains_str, const double &ratio)
-{
-    ProgressBarRect.setRight(qRound(ProgressBarBackground->rect().left() + ProgressBarBackground->rect().width() * (1 - ratio)));
-    ProgressBar->setRect(ProgressBarRect);
-
-    ProgressBarText->setPlainText(remains_str);
-
-    if (clockItem != nullptr)
-        clockItem->setText(QTime::currentTime().toString("hh:mm"));
-
-    if (picture_path.isEmpty() && IsBackgroundUpdate)
-        SetBackground(Hue_start + ratio);
-}
-
-
-// HSV
-// S - from uncolor to color
-// V - from black to color or white
-// 0 0 - black
-// 0 0.5 grey
-// 0 1 - white
-// 1 0 - black
-// 1 1 - color
 int View::SetBackground(double hue_now)
 {
+    // HSV
+    // S - from uncolor to color
+    // V - from black to color or white
+    // 0 0 - black   // 1 0 - black
+    // 0 0.5 grey    // 1 1 - color
+    // 0 1 - white
+
     QElapsedTimer timer;
     timer.start();
 
     if (Method == -1) {
-        Method = NEO % COUNT_OF_METHODS;
+        Method = rand() % COUNT_OF_METHODS;
 
-        if (Method == UNICOLOROUS
-                || Method == RANDOM_CIRCLE
-           )
+        if (Method == RANDOM_CIRCLE)
             IsBackgroundUpdate = true;
     }
 
     switch (Method) {
-    case UNICOLOROUS: { // 0
-        QColor c0 = QColor::fromHsvF(fmod(hue_now,  1), 1, 0.5);
-        myscene->setBackgroundBrush(c0);
-        break;
-    }
     case RAINBOW: {
         QLinearGradient rainbow(desktop.topLeft(), desktop.topRight());
 
@@ -399,11 +355,11 @@ int View::SetBackground(double hue_now)
 
         break;
     }
-    case RAINBOW_STRIPES: { //
+    case RAINBOW_STRIPES: {
         QLinearGradient rainbow(desktop.topLeft(), desktop.topRight());
 
         for (double ratio = 0, hue = 0; ratio <= 1.0; ratio += 1. / 25) {
-            QColor c = QColor::fromHsvF(fmod(hue_now + hue * 0.8, 1), 1, 1);
+            QColor c = QColor::fromHsvF(fmod(hue_now + hue * 0.8, 1), 1, 0.9);
             rainbow.setColorAt(1 - ratio, c);
             hue += 1. / 25;
         }
@@ -421,7 +377,6 @@ int View::SetBackground(double hue_now)
 
         if (stripes_gradient) {
             for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
-
                 QGraphicsRectItem *item = new QGraphicsRectItem(i, 0, stripe_width, desktop.height());
                 QLinearGradient grad(item->rect().topLeft(), item->rect().topRight());
                 grad.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0));
@@ -470,7 +425,6 @@ int View::SetBackground(double hue_now)
         }
         break;
     }
-
     case RANDOM_CIRCLE: {
         if (ElapsedTimerDot == nullptr) {
             Item = new QGraphicsEllipseItem();
@@ -507,203 +461,243 @@ int View::SetBackground(double hue_now)
 
         break;
     }
-
     case NEO: {
-        QString name = qgetenv("USER");
-        if (name.isEmpty()) name = qgetenv("USERNAME");
-        if (name.isEmpty() || name == "User" || name.size() > 10 || (rand()%10 != 0)) name = "Neo";
-
-        QFont font_background("PT Serif", 17);
-        QFont font_foreground("PT Serif", 100);
-
-        QGraphicsSimpleTextItem *centerText = new QGraphicsSimpleTextItem();
-        myscene->addItem(centerText);
-        centerText->setText(QString("Wake up, %1...").arg(name));
-        centerText->setBrush(QColor(0, 48, 0));
-        centerText->setPen(QPen(QColor(0, 255, 0),2));
-        centerText->setFont(font_foreground);
-        centerText->setZValue(3);
-
-        centerText->setPos(default_screen.center() - QPoint(centerText->boundingRect().width(), centerText->boundingRect().height()) / 2);
+        QFont font_background("FreeSerif Mod", 17);
+        QFont font_foreground("FreeSerif Mod", 100);
 
         if (clockItem) {
-            clockItem->setBrush(QColor(0, 152, 0));
+            clockItem->setBrush(QColor(0, 128, 0));
             clockItem->setPen(Qt::NoPen);
-            clockItem->setFont(QFont("PT Serif", clockItem->font().pointSize()));
+            clockItem->setFont(QFont("FreeSerif Mod", clockItem->font().pointSize()));
             clockItem->setOpacity(1);
+
+            QGraphicsRectItem *clockItemRect = new QGraphicsRectItem();
+            clockItemRect->setRect(clockItem->boundingRect());
+            clockItemRect->setPos(clockItem->pos());
+            clockItemRect->setZValue(2);
+            clockItemRect->setPen(Qt::NoPen);
+            clockItemRect->setBrush(Qt::black);
+            QGraphicsBlurEffect *blur = new QGraphicsBlurEffect();
+            blur->setBlurRadius(20);
+            clockItemRect->setGraphicsEffect(blur);
+            myscene->addItem(clockItemRect);
         }
-        if (textItem)
+        if (textItem) {
             myscene->removeItem(textItem);
-
-
-        QGraphicsSimpleTextItem *test = new QGraphicsSimpleTextItem("A");
-        test->setFont(font_background);
-        int basic_width = test->boundingRect().width();
-        int basic_height = test->boundingRect().height();
-        QFontMetrics fm(font_background);
-        int line_height =  fm.boundingRect("a").height();
-
-        const QVector<QVector<QVector<qint64>>> unicode_limits = {
-            /* 0 IPA                  */ {{0x0250, 0x02AF}},
-            /* 1 Runic                */ {{0x16A0, 0x16EF}},
-            /* 2 Glagolitic uppercase */ {{0x2C00, 0x2C2E}},
-            /* 3 Cyrillic Russian++   */ {{0x0400, 0x045f}},
-
-            /* 4 All Cyrillic */{
-                {0x0410, 0x044f},{0x0410, 0x044f}, //   Russian              = 2*3F
-                {0x0400, 0x0481},{0x048A, 0x04ff}, //   Cyrillic             = 82+75
-                {0x0500, 0x052F},                  //   Cyrillic Supplement  = 2F
-                {0xA640, 0xA66E},{0xA680, 0xA69B}  //   Cyrillic Extended-B  = 2E+1B
-            },
-            /* 5 All Latin */ {
-                {0x0041, 0x005A},{0x0041, 0x005A},{0x0041, 0x005A},{0x0041, 0x005A},  //   A-Z
-                {0x0061, 0x007A},{0x0061, 0x007A},{0x0061, 0x007A},{0x0061, 0x007A},  //   a-z
-                {0x00C0, 0x00D6},{0x00D8, 0x00F6},{0x00F8, 0x00FF},                   //   Latin-1 Supplement
-                {0x0100, 0x017F},                                                     //   Latin Extended-A
-                {0x0180, 0x01BF},{0x01C4, 0x01D4},{0x01E2, 0x0229},{0x0232, 0x024F}   //   Latin Extended-B
-            },
-            /* 6 Latin */ {
-                {0x0041, 0x005A},{0x0041, 0x005A},       //   A-Z
-                {0x0061, 0x007A},{0x0061, 0x007A},       //   a-z
-
-                // French (other) // all Latin-1
-                {0x00C0, 0x00D6},       //   Latin-1 Supplement: À(Á)Â(ÃÄÅÆÇ)ÈÉÊË(ÌÍ)ÎÏ(ÐÑ)(Ò)ÓÔ(ÕÖ)
-                {0x00E0, 0x00F6},       //   Latin-1 Supplement: à(á)â(ãäåæç)èéêë(ìí)îï(ðñ)(ò)óô(õö)
-                {0x00D8, 0x00DF},       //   Latin-1 Supplement: ØÙ(Ú)ÛÜ(ÝÞß)
-                {0x00F8, 0x00FF},       //   Latin-1 Supplement: øù(ú)ûü(ýþÿ)
-                // German          // +sup: ÄÖẞÜ
-                // Italian         // +sup: ÀÈÉÍÎÓÙÚÌÒ
-                // Belarusian
-                {0x0100, 0x0107},{0x010C, 0x010D},  //   Extended-A: (ĂăĄą)Ćć   Čč
-                {0x0139, 0x013A},                   //   Extended-A: Ĺĺ
-                {0x0141, 0x0148},{0x014A, 0x014D},  //   Extended-A: ŁłŃń(ŅņŇň)   (ŊŋŌō)
-                {0x0158, 0x0161},                   //   Extended-A: (Řř)Śś(ŜŝŞş)Šš
-                {0x016A, 0x0173},                   //   Extended-A: (Ūū)Ŭŭ(ŮůŰűŲų)
-                {0x0179, 0x017E},                   //   Extended-A: Źź(Żż)Žž
-                // Polish // +ext-a: ĄĆŁŃÓŚŹŻ
-                {0x0116, 0x011B},                   //   Extended-A: (Ėė)Ęę(Ěě)
-                // Lithuanian // +ext-a: ĄČĖĘŠŪŲŽ
-                {0x012E, 0x012F},                   //   Extended-A: Įį
-                // Latvian // +ext-a: +ĀČŠŪŽ
-                {0x0112, 0x0113},                   //   Extended-A: Ēē
-                {0x012A, 0x012B},{0x0122, 0x0123},  //   Extended-A: Īī   Ģģ
-                {0x0136, 0x0137},{0x013B, 0x013C},  //   Extended-A: Ķķ   Ļļ
-                {0x0145, 0x0146},                   //   Extended-A: Ņņ
-                // Estonian // +sup: ÄÕÖÜ // +ext-a: ŠŽ
-                // Finnish  // +sup: ÄÅÖ  // +ext-a: ŠŽ
-                // Swedish  // +sup: ÅÄÖ
-                // Danish Norwegian // +sup: ÆØÅ
-                // Czech    // +sup: ÓÁÉÍÝÚ // +ext-a: ČŠŮŽĚŇŘ
-                {0x010E, 0x0111},                   //   Extended-A: Ďď(Ðđ)
-                {0x0164, 0x0165},                   //   Extended-A: Ťť
-                // Turkish  // +sup: ÖÜÇ  // +ext-a: Ş
-                {0x011E, 0x011F},                   //   Extended-A: Ğğ
-                // Slovak // +sup: ÁÄÉÍÓÔÚÝŽ // +ext-a: ČĎŤĹŇŠ
-                {0x013D, 0x013E},                   //   Extended-A: Ľľ
-                {0x0154, 0x0155},                   //   Extended-A: Ŕŕ
-                // Slovene               // +ext-a: ČŠŽ
-                // Serbo-Croatian        // +ext-a: ČĆÐŠŽ
-                // Romanian  // +sup: ÂÎ // ext-a: Ă
-                {0x0218, 0x021B}                   //   Extended-B: ȘșȚț
-            },
-            /* 7 Greek lowercase */{
-                {0x3B1, 0x3C9},
-              //archaic_koppa, stigma,        digamma,       koppa,         sampi
-                {0x3D9, 0x3D9},{0x3DB, 0x3DB},{0x3DD, 0x3DD},{0x3DF, 0x3DF},{0x3D1, 0x3D1}
-            },
-            /* 8 Miscellaneous Symbols */{
-                {0x262D, 0x262E},       // hammer and sickle, peace
-                {0x263D, 0x2653},       // planets and zodiak
-                {0x26B3, 0x26B8},       // astrology
-                {0x26E6, 0x26E7}        // pentagrams
-            },
-            /* 9 hexadecimal Numerals */ {
-                {0x0030, 0x0039}, // 0-9
-                {0x0041, 0x0046}  // A-E
-            },
-            /* 10 Roman Numerals */ {
-                {0x2160, 0x216B},       // I-XII
-                {0x216C, 0x216F},       // L C D M
-                {0x2180, 0x2182},       // ↀ ↁ ↂ
-                {0x2185, 0x2186}        // ↅ ↆ
-            }
-
-            // 11 Klingon */ {{0xF8D0,0xF8FF}}
-            // Currency Symbols     */ //{{0x20A0, 0x20BE}},
-        };
-
-        int unicode_set = rand() % unicode_limits.size();
-
-        int limit = 0;
-        QVector<int> limits;
-        limits.reserve(unicode_limits[unicode_set].size() + 1);
-        limits.append(limit);
-        for (int i = 0; i < unicode_limits[unicode_set].size(); i++) {
-            limit += unicode_limits[unicode_set][i][1] - unicode_limits[unicode_set][i][0] + 1;
-            limits.append(limit);
         }
-        qDebug() << "unicode symbols ="  << limit;
+
+        if (rand()%10 == 0) {
+            QString name = transliteraction(qgetenv("USER"));
+            if (name.isEmpty()) name = transliteraction(qgetenv("USERNAME"));
+            if (name.isEmpty() || name == "User" || name.size() > 25 || (rand() % 10 == 0))
+                name = transliteraction(QString("Neo"));
+
+            QGraphicsSimpleTextItem *centerTextItem = new QGraphicsSimpleTextItem();
+            myscene->addItem(centerTextItem);
+            centerTextItem->setText(QString("Wake up, %1...").arg(name));
+            centerTextItem->setBrush(QColor(0, 48, 0));
+            centerTextItem->setPen(QPen(QColor(0, 255, 0), 2));
+            centerTextItem->setFont(font_foreground);
+            centerTextItem->setZValue(3);
+            QPoint crect(centerTextItem->boundingRect().width(),
+                         centerTextItem->boundingRect().height());
+
+            if (crect.x() < default_screen.width() * 0.8)
+                centerTextItem->setPos(default_screen.center() - crect / 2);
+            else {
+                centerTextItem->setText(QString("Wake up,\n%1...").arg(name));
+                crect = QPoint(centerTextItem->boundingRect().width(),
+                               centerTextItem->boundingRect().height());
+                centerTextItem->setPos(default_screen.center() - crect / 2);
+            }
+        }
+
+        QFontMetrics fm(font_background);
+        int basic_height =  fm.boundingRect("А").height();
+        int basic_width =  fm.boundingRect("А").width();
+
+        const QVector<QVector<QVector<quint32>>> unicode_limits = {
+            /* 0 IPA             */ {{0x0250, 0x02AF}},
+            /*   Runic           */ {{0x16A0, 0x16F0}},
+            /* 2 Greek lower     */ {{0x3B1, 0x3C9},{0x3D9, 0x3D9}, {0x3DB, 0x3DB}, {0x3DD, 0x3DD}, {0x3DF, 0x3DF}, {0x3D1, 0x3D1}},
+            /*   Glagolitic upper*/ {{0x2C00, 0x2C2E}},
+            /* 4 Gothic alphabet */ {{0x10330, 0x1034A}},
+            /*   Math.Blackletter*/ {{0x1D56C, 0x1D59F}},
+            /* 6 Phoenician      */ {{0x10900, 0x10915}},
+
+            /*   Cherokee        */ {{0x13A0, 0x13F4}},
+            /* 8 Tengwar         */ {{0xE000, 0xE031}, {0xE036, 0xE03D}, {0xE062, 0xE06F}},
+            /*   Klingon         */ {{0xF8D0, 0xF8E8}, {0xF8F1, 0xF8F9}},
+            /*10 Hex. Numerals   */ {{0x30, 0x39}, {0x41, 0x46}},
+            /*   Roman Numerals  */ {{0x2160, 0x216F}, {0x2180, 0x2182}},
+            /*12 Currency        */ {{0x24, 0x24}, {0xA2, 0xA5}, {0x20A0, 0x20BF}, {0xFF04, 0xFF04}},
+            /*   Cyrillic slavic */ {{0x0401,0x040C},{0x040E,0x044F},{0x0451,0x045C},{0x045E,0x045F}},
+            /*14 All Cyrillic    */{
+                {0x0410, 0x044f}, {0x0410, 0x044f}, //   Russian
+                {0x0400, 0x0481}, {0x048A, 0x04ff}, //   Cyrillic
+                {0x0500, 0x0527},                   //   Cyrillic Supplement
+                {0xA640, 0xA66E}, {0xA680, 0xA697}  //   Cyrillic Extended-B
+            },
+            /*   All Latin       */ {
+                {0x0041, 0x005A}, {0x0041, 0x005A}, {0x0041, 0x005A}, {0x0041, 0x005A}, //   A-Z
+                {0x0061, 0x007A}, {0x0061, 0x007A}, {0x0061, 0x007A}, {0x0061, 0x007A}, //   a-z
+                {0x00C0, 0x00D6}, {0x00D8, 0x00F6}, {0x00F8, 0x00FF},                   //   Latin-1 Supplement  
+                {0x0100, 0x01BF}, {0x01C4, 0x01D4}, {0x01E2, 0x0229}, {0x0232, 0x024F}  //   Latin Extended-A+B
+            },
+            /*16 Latin Europe    */ {
+                {0x0041, 0x005A}, {0x0041, 0x005A},      //   A-Z
+                {0x0061, 0x007A}, {0x0061, 0x007A},      //   a-z
+                // French Latin-1 Supplement
+                {0x00C0, 0x00D6},       // À(Á)Â(ÃÄÅÆÇ)ÈÉÊË(ÌÍ)ÎÏ(ÐÑ)(Ò)ÓÔ(ÕÖ)
+                {0x00E0, 0x00F6},       // à(á)â(ãäåæç)èéêë(ìí)îï(ðñ)(ò)óô(õö)
+                {0x00D8, 0x00DF},       // ØÙ(Ú)ÛÜ(ÝÞß)
+                {0x00F8, 0x00FF},       // øù(ú)ûü(ýþÿ)
+                // Belarusian Extended-A
+                {0x0100, 0x0107}, {0x010C, 0x010D}, // (ĂăĄą)Ćć   Čč
+                {0x0139, 0x013A}, {0x0141, 0x0148}, // Ĺĺ   ŁłŃń(ŅņŇň)
+                {0x014A, 0x014D}, {0x0158, 0x0161}, // (ŊŋŌō) (Řř)Śś(ŜŝŞş)Šš
+                {0x016A, 0x0173}, {0x0179, 0x017E}, // (Ūū)Ŭŭ(ŮůŰűŲų)   Źź(Żż)Žž
+
+                {0x0116, 0x011B},                   // (Ėė)Ęę(Ěě) // Polish     +ext-a: ĄĆŁŃÓŚŹŻ
+                {0x012E, 0x012F},                   // Įį         // Lithuanian +ext-a: ĄČĖĘŠŪŲŽ
+                {0x0112, 0x0113}, {0x012A, 0x012B}, {0x0122, 0x0123},// Ēē Īī Ģģ // Latvian +ext-a: +ĀČŠŪŽ
+                {0x0136, 0x0137}, {0x013B, 0x013C}, {0x0145, 0x0146},// Ķķ Ļļ Ņņ
+                {0x010E, 0x0111}, {0x0164, 0x0165}, // Ďď(Ðđ) Ťť // Czech   +sup: ÓÁÉÍÝÚ +ext-a: ČŠŮŽĚŇŘ
+                {0x011E, 0x011F},                   // Ğğ        // Turkish +sup: ÖÜÇ    +ext-a: Ş
+                {0x013D, 0x013E}, {0x0154, 0x0155}, // Ľľ Ŕŕ     // Slovak  +sup: ÁÄÉÍÓÔÚÝŽ +ext-a: ČĎŤĹŇŠ
+                {0x0218, 0x021B}                    // Extended-B: ȘșȚț      // Romanian +sup: ÂÎ    +ext-a: Ă
+                // German  +sup: ÄÖẞÜ            // Swedish          +sup: ÅÄÖ
+                // Italian +sup: ÀÈÉÍÎÓÙÚÌÒ      // Danish Norwegian +sup: ÆØÅ
+                // Slovene        +ext-a: ČŠŽ    // Estonian +sup: ÄÕÖÜ +ext-a: ŠŽ
+                // Serbo-Croatian +ext-a: ČĆÐŠŽ  // Finnish  +sup: ÄÅÖ  +ext-a: ŠŽ
+            }
+        };
         QGraphicsItemGroup *group =  new QGraphicsItemGroup();
         myscene->addItem(group);
 
-        {
-            // every item, FullHD 63 ms.
-            for (int column_pos_x = 0; column_pos_x < desktop.width();) {
-                int char_max = (desktop.height() - basic_height) / line_height + 2;
-                int char_count = 1.0 / 4.0 * char_max + 3.0 / 4.0 * (qrand() % char_max +1);
-                for (int char_index = 0; char_index < char_count; char_index++) {
-                    QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
-                    group->addToGroup(item);
-                    item->setBrush(QColor(0, 128, 0));
-                    item->setPen(Qt::NoPen);
-                    item->setFont(font_background);
+        //for (int unicode_set = 0; unicode_set < 1/*unicode_limits.size()*/; unicode_set++) {
+        //    for (auto item : group->childItems())
+        //        myscene->removeItem(item);
+            int unicode_set = rand() % unicode_limits.size();
+            //unicode_set++;
 
-                    int unicode = rand() % limits.last();
-
-                    for (int i = 1; i < limits.size(); i++)
-                        if (limits[i - 1] <= unicode && unicode < limits[i])
-                            unicode = unicode - limits[i - 1] + unicode_limits[unicode_set][i - 1][0];
-
-                    item->setText(QChar(unicode));
-                    item->setPos(column_pos_x + item->boundingRect().width() / 2, char_index * line_height);
-                }
-                column_pos_x += basic_width * 3;
+            quint32 limit = 0;
+            QVector<quint32> limits;
+            limits.reserve(unicode_limits[unicode_set].size() + 1);
+            limits.append(limit);
+            for (int i = 0; i < unicode_limits[unicode_set].size(); i++) {
+                limit += unicode_limits[unicode_set][i][1] - unicode_limits[unicode_set][i][0] + 1;
+                limits.append(limit);
             }
-        }
+            qDebug() << "unicode symbols ="  << limit;
+
+
+            {
+                // every item, FullHD 63 ms.
+                for (int column_pos_x = basic_width; column_pos_x < desktop.width();) {
+                    int char_max = desktop.height() / basic_height + 1;
+                    int char_count = 1.0 / 4.0 * char_max + 3.0 / 4.0 * (qrand() % char_max + 1);
+                    for (int char_index = 0; char_index < char_count; char_index++) {
+                        QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
+                        group->addToGroup(item);
+                        item->setBrush(QColor(0, 128, 0));
+                        item->setPen(Qt::NoPen);
+                        item->setFont(font_background);
+
+                        quint32 unicode = rand() % limits.last();
+
+                        for (int i = 1; i < limits.size(); i++)
+                            if (limits[i - 1] <= unicode && unicode < limits[i])
+                                unicode = unicode - limits[i - 1] + unicode_limits[unicode_set][i - 1][0];
+
+                        if (QChar::requiresSurrogates(unicode)) {
+                            QChar charArray[2];
+                            charArray[0] = QChar::highSurrogate(unicode);
+                            charArray[1] = QChar::lowSurrogate(unicode);
+                            item->setText(QString(charArray, 2));
+                        }
+                        else
+                            item->setText(QChar(unicode));
+
+                        item->setPos(column_pos_x - item->boundingRect().width() / 2, char_index * basic_height);
+                    }
+                    column_pos_x += basic_width * 3;
+                }
+            }
+//          SaveSceneToFile("c:/Users/User/Pictures/Screenshots/EyesThanks");
+//        }
 
         {
 
 //            // for test
-//            for (auto item: group->childItems())
+//            for (auto item: myscene->items())
 //                myscene->removeItem(item);
 //            QString text;
-//            //QFontDatabase::addApplicationFont("c:/Users/User/Repositories/eyes-thanks/repository/fonts/Constructium.ttf");
-//            //QFontDatabase::addApplicationFont("c:/Users/User/Repositories/eyes-thanks/repository/fonts/NotoSansGlagolitic-Regular.ttf");
-//            //QFontDatabase::addApplicationFont("c:/Users/User/Repositories/eyes-thanks/repository/fonts/NotoSansRunic-Regular.ttf");
-//            //QFont font_background("Constructium", 17);
+            //QFontDatabase::addApplicationFont("c:/Users/User/Repositories/eyes-thanks/repository/fonts/Constructium.ttf");
 
-//            int count = -1;
+//            QVector<QVector<QVector<qint64>>> unicode_limits = {
+//                {{0x0250, 0x02AF}},/* 0 IPA                  */
+//                {{0x16A0, 0x16EF}},/* 1 Runic                */
+//                {{0x2C00, 0x2C2E}},/* 2 Glagolitic uppercase */
+//                {{0x3B1, 0x3C9},{0x3D9, 0x3D9},{0x3DB, 0x3DB},{0x3DD, 0x3DD},{0x3DF, 0x3DF},{0x3D1, 0x3D1}}, // greek
+//                {{0x262D, 0x262E},{0x263D, 0x2653},{0x26B3, 0x26B8},{0x26E7, 0x26E7}},        // symbols
+//                {{0x2160, 0x216B},{0x216C, 0x216F},{0x2180, 0x2182},{0x2185, 0x2186}},        // roman num
+//                {{0xF8D0,0xF8E8}, {0xF8F1, 0xF8F9}}, /* 11 Klingon */
+//                {{0x20A0, 0x20BF}}, /* Currency Symbols */
+
+//                {{0x0400, 0x0481},{0x048A, 0x04ff}}, //   Cyrillic             = 82+75
+//                {{0x0500, 0x052F}},                  //   Cyrillic Supplement  = 2F
+//                {{0xA640, 0xA66E},{0xA680, 0xA69B}},  //   Cyrillic Extended-B  = 2E+1B
+//                {{0x0041, 0x005A},{0x0061, 0x007A}}, // A-Za-z
+//                {{0x00C0, 0x00D6},{0x00D8, 0x00F6},{0x00F8, 0x00FF}},                   //   Latin-1 Supplement
+//                {{0x0100, 0x017F}},                                                     //   Latin Extended-A
+//                {{0x0180, 0x01BF},{0x01C4, 0x01D4},{0x01E2, 0x0229},{0x0232, 0x024F}},   //   Latin Extended-B
+
+//                };
+
+//            int count = 0;
+
 //            for (int unicode_set=0; unicode_set< unicode_limits.size(); unicode_set++) {
-//                text+= QString::number(unicode_set);
-//                for (int t = 0; t < unicode_limits[unicode_set].size(); t++)
-//                for (qint64 i = unicode_limits[unicode_set][t][0]; i <= unicode_limits[unicode_set][t][1]; i++) {
-//                    qDebug() << unicode_set << t << i;
-//                    count++;
+//                int count_fortxt = 0;
+
+//                text+= QString::number(unicode_set) + ",    0x" +
+//                        QString::number(unicode_limits[unicode_set][0][0],16).toUpper()+ "  ";
+//                for (int t = 0; t < unicode_limits[unicode_set].size(); t++) {
+//                for (quint32 unicode = unicode_limits[unicode_set][t][0]; unicode <= unicode_limits[unicode_set][t][1]; unicode++) {
+//                    qDebug() << unicode_set << t << QString::number(unicode,16).toUpper();
+
 //                    QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
-//                    group->addToGroup(item);
+//                    myscene->addItem(item);
 //                    item->setBrush(QColor(0, 128, 0));
 //                    item->setPen(Qt::NoPen);
 //                    item->setFont(font_background);
 //                    item->setPos(basic_width + (count%(16*3) * basic_width*2) ,
-//                                 count/(16*3) * line_height + line_height);
-//                    if (count%(16*3) == 0) text += "\n";
-//                    item->setText(QChar(qint32(i)));
-//                    text += QChar(qint32(i));
+//                                 count/(16*3) * (line_height) + line_height);
+//                    if (count_fortxt %(16*4) == 0) text += "\n";
+
+//                    if(QChar::requiresSurrogates(unicode))
+//                    {
+//                        QChar charArray[2];
+//                        charArray[0] = QChar::highSurrogate(unicode);
+//                        charArray[1] = QChar::lowSurrogate(unicode);
+//                        item->setText(QString(charArray, 2));
+//                        text += QString(charArray, 2);
+//                    }
+//                    else {
+//                        item->setText(QChar(unicode));
+//                        text += QChar(unicode);
+//                    }
+
+//                    count++;
+//                    count_fortxt++;
 //                }
-//                count = count / (16*3) * (16*3)+(16*3);
+//                }
+//                count =  (count-1) / (16*3) * (16*3) + (16*3);
+//                myscene->addLine(0,count/(16*3) * (line_height) + line_height+1,
+//                   desktop.width(),count/(16*3) * (line_height) + line_height+1,QPen(Qt::darkGray));
 //                text+= "\n";
 //            }
-            //LogToFile("unicode.txt",text);
+//            LogToFile("unicode.txt",text);
         }
 
         {
@@ -755,37 +749,6 @@ int View::SetBackground(double hue_now)
         break;
     }
     default: {
-//        case RANDOM_DOTS_DYNAMIC: {
-//            if (ElapsedTimerDot == nullptr) {
-//                ElapsedTimerDot = new QElapsedTimer();
-//                //myscene->setItemIndexMethod(QGraphicsScene::NoIndex);
-//                //myscene->setBspTreeDepth(10);
-//                QGraphicsItemGroup *group =  new QGraphicsItemGroup();
-//                myscene->addItem(group);
-//            }
-//            else if (ElapsedTimerDot->elapsed() > 100) {
-//                ElapsedTimerDot->start();
-
-//                int diameter_dot = qrand() % 100 + 50;
-//                QRect r(qrand() % (screen.width() - diameter_dot),
-//                        qrand() % (screen.height() - diameter_dot), diameter_dot, diameter_dot);
-
-//                QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
-//                item->setBrush(QColor::fromHsvF(fmod(hue_now, 1), 1, 1));
-//                item->setPen(Qt::NoPen);
-//                item->setOpacity(0.5);
-//                item->setData(0, hue_now);
-//                group->addToGroup(item);
-
-//                for (auto i : group->childItems()) {
-//                    if (i->opacity() < 0.02)
-//                        myscene->removeItem(i);
-//                    i->setOpacity(i->opacity() - 0.005);
-//                }
-//            }
-
-//            break;
-//        }
     }
     }
 
@@ -793,6 +756,41 @@ int View::SetBackground(double hue_now)
 
 }
 
+void View::SaveSceneToFile(QString dir_path)
+{
+//    myscene->setBackgroundBrush(Qt::transparent);
+    QElapsedTimer timer;
+    timer.start();
+
+    QImage image(myscene->sceneRect().size().toSize(), QImage::Format_ARGB32);
+    image.fill(Qt::transparent);
+
+    QDir dir(dir_path);
+    if (!dir.exists()) dir.mkpath(".");
+    QString methodName = QString(QMetaEnum::fromType<Methods>().valueToKey(Method));
+
+    QPainter painter(&image);
+    myscene->render(&painter);
+    bool done = image.save(dir_path + QDir::separator() + QString("m%1-%2.png")
+                           .arg(methodName)
+                           .arg(QDateTime::currentDateTime().toString("yyyyMMdd-HHmmsszzz"))
+                          );
+    qDebug() << "SaveSceneToFile is" << done << "by" << timer.elapsed() << "ms.";
+}
+
+void View::UpdateValues(const QString &remains_str, const double &ratio)
+{
+    ProgressBarRect.setRight(qRound(ProgressBarBackground->rect().left() + ProgressBarBackground->rect().width() * (1 - ratio)));
+    ProgressBar->setRect(ProgressBarRect);
+
+    ProgressBarText->setPlainText(remains_str);
+
+    if (clockItem != nullptr)
+        clockItem->setText(QTime::currentTime().toString("hh:mm"));
+
+    if (picture_path.isEmpty() && IsBackgroundUpdate)
+        SetBackground(Hue_start + ratio);
+}
 
 void View::keyPressEvent(QKeyEvent *event)
 {

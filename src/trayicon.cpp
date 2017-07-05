@@ -25,7 +25,7 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     for (auto f : QDir(":fonts").entryInfoList())
         QFontDatabase::addApplicationFont(f.absoluteFilePath());
-    //UKIJ Diwani Yantu
+
 
     initIcons();
 
@@ -559,11 +559,11 @@ void TrayIcon::DialogUpdateTime()
 
 void TrayIcon::RefreshmentStart()
 {
-    ShowView();
     DialogTimer->stop();
     TrayMessageShowed = false;
     CurrentIconRatio = -1;
     ViewTimer->start();
+    ShowView();
 }
 
 
@@ -574,6 +574,8 @@ void TrayIcon::ShowView()
     qDebug().noquote() << QTime::currentTime().toString("ss.zzz") << "ShowView start";
 
     view = new View();
+    connect(this, SIGNAL(show_refreshment(QList<QString>, QString, QString, Setting, Timer*)),
+            view, SLOT(ShowRefreshment(QList<QString>, QString, QString, Setting, Timer*)));
     connect(ViewTimer, SIGNAL(finished()),   view,        SLOT(close())); // close() run view->closeEvent()
     //connect(view,      SIGNAL(view_close()), view,        SLOT(close()));
     connect(view,      SIGNAL(view_close()), DialogTimer, SLOT(start()));
@@ -606,9 +608,7 @@ void TrayIcon::ShowView()
     text.replace("%interval", QString::number(setting.pauseInterval / 1000 / 60) + " " + tr("min"));
     text.replace("%continuous", QString::number(setting.pauseContinuous / 1000) + " " + tr("sec"));
 
-    //qDebug() << QTime::currentTime().toString("ss.zzz") << "ShowView before ShowRefreshment" ;
-
-    view->ShowRefreshment(pics_path, clock, text, setting);
+    emit show_refreshment(pics_path, clock, text, setting, ViewTimer);
 
     qDebug().noquote() << QTime::currentTime().toString("ss.zzz") << "ShowView end in" << timer.elapsed() << "ms." ;
 }

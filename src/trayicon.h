@@ -8,7 +8,7 @@
 #define TRAYICON_H
 
 #if defined _WIN32
-#define UPDATE_PERIOD_1 40
+#define UPDATE_PERIOD_1 1000
 #else
 #define UPDATE_PERIOD_1 40
 #endif
@@ -33,6 +33,7 @@ public:
 
 signals:
     void updateLabel(const QString &text, const double &ratio);
+    void show_refreshment(QList<QString>, QString, QString, Setting, Timer*);
 
 private slots:
     void ShowView();

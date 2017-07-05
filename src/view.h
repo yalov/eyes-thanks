@@ -30,7 +30,7 @@ public:
     explicit View(QWidget *parent = 0);
 
     enum Methods {
-        UNICOLOROUS,
+//        UNICOLOROUS,
         RAINBOW,
         RAINBOW_STRIPES,
         RAINBOWED_RECTANGLES,
@@ -42,12 +42,13 @@ public:
         COUNT_OF_METHODS
     }; Q_ENUM(Methods)
 
-    void ShowRefreshment(const QList<QString>& pics_path,const QString &clock, const QString &ProgressBarText, const Setting & setting);
+
     void UpdateValues(const QString &remains_str, const double &ratio);
+public slots:
+    void ShowRefreshment(const QList<QString>& pics_path, const QString &clock, const QString &ProgressBarText, const Setting & setting, Timer *viewtimer);
 
 signals:
     void view_close();
-    void opengl_update(double, int);
 
 private:
     void closeEvent(QCloseEvent *event);

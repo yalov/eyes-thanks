@@ -8,7 +8,7 @@ include("functions.pri")
 StartProjectMESSAGE()
 
 VERSION = 1.2.0
-CONFIG += DEPLOY
+#CONFIG += DEPLOY
 TARGET  = "Eyes\' Thanks"
 NAME    = Alexander Yalov
 EMAIL   = alexander.yalov@gmail.com
@@ -29,6 +29,8 @@ CONFIG -= debug_and_release
 CONFIG -= debug_and_release_target
 
 CONFIG += c++11
+# '+' will automatically be performed as the QStringBuilder '%' everywhere.
+DEFINES *= QT_USE_QSTRINGBUILDER
 
 QT     += core gui network widgets winextras
 #QT += opengl
@@ -65,7 +67,8 @@ HEADERS  += src/aboutwindow.h \
     src/view.h \
     src/updater.h \
     src/global.h \
-    src/testitem.h
+    src/testitem.h \
+    src/transliteration-iso9a.h
 
 TRANSLATIONS += languages/lang_ru.ts languages/lang_en.ts
 RESOURCES    += resource.qrc
