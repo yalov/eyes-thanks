@@ -1,8 +1,13 @@
+//----------------------------------------------------------------------------------//
+//      Copyright 2015 Alexander Yalov <alexander.yalov@gmail.com>                  //
+//      This file is part of Eyes' Thanks.                                          //
+//      GNU General Public License 3                                                //
+//----------------------------------------------------------------------------------//
+
 #ifndef UPDATER_H
 #define UPDATER_H
 
-#include <QObject>
-#include <qaction.h>
+#include <QAction>
 #include <QMessageBox>
 #include <QtNetwork/QNetworkReply>
 

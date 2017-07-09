@@ -161,7 +161,7 @@ but in investing it.</translation>
     <message>
         <location filename="../src/dialog.cpp" line="192"/>
         <source>Leave both folder paths empty, if you want nice gradient instead of pictures.</source>
-        <translation>Leave both folder paths empty, if you want iridescent background instead of pictures.</translation>
+        <translation>Choose folder with images (jpg, png, gif), or leave empty.</translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="194"/>

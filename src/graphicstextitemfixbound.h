@@ -1,26 +1,13 @@
 //----------------------------------------------------------------------------------//
 //      Copyright 2015 Alexander Yalov <alexander.yalov@gmail.com>                  //
-//                                                                                  //
 //      This file is part of Eyes' Thanks.                                          //
-//                                                                                  //
-//      Eyes' Thanks is free software: you can redistribute it and/or modify        //
-//      it under the terms of the GNU General Public License either                 //
-//      version 3 of the License, or (at your option) any later version.            //
-//                                                                                  //
-//      Eyes' Thanks is distributed in the hope that it will be useful,             //
-//      but WITHOUT ANY WARRANTY; without even the implied warranty of              //
-//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               //
-//      GNU General Public License for more details.                                //
-//                                                                                  //
-//      You should have received a copy of the GNU General Public License           //
-//      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       //
+//      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
 #ifndef GRAPHICSTEXTITEMFIXBOUND_H
 #define GRAPHICSTEXTITEMFIXBOUND_H
 
 #include <QtGui>
-#include <QtCore>
 #include <QGraphicsTextItem>
 
 class GraphicsTextItemFixBound : public QGraphicsTextItem
@@ -28,10 +15,10 @@ class GraphicsTextItemFixBound : public QGraphicsTextItem
     Q_OBJECT
 private:
 
-    int d1x;
-    int d1y;
-    int d2x;
-    int d2y;
+    int d1x = 0;
+    int d1y = 0;
+    int d2x = 0;
+    int d2y = 0;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
     {
@@ -41,11 +28,6 @@ private:
     }
 
 public:
-
-    GraphicsTextItemFixBound() : QGraphicsTextItem()
-    {
-    }
-
     void setFont(QFont f)
     {
 

@@ -4,17 +4,29 @@
 //      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
-#include "trayicon.h"
-#include <QApplication>
+#ifndef TESTITEM_H
+#define TESTITEM_H
+#include <QOpenGLWidget>
 
-int main(int argc, char *argv[])
+
+
+class TestItem : public QOpenGLWidget
 {
-    QApplication a(argc, argv);
+Q_OBJECT
+public:
+    explicit TestItem(const QRect &screen);
 
-    a.setQuitOnLastWindowClosed(false);
+public slots:
+    void animate(double _hue, int _diameter);
 
-    TrayIcon w;
-    w.show();
+private:
+    void paintGL();
+    void resizeGL(int w, int h);
+    void initializeGL();
 
-    return a.exec();
-}
+    double hue = 0;
+    int diameter = 0;
+    QRect screen;
+};
+
+#endif // REFRESHMENT_H

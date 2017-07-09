@@ -1,19 +1,7 @@
 //----------------------------------------------------------------------------------//
 //      Copyright 2015 Alexander Yalov <alexander.yalov@gmail.com>                  //
-//                                                                                  //
 //      This file is part of Eyes' Thanks.                                          //
-//                                                                                  //
-//      Eyes' Thanks is free software: you can redistribute it and/or modify        //
-//      it under the terms of the GNU General Public License either                 //
-//      version 3 of the License, or (at your option) any later version.            //
-//                                                                                  //
-//      Eyes' Thanks is distributed in the hope that it will be useful,             //
-//      but WITHOUT ANY WARRANTY; without even the implied warranty of              //
-//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               //
-//      GNU General Public License for more details.                                //
-//                                                                                  //
-//      You should have received a copy of the GNU General Public License           //
-//      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       //
+//      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
 #ifndef VIEW_H
@@ -39,39 +27,63 @@ class View : public QGraphicsView
     Q_OBJECT
 
 public:
-    View(QWidget *parent = 0);
-    ~View();
+    explicit View(QWidget *parent = 0);
 
-    void ShowRefreshment(QList<QString> pics_path, QString clock, QString ProgressBarText, bool isLogging, bool isPrettyFont, ImageAspectMode AspectMode);
-    void UpdateValues(QString remains_str, double ratio);
+    enum Methods {
+//        UNICOLOROUS,
+        RAINBOW,
+        RAINBOW_STRIPES,
+        RAINBOWED_RECTANGLES,
+        RANDOM_CIRCLE,
+        RANDOM_CIRCLES,
+        NEO,
+//        LINEAR_GRADIENT_TEST,
+
+        COUNT_OF_METHODS
+    }; Q_ENUM(Methods)
+
+
+    void UpdateValues(const QString &remains_str, const double &ratio);
+public slots:
+    void ShowRefreshment(const QList<QString>& pics_path, const QString &clock, const QString &ProgressBarText, const Setting & setting, Timer *viewtimer);
 
 signals:
     void view_close();
-
 
 private:
     void closeEvent(QCloseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-    void SetBackground(double hue);
+    int SetBackground(double hue_now);
+    void SaveSceneToFile(QString dir_path);
+
+    const QRect default_screen;
+    const QRect desktop;
 
     QString picture_path;
 
     QGraphicsScene *myscene;
-    QGraphicsTextItem *clockItem;
-
+    QGraphicsSimpleTextItem *clockItem;
+    QGraphicsSimpleTextItem *textItem;
     QGraphicsRectItem *ProgressBar;
     QGraphicsRectItem *ProgressBarBound;
     QGraphicsRectItem *ProgressBarBackground;
     GraphicsTextItemFixBound *ProgressBarText;
     QRect ProgressBarRect;
     QGraphicsRectItem *ButtonRectItem;
-    double Hue;
-
-public:
     GraphicsTextItemFixBound *ButtonText;
+
+    Setting setting;
+
+    QGraphicsEllipseItem * Item;
+    QElapsedTimer * ElapsedTimerDot;
+    int Method;
+    double Hue_start;
+    bool IsBackgroundUpdate;
+    bool RunnedFirstTime;
 };
 
 

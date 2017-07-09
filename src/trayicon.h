@@ -1,39 +1,25 @@
 //----------------------------------------------------------------------------------//
 //      Copyright 2015 Alexander Yalov <alexander.yalov@gmail.com>                  //
-//                                                                                  //
 //      This file is part of Eyes' Thanks.                                          //
-//                                                                                  //
-//      Eyes' Thanks is free software: you can redistribute it and/or modify        //
-//      it under the terms of the GNU General Public License either                 //
-//      version 3 of the License, or (at your option) any later version.            //
-//                                                                                  //
-//      Eyes' Thanks is distributed in the hope that it will be useful,             //
-//      but WITHOUT ANY WARRANTY; without even the implied warranty of              //
-//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               //
-//      GNU General Public License for more details.                                //
-//                                                                                  //
-//      You should have received a copy of the GNU General Public License           //
-//      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       //
+//      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
 #ifndef TRAYICON_H
 #define TRAYICON_H
 
 #if defined _WIN32
-#define UPDATE_PERIOD_1 40
+#define UPDATE_PERIOD_1 1000
 #else
 #define UPDATE_PERIOD_1 40
 #endif
 
 #define UPDATE_PERIOD_2 1000
 
-#include <QAction>
 #include <QSystemTrayIcon>
 
 #include "view.h"
 #include "timer.h"
 #include "dialog.h"
-#include "aboutwindow.h"
 #include "updater.h"
 
 
@@ -46,12 +32,10 @@ public:
     ~TrayIcon();
 
 signals:
-    void updateLabel(QString text, double ratio);
+    void updateLabel(const QString &text, const double &ratio);
+    void show_refreshment(QList<QString>, QString, QString, Setting, Timer*);
 
 private slots:
-
-
-
     void ShowView();
     void RefreshmentStart();
     void ViewUpdateTime();
@@ -62,25 +46,25 @@ private slots:
     void About();
     void ShowDialog();
     void CloseDialog();
-    void Save(Setting s);
+    void Save(const Setting &s);
 
     void TimerStatusSend();
-    void slotLanguageChanged(QAction *action);  // this slot is called by the language menu actions
+    void LanguageChanged(QAction *action);  // this slot is called by the language menu actions
 
 private:
-    void ReadSettings();
-    void WriteSettings();
+    void readSettings();
+    void writeSettings();
 
-    void InitIcons();
+    void initIcons();
     void setCurrentIcon(double ratio);
     void setPauseIcon();
     void setCurrentIconbyCurrentIconRatio();
-    void Translate();
-    void LoadLanguage(const QString &rLanguage);  // loads a language by the given language shortcur (e.g. de, en)
+    void translate();
+    void loadLanguage(const QString &rLanguage);  // loads a language by the given language shortcur (e.g. de, en)
     void createContextMenu();
     void createLangActionGroup();
     void createActions();
-
+    void createOrDeleteAppStartUpLink(bool create);
 
 private:
     View *view;
@@ -110,8 +94,6 @@ private:
     bool TrayMessageShowed;
     QString TimeRemains;
     double CurrentIconRatio;
-
-    void CreateOrDeleteAppStartUpLink(bool create);
 };
 
 #endif // TRAYICON_H

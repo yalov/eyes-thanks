@@ -1,19 +1,7 @@
 //----------------------------------------------------------------------------------//
 //      Copyright 2015 Alexander Yalov <alexander.yalov@gmail.com>                  //
-//                                                                                  //
 //      This file is part of Eyes' Thanks.                                          //
-//                                                                                  //
-//      Eyes' Thanks is free software: you can redistribute it and/or modify        //
-//      it under the terms of the GNU General Public License either                 //
-//      version 3 of the License, or (at your option) any later version.            //
-//                                                                                  //
-//      Eyes' Thanks is distributed in the hope that it will be useful,             //
-//      but WITHOUT ANY WARRANTY; without even the implied warranty of              //
-//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               //
-//      GNU General Public License for more details.                                //
-//                                                                                  //
-//      You should have received a copy of the GNU General Public License           //
-//      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       //
+//      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
 #include "dialog.h"
@@ -23,7 +11,7 @@
 #include <QFileDialog>
 #include <QApplication>
 
-Dialog::Dialog()
+Dialog::Dialog():QDialog()
 {
     setWindowIcon(QIcon(":icons/logo.png"));
 
@@ -117,8 +105,8 @@ void Dialog::InitWidgets()
     layoutGrid_BreakSetting->addWidget(ButtonGenerateText,   9, 1);
     layoutGrid_BreakSetting->addWidget(TextEdit_Text,        10, 0, 1, 2);
 
-    layoutGrid_BreakSetting->setColumnStretch(0,2);
-    layoutGrid_BreakSetting->setColumnStretch(1,1);
+    layoutGrid_BreakSetting->setColumnStretch(0, 2);
+    layoutGrid_BreakSetting->setColumnStretch(1, 1);
 
     layoutV_BreakSetting->addLayout(layoutGrid_BreakSetting);
 
@@ -139,8 +127,8 @@ void Dialog::InitWidgets()
     layoutGrid_SystemSetting->addWidget(CheckBox_Message,     3, 0, 1, 2);
     layoutGrid_SystemSetting->addWidget(CheckBox_Logging,     4, 0, 1, 2);
 
-    layoutGrid_SystemSetting->setColumnStretch(0,2);
-    layoutGrid_SystemSetting->setColumnStretch(1,1);
+    layoutGrid_SystemSetting->setColumnStretch(0, 2);
+    layoutGrid_SystemSetting->setColumnStretch(1, 1);
 
     TopLayout->addWidget(GroupBox_SystemSetting);
 
@@ -167,8 +155,8 @@ void Dialog::InitWidgets()
 
     layout_Label_timer->addWidget(Label_Timer_Prefix);
     layout_Label_timer->addWidget(Label_Timer);
-    layout_Label_timer->setStretch(0,2);
-    layout_Label_timer->setStretch(1,1);
+    layout_Label_timer->setStretch(0, 2);
+    layout_Label_timer->setStretch(1, 1);
 
     TopLayout->addLayout(layout_Label_timer);
     TopLayout->addStretch();
@@ -234,22 +222,22 @@ void Dialog::InitConnectWidgetsChanged()
 
 void Dialog::SaveButton_status()
 {
-    Setting s = Setting(
-                        setting.counter,
-                        Spinbox_RefreshmentInterval->value() * 60 * 1000,
-                        Spinbox_RefreshmentContinuous->value() * 1000,
-                        LineEdit_Path->text(),
-                        LineEdit_Path_alt->text(),
-                        static_cast<ImageAspectMode>(Combobox_imageAspectMode->currentIndex()),
-                        static_cast<IconsMode>(Combobox_iconsMode->currentIndex()),
-                        CheckBox_Logging->isChecked(),
-                        CheckBox_Text->isChecked(),
-                        CheckBox_Clock->isChecked(),
-                        CheckBox_Message->isChecked(),
-                        CheckBox_PrettyFont->isChecked(),
-                        CheckBox_StartupLink->isChecked(),
-                        TextEdit_Text->toPlainText()
-                       );
+    Setting s = {
+        setting.counter,
+        Spinbox_RefreshmentInterval->value() * 60 * 1000,
+        Spinbox_RefreshmentContinuous->value() * 1000,
+        LineEdit_Path->text(),
+        LineEdit_Path_alt->text(),
+        static_cast<ImageAspectMode>(Combobox_imageAspectMode->currentIndex()),
+        static_cast<IconsMode>(Combobox_iconsMode->currentIndex()),
+        CheckBox_Logging->isChecked(),
+        CheckBox_Text->isChecked(),
+        CheckBox_Clock->isChecked(),
+        CheckBox_Message->isChecked(),
+        CheckBox_PrettyFont->isChecked(),
+        CheckBox_StartupLink->isChecked(),
+        TextEdit_Text->toPlainText()
+    };
 
     if (setting != s)
         buttonSave->setEnabled(true);
@@ -326,7 +314,7 @@ void Dialog::showEvent(QShowEvent *e)
 
 
 
-void Dialog::SetValues(Setting setting)
+void Dialog::SetValues(const Setting &setting)
 {
     this->setting = setting;
 
@@ -365,7 +353,7 @@ void Dialog::SetValues(Setting setting)
     //connect(TextEdit_Text, SIGNAL(textChanged()), this, SLOT(SaveValues()));
 }
 
-void Dialog::UpdateLabel(QString time, double ratio)
+void Dialog::UpdateLabel(const QString &time, const double &ratio)
 {
     Label_Timer->setText(time);
 
@@ -374,7 +362,8 @@ void Dialog::UpdateLabel(QString time, double ratio)
         TaskbarProgress->setValue(ratio * 100);
 
         //qDebug() << "Set time " << time;
-    } else {
+    }
+    else {
         TaskbarProgress->pause();
         TaskbarProgress->setValue(-ratio * 100);
         //qDebug() << "pause " << time;
@@ -391,7 +380,8 @@ bool Dialog::event(QEvent *event)
         emit closedialog();
         return QDialog::close();
         //return QDialog::event(event);
-    } else {
+    }
+    else {
         //event->accept();
         return QDialog::event(event);
     }
@@ -402,18 +392,16 @@ void Dialog::ButtonPath_clicked()
 {
     QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
                    (LineEdit_Path->text().isEmpty() ? QDir::homePath() : LineEdit_Path->text()), QFileDialog::ShowDirsOnly);
-    if (!path.isEmpty()) {
+    if (!path.isEmpty())
         LineEdit_Path->setText(path);
-    }
 }
 
 void Dialog::ButtonPath_alt_clicked()
 {
     QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
                    (LineEdit_Path_alt->text().isEmpty() ? QDir::homePath() : LineEdit_Path_alt->text()), QFileDialog::ShowDirsOnly);
-    if (!path.isEmpty()) {
+    if (!path.isEmpty())
         LineEdit_Path_alt->setText(path);
-    }
 }
 
 void Dialog::ButtonGenerateText_clicked()
@@ -429,22 +417,22 @@ void Dialog::SaveValues()
     //emit TimerStatusRequest();
     //Label_Timer->setText(QString("%1:00").arg(Spinbox_RefreshmentInterval->value(),2,10,QLatin1Char(' ')));
 
-    setting = Setting(
-                      setting.counter,
-                      Spinbox_RefreshmentInterval->value() * 60 * 1000,
-                      Spinbox_RefreshmentContinuous->value() * 1000,
-                      LineEdit_Path->text(),
-                      LineEdit_Path_alt->text(),
-                      static_cast<ImageAspectMode>(Combobox_imageAspectMode->currentIndex()),
-                      static_cast<IconsMode>(Combobox_iconsMode->currentIndex()),
-                      CheckBox_Logging->isChecked(),
-                      CheckBox_Text->isChecked(),
-                      CheckBox_Clock->isChecked(),
-                      CheckBox_Message->isChecked(),
-                      CheckBox_PrettyFont->isChecked(),
-                      CheckBox_StartupLink->isChecked(),
-                      TextEdit_Text->toPlainText()
-                     );
+    setting = Setting{
+        setting.counter,
+        Spinbox_RefreshmentInterval->value() * 60 * 1000,
+        Spinbox_RefreshmentContinuous->value() * 1000,
+        LineEdit_Path->text(),
+        LineEdit_Path_alt->text(),
+        static_cast<ImageAspectMode>(Combobox_imageAspectMode->currentIndex()),
+        static_cast<IconsMode>(Combobox_iconsMode->currentIndex()),
+        CheckBox_Logging->isChecked(),
+        CheckBox_Text->isChecked(),
+        CheckBox_Clock->isChecked(),
+        CheckBox_Message->isChecked(),
+        CheckBox_PrettyFont->isChecked(),
+        CheckBox_StartupLink->isChecked(),
+        TextEdit_Text->toPlainText()
+    };
 
     emit save(setting);
 }

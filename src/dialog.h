@@ -1,19 +1,7 @@
 //----------------------------------------------------------------------------------//
 //      Copyright 2015 Alexander Yalov <alexander.yalov@gmail.com>                  //
-//                                                                                  //
 //      This file is part of Eyes' Thanks.                                          //
-//                                                                                  //
-//      Eyes' Thanks is free software: you can redistribute it and/or modify        //
-//      it under the terms of the GNU General Public License either                 //
-//      version 3 of the License, or (at your option) any later version.            //
-//                                                                                  //
-//      Eyes' Thanks is distributed in the hope that it will be useful,             //
-//      but WITHOUT ANY WARRANTY; without even the implied warranty of              //
-//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               //
-//      GNU General Public License for more details.                                //
-//                                                                                  //
-//      You should have received a copy of the GNU General Public License           //
-//      along with Eyes' Thanks.  If not, see <http://www.gnu.org/licenses/>.       //
+//      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
 #ifndef DIALOG_H
@@ -22,12 +10,10 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialog>
-#include <QEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QSpinBox>
-#include <QDebug>
 #include <QGroupBox>
 #include <QWinTaskbarButton>
 #include <QWinTaskbarProgress>
@@ -40,7 +26,7 @@ class Dialog : public QDialog
     Q_OBJECT
 public:
     Dialog();
-    void SetValues(Setting setting);
+    void SetValues(const Setting &setting);
     void Translate();
 
 private:
@@ -50,7 +36,7 @@ private:
     void InitConnectWidgetsChanged();
 
 public slots:
-    void UpdateLabel(QString time, double ratio);
+    void UpdateLabel(const QString &time, const double &ratio);
 
 private slots:
     void SaveValues();
@@ -60,7 +46,7 @@ private slots:
     void SaveButton_status();
 signals:
     void closedialog();
-    void save(Setting setting);
+    void save(const Setting &setting);
     void TimerStatusRequest();
 
 private:
