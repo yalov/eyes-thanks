@@ -11,7 +11,7 @@
 #include <QFileDialog>
 #include <QApplication>
 
-Dialog::Dialog():QDialog()
+Dialog::Dialog(): QDialog()
 {
     setWindowIcon(QIcon(":icons/logo.png"));
 
@@ -23,7 +23,6 @@ Dialog::Dialog():QDialog()
 
     InitWidgets();
     Translate();
-
 }
 
 void Dialog::InitWidgets()
@@ -353,7 +352,7 @@ void Dialog::SetValues(const Setting &setting)
     //connect(TextEdit_Text, SIGNAL(textChanged()), this, SLOT(SaveValues()));
 }
 
-void Dialog::UpdateLabel(const QString &time, const double &ratio)
+void Dialog::UpdateLabel(const QString &time, const qreal &ratio)
 {
     Label_Timer->setText(time);
 
@@ -407,7 +406,7 @@ void Dialog::ButtonPath_alt_clicked()
 void Dialog::ButtonGenerateText_clicked()
 {
     QStringList proverbs = qApp->translate("App", "Proverbs.").split("\n\n");
-    TextEdit_Text->setPlainText(proverbs[rand() % proverbs.size()]);
+    TextEdit_Text->setPlainText(proverbs[qrand() % proverbs.size()]);
 
 
 }

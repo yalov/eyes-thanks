@@ -32,7 +32,7 @@ public:
     ~TrayIcon();
 
 signals:
-    void updateLabel(const QString &text, const double &ratio);
+    void updateLabel(const QString &text, const qreal &ratio);
     void show_refreshment(QList<QString>, QString, QString, Setting, Timer*);
 
 private slots:
@@ -56,7 +56,7 @@ private:
     void writeSettings();
 
     void initIcons();
-    void setCurrentIcon(double ratio);
+    void setCurrentIcon(qreal ratio);
     void setPauseIcon();
     void setCurrentIconbyCurrentIconRatio();
     void translate();
@@ -93,7 +93,7 @@ private:
 
     bool TrayMessageShowed;
     QString TimeRemains;
-    double CurrentIconRatio;
+    qreal CurrentIconRatio;
 };
 
 #endif // TRAYICON_H

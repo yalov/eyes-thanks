@@ -26,9 +26,9 @@ public:
         QString win_title = tr("About Eyes' Thanks");
         QString app_name = QString(APP_NAME);
         QString app_version = QString(APP_VERSION);
-        QString dev_name = QString(DEVELOP_NAME);
-        QString dev_email = QString(DEVELOP_EMAIL);
-        QString repository_url = QString(REPOSITORY_PATH);
+        QString dev_name = QString(DEV_NAME);
+        QString dev_email = QString(DEV_EMAIL);
+        QString repository_url = QString(REPO_URL);
         QString license_url = "http://www.gnu.org/licenses/gpl-3.0.html";
         QString license_path = ":/copying.html";
         QString license_name = "GNU GPLv3";

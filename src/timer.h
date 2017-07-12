@@ -22,7 +22,7 @@ public:
     void  restart();
     qint64 elapsed();
     qint64 remains();
-    double ratio();
+    qreal ratio();
     QString remains_str();
     QString remains_str(bool isDeciSec);
     qint64 interval;

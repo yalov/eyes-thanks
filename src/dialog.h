@@ -36,7 +36,7 @@ private:
     void InitConnectWidgetsChanged();
 
 public slots:
-    void UpdateLabel(const QString &time, const double &ratio);
+    void UpdateLabel(const QString &time, const qreal &ratio);
 
 private slots:
     void SaveValues();

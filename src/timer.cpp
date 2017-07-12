@@ -99,9 +99,9 @@ qint64 Timer::remains()
     return interval - elapsed();
 }
 
-double Timer::ratio()
+qreal Timer::ratio()
 {
-    return double(elapsed()) / interval;
+    return qreal(elapsed()) / interval;
 }
 
 QString Timer::remains_str()

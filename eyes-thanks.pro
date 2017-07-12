@@ -7,12 +7,13 @@
 include("functions.pri")
 StartProjectMESSAGE()
 
-VERSION = 1.2.0
-#CONFIG += DEPLOY
-TARGET  = "Eyes\' Thanks"
-NAME    = Alexander Yalov
-EMAIL   = alexander.yalov@gmail.com
-REPO    = https://github.com/yalov/eyes-thanks
+#CONFIG  += DEPLOY
+APP_NAME  = Eyes’ Thanks
+VERSION   = 1.2.2
+DEV_NAME  = Alexander Yalov
+DEV_EMAIL = alexander.yalov@gmail.com
+REPO_URL  = https://github.com/yalov/eyes-thanks
+TARGET    = "Eyes\' Thanks"
 
 CONFIG(release, debug|release) {
 DESTDIR = $$PWD/../EyesThanks
@@ -29,24 +30,22 @@ CONFIG -= debug_and_release
 CONFIG -= debug_and_release_target
 
 CONFIG += c++11
-# '+' will automatically be performed as the QStringBuilder '%' everywhere.
-DEFINES *= QT_USE_QSTRINGBUILDER
 
 QT     += core gui network widgets winextras
-#QT += opengl
-#LIBS += -LC:\Qt\5.9\mingw53_32\lib\libQt5OpenGL.a -lopengl32
-#LIBS += -lGLU
 
 win32:RC_ICONS += icons/icon.ico
 
 QMAKE_TARGET_DESCRIPTION = $$TARGET
-QMAKE_TARGET_COPYRIGHT   = $$NAME
+QMAKE_TARGET_COPYRIGHT   = $$DEV_NAME
 
-DEFINES += REPOSITORY_PATH='"\\\"$$REPO\\\""'
-DEFINES +=   APP_VERSION='"\\\"$$VERSION\\\""'
-DEFINES +=     APP_NAME='"\\\"$$TARGET\\\""'
-DEFINES +=  DEVELOP_NAME='"\\\"$$NAME\\\""'
-DEFINES += DEVELOP_EMAIL='"\\\"$$EMAIL\\\""'
+DEFINES +=    REPO_URL='"\\\"$$REPO_URL\\\""'
+DEFINES += APP_VERSION='"\\\"$$VERSION\\\""'
+DEFINES +=    APP_NAME='"\\\"$$APP_NAME\\\""'
+DEFINES +=    DEV_NAME='"\\\"$$DEV_NAME\\\""'
+DEFINES +=   DEV_EMAIL='"\\\"$$DEV_EMAIL\\\""'
+
+# '+' will automatically be performed as the QStringBuilder '%' everywhere.
+DEFINES *= QT_USE_QSTRINGBUILDER
 
 TEMPLATE = app
 
@@ -56,18 +55,15 @@ SOURCES += \
     src/trayicon.cpp \
     src/view.cpp \
     src/updater.cpp \
-    src/timer.cpp \
-    src/testitem.cpp
+    src/timer.cpp
 
 HEADERS  += src/aboutwindow.h \
     src/dialog.h \
-    src/graphicstextitemfixbound.h \
     src/timer.h \
     src/trayicon.h \
     src/view.h \
     src/updater.h \
     src/global.h \
-    src/testitem.h \
     src/transliteration-iso9a.h
 
 TRANSLATIONS += languages/lang_ru.ts languages/lang_en.ts

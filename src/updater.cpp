@@ -10,27 +10,27 @@
 #include <QCoreApplication>
 #include <QGridLayout>
 
-
-
 UpdateAction::UpdateAction(const QIcon &icon, const QString &text, QObject *parent) :
     QAction(icon, text, parent)
 {
     connect(this, SIGNAL(triggered()), this, SLOT(showmessagebox()));
     connect(this, SIGNAL(triggered()), this, SLOT(update()));
-
 }
 
 void UpdateAction::showmessagebox()
 {
-    downloadProcess = new QMessageBox(QMessageBox::Icon::NoIcon, qApp->translate("App", "Eyes' Thanks"), tr("Checking update..."), QMessageBox::StandardButton::Cancel);
+    mbx = new QMessageBox(QMessageBox::Icon::NoIcon, qApp->translate("App", "Eyes' Thanks"), tr("Checking update..."),
+                                      QMessageBox::StandardButton::Cancel);
+    QFontMetrics fm(mbx->font());
+    int height =  fm.boundingRect("A").height() * 6;
+    mbx->setStyleSheet(QString("QLabel{min-height: %1px;}").arg(height));
 
     QSpacerItem *horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    QGridLayout *layout = (QGridLayout *)downloadProcess->layout();
+    QGridLayout *layout = qobject_cast<QGridLayout *>(mbx->layout());
     layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
 
-    downloadProcess->show();
+    mbx->show();
     QCoreApplication::processEvents();
-
 }
 
 void UpdateAction::update()
@@ -40,82 +40,49 @@ void UpdateAction::update()
     connect(manager, SIGNAL(finished(QNetworkReply *)),
             this, SLOT(replyFinished(QNetworkReply *)));
 
-    manager->get(QNetworkRequest(QUrl("https://raw.githubusercontent.com/yalov/eyes-thanks/master/eyes-thanks.pro")));
-
+    manager->get(QNetworkRequest(QUrl("https://api.github.com/repos/yalov/eyes-thanks/releases")));
 }
-
-
 
 void UpdateAction::replyFinished(QNetworkReply *reply)
 {
-    QList<int> newVersion = {0, 0, 0};
-    QList<int> currVersion = {0, 0, 0};
-
-    QRegularExpression re("(\\d+)\\.(\\d+)\\.(\\d+)");
-    QRegularExpressionMatch match = re.match(QString(APP_VERSION));
-
-    if (match.hasMatch()) {
-        currVersion[0] = match.captured(1).toInt();
-        currVersion[1] = match.captured(2).toInt();
-        currVersion[2] = match.captured(3).toInt();
-    }
-
+    mbx->setStandardButtons(QMessageBox::Ok);
 
     if (reply->error() != QNetworkReply::NoError) {
-        // qDebug() << reply->errorString();
-
-        downloadProcess->setText(tr("There was an error connecting to <a href='%1'>%1</a>.")
-                                 .arg(REPOSITORY_PATH));
-
-        downloadProcess->setIcon(QMessageBox::Critical);
-        downloadProcess->setStandardButtons(QMessageBox::Ok);
-
-    } else {
-
-        QString ProFileText = QString(reply->readAll());
-        QRegularExpression re("VERSION.+(\\d+)\\.(\\d+)\\.(\\d+)");
-        QRegularExpressionMatch match = re.match(ProFileText);
-
-        if (match.hasMatch()) {
-            newVersion[0] = match.captured(1).toInt();
-            newVersion[1] = match.captured(2).toInt();
-            newVersion[2] = match.captured(3).toInt();
-        }
-
-
-        downloadProcess->setIcon(QMessageBox::Information);
-        downloadProcess->setStandardButtons(QMessageBox::Ok);
-
-        if (currVersion == newVersion) {
-            downloadProcess->setText(tr("You are already running the most recent version of <b>Eyes' Thanks</b>."));
-
-        } else if ((currVersion[0] < newVersion[0]) ||
-                   (currVersion[0] == newVersion[0] && currVersion[1] < newVersion[1]) ||
-                   (currVersion[0] == newVersion[0] && currVersion[1] == newVersion[1] && currVersion[2] < newVersion[2])) {
-            QString NewVersionPath = QString("https://github.com/yalov/eyes-thanks/releases/download/%1/EyesThanks_v%1.7z")
-                                     .arg(QString::number(newVersion[0]) + "." + QString::number(newVersion[1]) + "." + QString::number(newVersion[2]));
-
-            downloadProcess->setText(
-                tr("A new version of <b>Eyes' Thanks</b> has been released! Version <b>%1</b> is available at <a href=%2>%2</a>.<br><br>"
-                   "You can download this version using the link:<br>"
-                   "<a href=%3>%3</a>")
-                .arg(QString::number(newVersion[0]) + "." + QString::number(newVersion[1]) + "." + QString::number(newVersion[2]))
-                .arg(REPOSITORY_PATH)
-                .arg(NewVersionPath));
-        }
-
-
-        else {
-            downloadProcess->setText(
-                tr("Fantastic! You are have <b>Eyes' Thanks %1</b>, but last available version is <b>%2</b>.<br><br>"
-                   "Please, upload new version to <a href=%3>%3</a>.")
-                .arg(QString::number(currVersion[0]) + "." + QString::number(currVersion[1]) + "." + QString::number(currVersion[2]))
-                .arg(QString::number(newVersion[0]) + "." + QString::number(newVersion[1]) + "." + QString::number(newVersion[2]))
-                .arg(REPOSITORY_PATH)
-            );
-        }
-
+        mbx->setIcon(QMessageBox::Critical);
+        mbx->setText(tr("There was an error connecting to <a href='%1'>%1</a>.").arg(REPO_URL));
     }
+    else {
+        QVector<int> newVersion = {0, 0, 0};
+        QVector<int> currVersion = {0, 0, 0};
 
+        QRegularExpression re1("(\\d+)\\.(\\d+)\\.(\\d+)");
+        QRegularExpressionMatch match1 = re1.match(QString(APP_VERSION));
+        for (int i = 0; i < match1.lastCapturedIndex(); ++i) // 0..2
+            currVersion[i] = match1.captured(i+1).toInt();
+
+        QRegularExpression re2("tag_name.+?(\\d+)\\.(\\d+)\\.(\\d+)");
+        QRegularExpressionMatch match2 = re2.match(QString(reply->readAll()));
+        for (int i = 0; i < match2.lastCapturedIndex(); ++i) // 0..2
+            newVersion[i] = match2.captured(i+1).toInt();
+
+        QString NewVersionString  = QString("%1.%2.%3").arg(newVersion[0]).arg(newVersion[1]).arg(newVersion[2]);
+        QString NewVersionUrl =
+            QString("https://github.com/yalov/eyes-thanks/releases/download/%1/EyesThanks_v%1.7z").arg(NewVersionString);
+
+        QString text;
+        if (currVersion == newVersion)
+            text = tr("You are already running the most recent version of <b>Eyes' Thanks</b>.");
+        else if (currVersion < newVersion)
+            text = tr("A new version of <b>Eyes' Thanks</b> has been released! "
+                      "Version <b>%1</b> is available at <a href=%2>%2</a>.<br><br>"
+                      "You can download this version using the link:<br>"
+                      "<a href=%3>%3</a>").arg(NewVersionString).arg(REPO_URL).arg(NewVersionUrl);
+        else
+            text = tr("Fantastic! You are have <b>Eyes' Thanks %1</b>, "
+                      "but last available version is <b>%2</b>.<br><br>"
+                      "Please, upload new version to <a href=%3>%3</a>.").arg(APP_VERSION).arg(NewVersionString).arg(REPO_URL);
+
+        mbx->setText(text);
+    }
     reply->deleteLater();
 }

@@ -4,8 +4,7 @@
 //      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
-#include <QApplication>
-#include <QDesktopWidget>
+
 #include <QGraphicsBlurEffect>
 #include "view.h"
 #include "timer.h"
@@ -14,7 +13,7 @@
 View::View(QWidget *parent): QGraphicsView(parent),
     default_screen(QApplication::desktop()->screenGeometry(-1)),
     desktop(QApplication::desktop()->geometry()),
-    clockItem(nullptr), textItem(nullptr), setting(), Item(nullptr), ElapsedTimerDot(nullptr),
+    clockItem(nullptr), textItem(nullptr), setting(), Item(nullptr),
     Method(-1), Hue_start(0), IsBackgroundUpdate(false), RunnedFirstTime(false)
 {
 #ifdef DEPLOY
@@ -26,19 +25,18 @@ View::View(QWidget *parent): QGraphicsView(parent),
     setRenderHint(QPainter::Antialiasing);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setMouseTracking(true);
     setStyleSheet("QGraphicsView { border-style: none; }");
-
-    ;
 
     myscene = new QGraphicsScene();
     myscene->setBackgroundBrush(Qt::black);
     setScene(myscene);
 
-    ProgressBarText = new GraphicsTextItemFixBound();
+    ProgressBarText = new QGraphicsSimpleTextItem();
     QFont font;
     font.setPointSize(16);
     ProgressBarText->setFont(font);
-    ProgressBarText->setDefaultTextColor(Qt::black);
+    ProgressBarText->setBrush(Qt::black);
     ProgressBarText->setZValue(3);
     ProgressBarText->setCacheMode(QGraphicsItem::ItemCoordinateCache);
     myscene->addItem(ProgressBarText);
@@ -47,7 +45,7 @@ View::View(QWidget *parent): QGraphicsView(parent),
     ProgressBar->setPen(Qt::NoPen);
     ProgressBar->setBrush(Qt::white);
     ProgressBar->setOpacity(0.8);
-    ProgressBar->setZValue(2);
+    ProgressBar->setZValue(2.5);
     ProgressBar->setCacheMode(QGraphicsItem::ItemCoordinateCache);
     myscene->addItem(ProgressBar);
 
@@ -55,21 +53,21 @@ View::View(QWidget *parent): QGraphicsView(parent),
     ProgressBarBackground->setPen(Qt::NoPen);
     ProgressBarBackground->setBrush(Qt::white);
     ProgressBarBackground->setOpacity(0.4);
-    ProgressBarBackground->setZValue(1);
+    ProgressBarBackground->setZValue(2);
     myscene->addItem(ProgressBarBackground);
 
     ProgressBarBound = new QGraphicsRectItem();
     ProgressBarBound->setPen(QPen(Qt::black));
     ProgressBarBound->setBrush(Qt::NoBrush);
-    ProgressBarBound->setZValue(2.5);
+    ProgressBarBound->setZValue(3);
     myscene->addItem(ProgressBarBound);
 
-    ButtonText = new GraphicsTextItemFixBound();
+    ButtonText = new QGraphicsSimpleTextItem();
     font.setPointSize(14);
     ButtonText->setFont(font);
-    ButtonText->setDefaultTextColor(Qt::black);
+    ButtonText->setBrush(Qt::black);
     ButtonText->setZValue(3);
-    ButtonText->setPlainText(tr("Close"));
+    ButtonText->setText(tr("Close"));
     myscene->addItem(ButtonText);
 
     ButtonRectItem = new QGraphicsRectItem();
@@ -81,22 +79,27 @@ View::View(QWidget *parent): QGraphicsView(parent),
 }
 
 
-inline QString Tostr(QRect r)
+inline QString str_from(QRect r)
 {
     return QString("(%1,%2)[%3x%4]").arg(r.x(), 5).arg(r.y(), 5).arg(r.width(), 4).arg(r.height(), 4);
 }
 
-inline QString Tostr(QSize s)
+inline QString str_from(QSize s)
 {
     return QString("             [%3x%4]").arg(s.width(), 4).arg(s.height(), 4);
 }
+
+//inline int positive_modulo(int i, int n)
+//{
+//    return (i % n + n) % n;
+//}
 
 void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock, const QString &text, const  Setting &setting, Timer *viewtimer)
 {
     QElapsedTimer timer; timer.start();
     myscene->setSceneRect(desktop);
-    double ratio_desk = double(desktop.width()) / desktop.height();
-    double ratio_default_screen = double(default_screen.width()) / default_screen.height();
+    qreal ratio_desk = desktop.ratio();
+    qreal ratio_default_screen = default_screen.ratio();
 
     // ClockItem and TextItem
     if (!clock.isEmpty() || !text.isEmpty()) {
@@ -147,7 +150,7 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
     }
 
     // Picture and Background
-    QList<double> ratios_pic;
+    QList<qreal> ratios_pic;
     QList<QPixmap> pics;
     QList<QString> pics_path_confirmed;
 
@@ -155,7 +158,7 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
         QPixmap pic = QPixmap(pic_path);
         if (!pic.isNull()) {
             pics.append(pic);
-            ratios_pic.append((double)pic.width() / pic.height());
+            ratios_pic.append((qreal)pic.width() / pic.height());
             pics_path_confirmed.append(pic_path);
         }
     }
@@ -166,9 +169,9 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
 
     if (pics.size() > 0) {
         // find out which one of pic apropriate, if "inside" - comparison to def screen, if outside or auto - comparison to desk
-        double ratio = (setting.imageAspectMode == ImageAspectMode::Inside) ? ratio_default_screen : ratio_desk;
-        double min_value = std::numeric_limits<double>::max();
-        double min_index = 0;
+        qreal ratio = (setting.imageAspectMode == ImageAspectMode::Inside) ? ratio_default_screen : ratio_desk;
+        qreal min_value = std::numeric_limits<qreal>::max();
+        qreal min_index = 0;
 
         for (int i = 0; i < pics.size(); i++) {
             if (abs(ratios_pic[i] - ratio) < min_value) {
@@ -179,7 +182,7 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
 
         picture_path = pics_path_confirmed[min_index];
         QPixmap pic = pics[min_index];
-        double ratio_pic = ratios_pic[min_index];
+        qreal ratio_pic = ratios_pic[min_index];
 
         if (setting.imageAspectMode == ImageAspectMode::Inside)      display_case = "Default_screen Inside";
         else if (setting.imageAspectMode == ImageAspectMode::Outside)     display_case = "Full_desktop Outside";
@@ -228,8 +231,8 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
 
     // ProgressBar and ButtonRect
     {
-        ProgressBarText->setPlainText(viewtimer->remains_str());
-        QPoint textsize = QPoint(ProgressBarText->boundingRect().width(),ProgressBarText->boundingRect().height());
+        ProgressBarText->setText(viewtimer->remains_str());
+        QPoint textsize = QPoint(ProgressBarText->boundingRect().width(), ProgressBarText->boundingRect().height());
         int y_pos = default_screen.height() - textsize.y() - 25 ;
         ProgressBarRect = QRect(default_screen.left() + default_screen.width() / 5, y_pos,
                                 3 * default_screen.width() / 5, textsize.y());
@@ -238,7 +241,7 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
         ProgressBar->setRect(ProgressBarRect.adjusted(0, 0, 0/*-ProgressBarRect.width() / 2*/, 0));
         ProgressBarBound->setRect(ProgressBarRect.adjusted(-1, -1, 0, 0));
         ButtonRectItem->setRect(QRect(ProgressBarBackground->boundingRect().right() + 25, y_pos, 100, textsize.y()));
-        ProgressBarText->setPos(ProgressBarRect.center() - textsize/2);
+        ProgressBarText->setPos(ProgressBarRect.center() - textsize / 2);
 
         QPointF p = ButtonRectItem->rect().center() -
                     QPoint(ButtonText->boundingRect().width(), ButtonText->boundingRect().height()) / 2;
@@ -264,27 +267,27 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
 
         for (int i = 0; i < pics.size(); i++) {
             if (picture_path == pics_path_confirmed[i])
-                Logging_str += QString(" - image showing      %1  %2 %3\n").arg(ratios_pic[i], 4, 'f', 2).arg(Tostr(pics[i].size())).arg(pics_path_confirmed[i]);
+                Logging_str += QString(" - image showing      %1  %2 %3\n").arg(ratios_pic[i], 4, 'f', 2).arg(str_from(pics[i].size())).arg(pics_path_confirmed[i]);
             else
-                Logging_str += QString(" - image              %1  %2 %3\n").arg(ratios_pic[i], 4, 'f', 2).arg(Tostr(pics[i].size())).arg(pics_path_confirmed[i]);
+                Logging_str += QString(" - image              %1  %2 %3\n").arg(ratios_pic[i], 4, 'f', 2).arg(str_from(pics[i].size())).arg(pics_path_confirmed[i]);
         }
 
         if (default_screen == desktop)
-            Logging_str += QString(" - single screen      %3  %4\n").arg(ratio_desk, 4, 'f', 2).arg(Tostr(desktop.size()));
+            Logging_str += QString(" - single screen      %3  %4\n").arg(ratio_desk, 4, 'f', 2).arg(str_from(desktop.size()));
         else {
-            Logging_str += QString(" - full desktop       %3  %4\n").arg(ratio_desk, 4, 'f', 2).arg(Tostr(desktop.size()));
+            Logging_str += QString(" - full desktop       %3  %4\n").arg(ratio_desk, 4, 'f', 2).arg(str_from(desktop.size()));
 
             for (int i = 0; i < QApplication::desktop()->screenCount(); i++) {
                 if (QApplication::desktop()->primaryScreen() == i) {
                     Logging_str += QString(" - - default screen #%1  %2  %3\n").arg(i)
                                    .arg(ratio_default_screen, 4, 'f', 2)
-                                   .arg(Tostr(default_screen));
+                                   .arg(str_from(default_screen));
                 }
                 else {
                     QRect scr_i = QApplication::desktop()->screenGeometry(i);
                     Logging_str += QString(" - -         screen #%1  %2  %3\n").arg(i)
-                                   .arg((double)scr_i.width() / scr_i.height(), 4, 'f', 2)
-                                   .arg(Tostr(scr_i));
+                                   .arg((qreal)scr_i.width() / scr_i.height(), 4, 'f', 2)
+                                   .arg(str_from(scr_i));
                 }
             }
         }
@@ -312,7 +315,7 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
 #endif
 }
 
-int View::SetBackground(double hue_now)
+int View::SetBackground(qreal hue_now)
 {
     // HSV
     // S - from uncolor to color
@@ -320,12 +323,13 @@ int View::SetBackground(double hue_now)
     // 0 0 - black   // 1 0 - black
     // 0 0.5 grey    // 1 1 - color
     // 0 1 - white
+    Q_UNUSED(hue_now);
 
     QElapsedTimer timer;
     timer.start();
 
     if (Method == -1) {
-        Method = rand() % COUNT_OF_METHODS;
+        Method = qrand() % COUNT_OF_METHODS;
 
         if (Method == RANDOM_CIRCLE)
             IsBackgroundUpdate = true;
@@ -333,20 +337,65 @@ int View::SetBackground(double hue_now)
 
     switch (Method) {
     case RAINBOW: {
+        if (0.20 < Hue_start && Hue_start < 0.35)
+            Hue_start = Hue_start * 5 + 0.35; // 1.35 << 2.10 // no blue in the center
+
         QLinearGradient rainbow(desktop.topLeft(), desktop.topRight());
 
-        for (double ratio = 0, hue = 0; ratio <= 1.0; ratio += 1. / 25) {
-            QColor c = QColor::fromHsvF(fmod(hue_now + hue * 0.8, 1), 1, 1);
-            rainbow.setColorAt(1 - ratio, c);
-            hue += 1. / 25;
+        for (qreal hue = 0; hue <= 1.0; hue += 1. / 25) {
+            QColor c = QColor::fromHsvF(fmod(Hue_start + hue * 0.8, 1), 1, 1);
+            rainbow.setColorAt(hue, c);
         }
         myscene->setBackgroundBrush(QBrush(rainbow));
+        ProgressBar->setBrush(QBrush(rainbow));
+        ProgressBar->setOpacity(1);
+        ProgressBarBackground->setBrush(QBrush(rainbow));
+        ProgressBarBackground->setOpacity(0.4);
+        ButtonRectItem->setBrush(QBrush(rainbow));
 
         QLinearGradient vertical(desktop.topLeft(), desktop.bottomLeft());
-        vertical.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0.9));
-        vertical.setColorAt(0.5, QColor::fromRgbF(0, 0, 0, 0.1));
-        vertical.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0.9));
+        int mode = qrand() % 3;
+        if (mode == 0) {
+            vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
+            vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
 
+            vertical.setColorAt(0.35,  QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(0.5,  QColor::fromRgbF(0, 0, 0, 0.4));
+            vertical.setColorAt(0.65,  QColor::fromRgbF(0, 0, 0, 1.0));
+
+            vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
+        }
+        else if (mode == 1) {
+            vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
+            vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
+
+            vertical.setColorAt(0.275, QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(0.375, QColor::fromRgbF(0, 0, 0, 0.4));
+            vertical.setColorAt(0.475, QColor::fromRgbF(0, 0, 0, 1.0));
+
+            vertical.setColorAt(0.525, QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(0.625, QColor::fromRgbF(0, 0, 0, 0.4));
+            vertical.setColorAt(0.725, QColor::fromRgbF(0, 0, 0, 1.0));
+
+            vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
+        }
+        else if (mode == 2) {
+            vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
+            vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(0.30, QColor::fromRgbF(0, 0, 0, 0.6));
+            vertical.setColorAt(0.35, QColor::fromRgbF(0, 0, 0, 1.0));
+
+            vertical.setColorAt(0.4,  QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(0.5,  QColor::fromRgbF(0, 0, 0, 0.4));
+            vertical.setColorAt(0.6,  QColor::fromRgbF(0, 0, 0, 1.0));
+
+            vertical.setColorAt(0.65, QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(0.70, QColor::fromRgbF(0, 0, 0, 0.6));
+            vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
+        }
         QGraphicsRectItem *item = new QGraphicsRectItem(desktop);
         item->setPen(Qt::NoPen);
         item->setBrush(vertical);
@@ -354,80 +403,167 @@ int View::SetBackground(double hue_now)
 
         break;
     }
-    case RAINBOW_STRIPES: {
-        QLinearGradient rainbow(desktop.topLeft(), desktop.topRight());
+    case TILING: {
+        switch (qrand() % 5) {
+        case 0: { // square
+            int h = qrand() % 20 + 9;
+            int w = qRound(h * desktop.ratio());
+            qreal cellw = desktop.widthF() / w;
+            qreal cellh = desktop.heightF() / h;
 
-        for (double ratio = 0, hue = 0; ratio <= 1.0; ratio += 1. / 25) {
-            QColor c = QColor::fromHsvF(fmod(hue_now + hue * 0.8, 1), 1, 0.9);
-            rainbow.setColorAt(1 - ratio, c);
-            hue += 1. / 25;
-        }
-        myscene->setBackgroundBrush(QBrush(rainbow));
-
-        double ratio = double(desktop.width()) / desktop.height();
-        double standard_ratio = 16.0 / 9.0;
-        double k = ratio / standard_ratio;
-        int stripes_count = 10;
-
-        int stripe_segment = desktop.width() / int(stripes_count * k);
-        int stripe_width = stripe_segment * 0.8;
-
-        bool stripes_gradient = rand() % 2;
-        if (stripes_gradient) {
-            for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
-                QGraphicsRectItem *item = new QGraphicsRectItem(i, 0, stripe_width, desktop.height());
-                QLinearGradient grad(item->rect().topLeft(), item->rect().topRight());
-                grad.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0));
-                grad.setColorAt(0.5, QColor::fromRgbF(0, 0, 0, 0.9));
-                grad.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
-                item->setPen(Qt::NoPen);
-                item->setBrush(grad);
-                myscene->addItem(item);
+            for (int i = 0; i < w; i++) {
+                for (int j = 0; j < h; j++) {
+                    QGraphicsRectItem *squareItem = new QGraphicsRectItem();
+                    squareItem->setPen(QPen(Qt::black, 1));
+                    squareItem->setPos(i * cellw, j * cellh);
+                    squareItem->setRect(0, 0, cellw, cellh);
+                    qreal hue = Hue_start + qreal(i) * 0.8 / w ;
+                    hue -= floor(hue);
+                    qreal value = qrand() % 50 / 100.0 + 0.25 ;
+                    squareItem->setBrush(QColor::fromHsvF(hue, 1.0, value));
+                    myscene->addItem(squareItem);
+                }
             }
+            break;
         }
-        else {
-            stripe_width = stripe_segment * 0.4;
-            for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
-                QGraphicsLineItem *item = new QGraphicsLineItem(i + stripe_width / 2, 0, i + stripe_width / 2, desktop.height());
-                item->setPen(QPen(QColor(Qt::black), stripe_width));
-                item->setOpacity(0.7);
-                myscene->addItem(item);
-            }
-        }
-        break;
-    }
-    case RAINBOWED_RECTANGLES: {
-        int w = qrand() % 50 + 7;
-        double half = qrand() % 10 + 2;
-        int h = 2 * int(half) + 1;
-        qDebug() << w << " " << h;
-        double cellw = desktop.width() / double(w);
-        double cellh = desktop.height() / double(h);
+        case 1: { // square transform
+            int h =  qrand() % 20 + 7;
+            qreal w = qRound(h * desktop.ratio() * 2 * 2) / 2; // ok.
+            qreal cellh = desktop.heightF() / h;
+            qreal cellw = desktop.widthF() / (w / 2);
 
-        for (int i = 0; i < int(w); i++) {
-            for (int j = 0; j < int(h); j++) {
-                QGraphicsRectItem *textItemRect = new QGraphicsRectItem();
-                textItemRect->setRect(i * cellw, j * cellh,
-                                      (i == w - 1) ? cellw : cellw - 1,
-                                      (j == h - 1) ? cellh : cellh - 1);
-
-                textItemRect->setPen(Qt::NoPen);
-                double hue = double(i) / w;
-                double value = 1 - qAbs(j - half) / (half + 1);
-                textItemRect->setBrush(QColor::fromHsvF(hue, 1.0, value));
-                myscene->addItem(textItemRect);
+            auto square = QPolygonF()
+                          << QPointF(-cellw / 2, 0)
+                          << QPointF(0, -cellh / 2)
+                          << QPointF(cellw / 2, 0)
+                          << QPointF(0, cellh / 2);
+            for (int i = 0; i < w + 1 ; i++) {
+                for (int j = 0; j < h + 1; j++) {
+                    qreal hue = Hue_start + qreal(i) * 0.8 / w;
+                    TilingItem *squareItem = new TilingItem(square, hue);
+                    squareItem->setPos(i * 0.5 * cellw, (j + (i % 2) * 0.5) * cellh);
+                    myscene->addItem(squareItem);
+                }
             }
+            break;
         }
+        case 2: { // hexagon
+            qreal k = 2 / qSqrt(3);
+            int h = qrand() % 30 + 7;
+            qreal cellh = desktop.heightF() / h;
+            qreal cellw = cellh * k;
+            int x = qRound((2 * desktop.widthF() / cellw + 1) / 3);
+            int w = 2 * x;
+            cellw = 2 * desktop.widthF() / (3 * x - 1);
+
+            auto hexagon = QPolygonF()
+                           << QPointF(-cellw / 2,  0)
+                           << QPointF(-cellw / 4, -cellh / 2)
+                           << QPointF(cellw / 4, -cellh / 2)
+                           << QPointF(cellw / 2,  0)
+                           << QPointF(cellw / 4,  cellh / 2)
+                           << QPointF(-cellw / 4,  cellh / 2);
+
+            for (int i = 0; i < w + 1; i++) {
+                for (int j = 0; j < h + 1; j++) {
+                    qreal hue = Hue_start + qreal(i) * 0.8 / w;
+                    TilingItem *hexagonItem = new TilingItem(hexagon, hue);
+                    hexagonItem->setPos((0.75 * i - 0.25) * cellw, (j - 0.5) * cellh + (i % 2 ? 0 : 0.5 * cellh));
+                    myscene->addItem(hexagonItem);
+                }
+            }
+            break;
+        }
+        case 3: { // triangle
+            qreal k = 2 / qSqrt(3);
+            int h = 2 * (qrand() % 10 + 3); // even
+            qreal cellh = desktop.heightF() / h;
+            qreal cellw = cellh * k;
+            int x = qRound(desktop.widthF() / cellw);
+            int w = 2 * x - 1;
+            cellw = desktop.widthF() / x;
+
+            auto triangle = QPolygonF()
+                            << QPointF(-cellw / 2, cellh / 3)
+                            << QPointF(0,    - 2 * cellh / 3)
+                            << QPointF(cellw / 2,  cellh / 3);
+
+            for (int i = 0; i < w + 2  ; i++) {
+                for (int j = 0; j < h; j++) {
+                    qreal hue = Hue_start + qreal(i) * 0.8 / w;
+                    TilingItem *triangleItem = new TilingItem(triangle, hue);
+                    triangleItem->setPos(cellw * (0.5 * i),
+                                         cellh * j + cellh * ((j + i) % 2 ? 1.0 / 3.0 : 2.0 / 3.0));
+                    myscene->addItem(triangleItem);
+
+                    if ((j + i) % 2) triangleItem->setRotation(180);
+                }
+            }
+            break;
+        }
+        case 4: { // square+triangle
+            int h = 2 * qrand() % 10 + 5; // odd
+            int w = qCeil(h * desktop.ratio());
+            qreal alpha = M_PI / 3;
+            qreal cell = desktop.heightF() / h;
+            qreal a = cell / (qSin(M_PI / 4 + alpha / 2) * qSqrt(2) * 2); // half square_side
+
+            auto points = QVector<QPointF>()
+                          << QPointF(-a,  a) << QPointF(-a, -a)
+                          << QPointF(a, -a) << QPointF(a,  a)
+                          << QPointF(2 * a * qCos(alpha) - a, -2 * a * qSin(alpha) - a)
+                          << QPointF(2 * a * qSin(alpha) + a,  2 * a * qCos(alpha) - a)
+                          << QPointF(-2 * a * qCos(alpha) + a, -2 * a * qSin(alpha) - a)
+                          << QPointF(2 * a * qSin(alpha) + a, -2 * a * qCos(alpha) + a) ;
+            for (int i = 0; i < w + 1; i++) {
+                for (int j = 0; j < h + 1; j++) {
+                    qreal hue = Hue_start + qreal(i) * 0.8 / w;
+                    qreal hue1 = hue +  0.5 * 0.8 / w;
+                    QPointF pos = {cell  * i, cell  * j};
+
+                    QGraphicsItemGroup *group = new QGraphicsItemGroup();
+                    myscene->addItem(group);
+
+                    auto square = QPolygonF() << points[0] << points[1] << points[2] << points[3];
+                    TilingItem *squareItem = new TilingItem(square, hue);
+                    squareItem->setPos(pos);
+                    squareItem->setZValue(0.5);
+                    group->addToGroup(squareItem);
+
+                    auto triangleUp = QPolygonF() << points[1] << points[2] << points[((j + i) % 2) ? 6 : 4];
+                    TilingItem *triangleUpItem = new TilingItem(triangleUp, hue);
+                    triangleUpItem->setPos(pos);
+                    triangleUpItem->setZValue(1);
+                    group->addToGroup(triangleUpItem);
+
+                    auto triangleRight = QPolygonF() << points[2] << points[3] << points[((j + i) % 2) ? 7 : 5];
+                    TilingItem *triangleRightItem = new TilingItem(triangleRight, hue1);
+                    triangleRightItem->setPos(pos);
+                    triangleRightItem->setZValue(1);
+                    group->addToGroup(triangleRightItem);
+
+                    group->setTransformOriginPoint(pos);
+
+                    if ((j + i) % 2)
+                        group->setRotation(-alpha / 2 * 180 / M_PI);
+                    else
+                        group->setRotation(alpha / 2 * 180 / M_PI);
+                }
+            }
+            break;
+        }
+        default:
+            break;
+        }
+
         break;
     }
     case RANDOM_CIRCLE: {
-        if (ElapsedTimerDot == nullptr) {
+        if (Item == nullptr) {
             Item = new QGraphicsEllipseItem();
             myscene->addItem(Item);
-            ElapsedTimerDot = new QElapsedTimer();
         }
-        else if (ElapsedTimerDot->elapsed() > 500) {
-            ElapsedTimerDot->start();
+        else {
             int diameter_dot = qMin(desktop.width(), desktop.height()) / 10;
             QRect r(qrand() % (desktop.width() - diameter_dot),
                     qrand() % (desktop.height() - diameter_dot), diameter_dot, diameter_dot);
@@ -448,9 +584,9 @@ int View::SetBackground(double hue_now)
                     qrand() % (desktop.height() - diameter_dot), diameter_dot, diameter_dot);
 
             QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
-            item->setBrush(QColor::fromHsvF(fmod(hue_now + double(i) / count_item / 2, 1), 1, 1));
+            item->setBrush(QColor::fromHsvF(fmod(Hue_start + qreal(i) / count_item / 2, 1), 1, 1));
             item->setPen(Qt::NoPen);
-            item->setOpacity(double(i) / count_item / 2);
+            item->setOpacity(qreal(i) / count_item / 2);
             group->addToGroup(item);
         }
 
@@ -477,14 +613,13 @@ int View::SetBackground(double hue_now)
             clockItemRect->setGraphicsEffect(blur);
             myscene->addItem(clockItemRect);
         }
-        if (textItem) {
+        if (textItem)
             myscene->removeItem(textItem);
-        }
 
-        if (rand()%10 == 0) {
+        if (qrand() % 10 == 0) {
             QString name = transliteraction(qgetenv("USER"));
             if (name.isEmpty()) name = transliteraction(qgetenv("USERNAME"));
-            if (name.isEmpty() || name == "User" || name.size() > 25 || (rand() % 10 == 0))
+            if (name.isEmpty() || name == "User" || name.size() > 25 || (qrand() % 10 == 0))
                 name = transliteraction(QString("Neo"));
 
             QGraphicsSimpleTextItem *centerTextItem = new QGraphicsSimpleTextItem();
@@ -514,7 +649,7 @@ int View::SetBackground(double hue_now)
         const QVector<QVector<QVector<quint32>>> unicode_limits = {
             /* 0 IPA             */ {{0x0250, 0x02AF}},
             /*   Runic           */ {{0x16A0, 0x16F0}},
-            /* 2 Greek lower     */ {{0x3B1, 0x3C9},{0x3D9, 0x3D9}, {0x3DB, 0x3DB}, {0x3DD, 0x3DD}, {0x3DF, 0x3DF}, {0x3D1, 0x3D1}},
+            /* 2 Greek lower     */ {{0x3B1, 0x3C9}, {0x3D9, 0x3D9}, {0x3DB, 0x3DB}, {0x3DD, 0x3DD}, {0x3DF, 0x3DF}, {0x3D1, 0x3D1}},
             /*   Glagolitic upper*/ {{0x2C00, 0x2C2E}},
             /* 4 Gothic alphabet */ {{0x10330, 0x1034A}},
             /*   Math.Blackletter*/ {{0x1D56C, 0x1D59F}},
@@ -526,7 +661,7 @@ int View::SetBackground(double hue_now)
             /*10 Hex. Numerals   */ {{0x30, 0x39}, {0x41, 0x46}},
             /*   Roman Numerals  */ {{0x2160, 0x216F}, {0x2180, 0x2182}},
             /*12 Currency        */ {{0x24, 0x24}, {0xA2, 0xA5}, {0x20A0, 0x20BF}, {0xFF04, 0xFF04}},
-            /*   Cyrillic slavic */ {{0x0401,0x040C},{0x040E,0x044F},{0x0451,0x045C},{0x045E,0x045F}},
+            /*   Cyrillic slavic */ {{0x0401, 0x040C}, {0x040E, 0x044F}, {0x0451, 0x045C}, {0x045E, 0x045F}},
             /*14 All Cyrillic    */{
                 {0x0410, 0x044f}, {0x0410, 0x044f}, //   Russian
                 {0x0400, 0x0481}, {0x048A, 0x04ff}, //   Cyrillic
@@ -536,7 +671,7 @@ int View::SetBackground(double hue_now)
             /*   All Latin       */ {
                 {0x0041, 0x005A}, {0x0041, 0x005A}, {0x0041, 0x005A}, {0x0041, 0x005A}, //   A-Z
                 {0x0061, 0x007A}, {0x0061, 0x007A}, {0x0061, 0x007A}, {0x0061, 0x007A}, //   a-z
-                {0x00C0, 0x00D6}, {0x00D8, 0x00F6}, {0x00F8, 0x00FF},                   //   Latin-1 Supplement  
+                {0x00C0, 0x00D6}, {0x00D8, 0x00F6}, {0x00F8, 0x00FF},                   //   Latin-1 Supplement
                 {0x0100, 0x01BF}, {0x01C4, 0x01D4}, {0x01E2, 0x0229}, {0x0232, 0x024F}  //   Latin Extended-A+B
             },
             /*16 Latin Europe    */ {
@@ -573,51 +708,51 @@ int View::SetBackground(double hue_now)
         //for (int unicode_set = 0; unicode_set < 1/*unicode_limits.size()*/; unicode_set++) {
         //    for (auto item : group->childItems())
         //        myscene->removeItem(item);
-            int unicode_set = rand() % unicode_limits.size();
-            //unicode_set++;
+        int unicode_set = qrand() % unicode_limits.size();
+        //unicode_set++;
 
-            quint32 limit = 0;
-            QVector<quint32> limits;
-            limits.reserve(unicode_limits[unicode_set].size() + 1);
+        quint32 limit = 0;
+        QVector<quint32> limits;
+        limits.reserve(unicode_limits[unicode_set].size() + 1);
+        limits.append(limit);
+        for (int i = 0; i < unicode_limits[unicode_set].size(); i++) {
+            limit += unicode_limits[unicode_set][i][1] - unicode_limits[unicode_set][i][0] + 1;
             limits.append(limit);
-            for (int i = 0; i < unicode_limits[unicode_set].size(); i++) {
-                limit += unicode_limits[unicode_set][i][1] - unicode_limits[unicode_set][i][0] + 1;
-                limits.append(limit);
-            }
-            qDebug() << "unicode symbols ="  << limit;
+        }
+        qDebug() << "unicode symbols ="  << limit;
 
 
-            {
-                // every item, FullHD 63 ms.
-                for (int column_pos_x = basic_width; column_pos_x < desktop.width();) {
-                    int char_max = desktop.height() / basic_height + 1;
-                    int char_count = 1.0 / 4.0 * char_max + 3.0 / 4.0 * (qrand() % char_max + 1);
-                    for (int char_index = 0; char_index < char_count; char_index++) {
-                        QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
-                        group->addToGroup(item);
-                        item->setBrush(QColor(0, 128, 0));
-                        item->setPen(Qt::NoPen);
-                        item->setFont(font_background);
+        {
+            // every item, FullHD 63 ms.
+            for (int column_pos_x = basic_width; column_pos_x < desktop.width();) {
+                int char_max = desktop.height() / basic_height + 1;
+                int char_count = 1.0 / 4.0 * char_max + 3.0 / 4.0 * (qrand() % char_max + 1);
+                for (int char_index = 0; char_index < char_count; char_index++) {
+                    QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
+                    group->addToGroup(item);
+                    item->setBrush(QColor(0, 128, 0));
+                    item->setPen(Qt::NoPen);
+                    item->setFont(font_background);
 
-                        quint32 unicode = rand() % limits.last();
-                        for (int i = 1; i < limits.size(); i++)
-                            if (limits[i - 1] <= unicode && unicode < limits[i])
-                                unicode = unicode - limits[i - 1] + unicode_limits[unicode_set][i - 1][0];
+                    quint32 unicode = qrand() % limits.last();
+                    for (int i = 1; i < limits.size(); i++)
+                        if (limits[i - 1] <= unicode && unicode < limits[i])
+                            unicode = unicode - limits[i - 1] + unicode_limits[unicode_set][i - 1][0];
 
-                        if (QChar::requiresSurrogates(unicode)) {
-                            QChar charArray[2];
-                            charArray[0] = QChar::highSurrogate(unicode);
-                            charArray[1] = QChar::lowSurrogate(unicode);
-                            item->setText(QString(charArray, 2));
-                        }
-                        else
-                            item->setText(QChar(unicode));
-
-                        item->setPos(column_pos_x - item->boundingRect().width() / 2, char_index * basic_height);
+                    if (QChar::requiresSurrogates(unicode)) {
+                        QChar charArray[2];
+                        charArray[0] = QChar::highSurrogate(unicode);
+                        charArray[1] = QChar::lowSurrogate(unicode);
+                        item->setText(QString(charArray, 2));
                     }
-                    column_pos_x += basic_width * 3;
+                    else
+                        item->setText(QChar(unicode));
+
+                    item->setPos(column_pos_x - item->boundingRect().width() / 2, char_index * basic_height);
                 }
+                column_pos_x += basic_width * 3;
             }
+        }
 //          SaveSceneToFile("c:/Users/User/Pictures/Screenshots/EyesThanks");
 //        }
 
@@ -766,12 +901,13 @@ void View::SaveSceneToFile(QString dir_path)
                           );
     qDebug() << "SaveSceneToFile is" << done << "by" << timer.elapsed() << "ms.";
 }
-void View::UpdateValues(const QString &remains_str, const double &ratio)
+
+void View::UpdateValues(const QString &remains_str, const qreal &ratio)
 {
     ProgressBarRect.setRight(qRound(ProgressBarBackground->rect().left() + ProgressBarBackground->rect().width() * (1 - ratio)));
     ProgressBar->setRect(ProgressBarRect);
 
-    ProgressBarText->setPlainText(remains_str);
+    ProgressBarText->setText(remains_str);
 
     if (clockItem != nullptr)
         clockItem->setText(QTime::currentTime().toString("hh:mm"));
@@ -801,9 +937,6 @@ void View::keyReleaseEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_Escape)
         close();
-
-    // QGraphicsView::keyPressEvent(event);
-
 }
 
 void View::mousePressEvent(QMouseEvent *event)
@@ -836,7 +969,6 @@ void View::mouseMoveEvent(QMouseEvent *event)
     }
     else
         ButtonRectItem->setOpacity(0.4);
-
 }
 
 void View::closeEvent(QCloseEvent *event)

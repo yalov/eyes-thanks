@@ -437,7 +437,7 @@ void TrayIcon::translate()
 
 
 //-----------------------------------------------------------------
-void TrayIcon::setCurrentIcon(double ratio)
+void TrayIcon::setCurrentIcon(qreal ratio)
 {
     if (CurrentIconRatio == -1) {
         setIcon(i00);
@@ -506,7 +506,7 @@ void TrayIcon::ShowDialog()
 
     connect(dialog, SIGNAL(TimerStatusRequest()), this, SLOT(TimerStatusSend()));
 
-    connect(this, SIGNAL(updateLabel(QString, double)), dialog, SLOT(UpdateLabel(QString, double)));
+    connect(this, SIGNAL(updateLabel(QString, qreal)), dialog, SLOT(UpdateLabel(QString, qreal)));
 
     ShowSettingAct->setEnabled(false);
 
@@ -534,7 +534,7 @@ void TrayIcon::DialogUpdateTime()
 {
     qint64 remains =  DialogTimer->remains();;
     TimeRemains = DialogTimer->remains_str();
-    double ratio = DialogTimer->ratio();
+    qreal ratio = DialogTimer->ratio();
 
 
     emit updateLabel(TimeRemains, ratio);
@@ -562,6 +562,8 @@ void TrayIcon::RefreshmentStart()
     DialogTimer->stop();
     TrayMessageShowed = false;
     CurrentIconRatio = -1;
+    DialogUpdateTime();
+
     ViewTimer->start();
     ShowView();
 }

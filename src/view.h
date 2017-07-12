@@ -14,38 +14,53 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QGraphicsTextItem>
-#include <QGraphicsProxyWidget>
+#include <QApplication>
+#include <QDesktopWidget>
 
-#include "graphicstextitemfixbound.h"
 #include "global.h"
 #include "timer.h"
 
-#define WidgetMode
+class Rect : public QRect {
+public:
+    Rect(const QRect r): QRect(r) {}
+    inline qreal  widthF() const { return qreal(width()); }
+    inline qreal heightF() const { return qreal(height()); }
+    inline qreal   ratio() const { return widthF() / heightF(); }
+};
+class TilingItem : public QGraphicsPolygonItem {
+public:
+    TilingItem(const QPolygonF &hexagon, qreal &hue, int pen_width = 2, QColor pen_color = Qt::black): QGraphicsPolygonItem()
+    {
+        setPolygon(hexagon);
+        setPen(QPen(pen_color, pen_width));
 
-class View : public QGraphicsView
-{
+        hue -= floor(hue);
+        qreal value = qrand() % 40 / 100.0 + 0.20;
+        setBrush(QColor::fromHsvF(hue, 1.0, value));
+    }
+};
+
+
+class View : public QGraphicsView {
     Q_OBJECT
 
 public:
     explicit View(QWidget *parent = 0);
 
     enum Methods {
-//        UNICOLOROUS,
         RAINBOW,
-        RAINBOW_STRIPES,
-        RAINBOWED_RECTANGLES,
+        TILING,
         RANDOM_CIRCLE,
         RANDOM_CIRCLES,
         NEO,
-//        LINEAR_GRADIENT_TEST,
 
         COUNT_OF_METHODS
     }; Q_ENUM(Methods)
 
+    void UpdateValues(const QString &remains_str, const qreal &ratio);
 
-    void UpdateValues(const QString &remains_str, const double &ratio);
 public slots:
-    void ShowRefreshment(const QList<QString>& pics_path, const QString &clock, const QString &ProgressBarText, const Setting & setting, Timer *viewtimer);
+    void ShowRefreshment(const QList<QString> &pics_path, const QString &clock, const QString &ProgressBarText, const Setting &setting, Timer *viewtimer);
 
 signals:
     void view_close();
@@ -57,11 +72,11 @@ private:
     void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-    int SetBackground(double hue_now);
+    int SetBackground(qreal hue_now);
     void SaveSceneToFile(QString dir_path);
 
-    const QRect default_screen;
-    const QRect desktop;
+    const Rect default_screen;
+    const Rect desktop;
 
     QString picture_path;
 
@@ -71,22 +86,18 @@ private:
     QGraphicsRectItem *ProgressBar;
     QGraphicsRectItem *ProgressBarBound;
     QGraphicsRectItem *ProgressBarBackground;
-    GraphicsTextItemFixBound *ProgressBarText;
+    QGraphicsSimpleTextItem *ProgressBarText;
     QRect ProgressBarRect;
     QGraphicsRectItem *ButtonRectItem;
-    GraphicsTextItemFixBound *ButtonText;
+    QGraphicsSimpleTextItem *ButtonText;
 
     Setting setting;
 
-    QGraphicsEllipseItem * Item;
-    QElapsedTimer * ElapsedTimerDot;
+    QGraphicsEllipseItem *Item;
     int Method;
-    double Hue_start;
+    qreal Hue_start;
     bool IsBackgroundUpdate;
     bool RunnedFirstTime;
 };
-
-
-
 
 #endif // VIEW_H

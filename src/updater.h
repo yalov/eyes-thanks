@@ -19,7 +19,7 @@ public:
 
 private:
     QNetworkAccessManager *manager;
-    QMessageBox *downloadProcess;
+    QMessageBox *mbx;
 
 private slots:
     void showmessagebox();
