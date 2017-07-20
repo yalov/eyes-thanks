@@ -5,18 +5,20 @@
 #----------------------------------------------------------------------------------#
 
 include("functions.pri")
-StartProjectMESSAGE()
+include("../qutfstring/include.pri")
+message("$$BUILD_TIME eyes-thanks.pro")
 
-#CONFIG  += DEPLOY
+CONFIG  += DEPLOY
 APP_NAME  = Eyes’ Thanks
-VERSION   = 1.2.2
+VERSION   = 1.2.5
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
 TARGET    = "Eyes\' Thanks"
 
 CONFIG(release, debug|release) {
-DESTDIR = $$PWD/../EyesThanks
+DESTDIR =   $$PWD/../../EyesThanks
+SSLDLLDIR = $$PWD/../../../openssl-1.0.2h-bin
 }
 
 # subfolders in debug and release folder
@@ -25,17 +27,18 @@ MOC_DIR     = $$OUT_PWD/.moc
 RCC_DIR     = $$OUT_PWD/.qrc
 UI_DIR      = $$OUT_PWD/.ui
 
+TEMPLATE = app
+QT      += core gui network widgets winextras
+
 # no debug and release subfolder in debug and release folder
 CONFIG -= debug_and_release
 CONFIG -= debug_and_release_target
 
-CONFIG += c++11
-
-QT     += core gui network widgets winextras
+CONFIG += c++14
 
 win32:RC_ICONS += icons/icon.ico
 
-QMAKE_TARGET_DESCRIPTION = $$TARGET
+QMAKE_TARGET_DESCRIPTION = $$APP_NAME
 QMAKE_TARGET_COPYRIGHT   = $$DEV_NAME
 
 DEFINES +=    REPO_URL='"\\\"$$REPO_URL\\\""'
@@ -47,55 +50,44 @@ DEFINES +=   DEV_EMAIL='"\\\"$$DEV_EMAIL\\\""'
 # '+' will automatically be performed as the QStringBuilder '%' everywhere.
 DEFINES *= QT_USE_QSTRINGBUILDER
 
-TEMPLATE = app
-
-SOURCES += \
-    src/dialog.cpp \
-    src/main.cpp \
-    src/trayicon.cpp \
-    src/view.cpp \
-    src/updater.cpp \
-    src/timer.cpp
+SOURCES += src/dialog.cpp \
+           src/main.cpp \
+           src/trayicon.cpp \
+           src/view.cpp \
+           src/updater.cpp \
+           src/timer.cpp \
+           src/charactersets.cpp
 
 HEADERS  += src/aboutwindow.h \
-    src/dialog.h \
-    src/timer.h \
-    src/trayicon.h \
-    src/view.h \
-    src/updater.h \
-    src/global.h \
-    src/transliteration-iso9a.h
+            src/dialog.h \
+            src/timer.h \
+            src/trayicon.h \
+            src/view.h \
+            src/updater.h \
+            src/global.h \
+            src/transliteration-iso9a.h \
+            src/charactersets.h
 
 TRANSLATIONS += languages/lang_ru.ts languages/lang_en.ts
 RESOURCES    += resource.qrc
 
+
 # windeployqt only release and only DEPLOY variable
 CONFIG(release, debug|release) {
     DEPLOY {
-        message( "qt_no_debug_output" )
+        message("DEPLOY")
+
         DEFINES += QT_NO_DEBUG_OUTPUT DEPLOY
-        message( "start windeployqt" )
 
         windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)
 
-        removeDirRecursive($$DESTDIR\bearer)
+        removeDirRecursive($$DESTDIR/bearer)
 
-        FILES_TO_DEL = $$DESTDIR/imageformats/qicns.dll \
-                       $$DESTDIR/imageformats/qico.dll \
-                       $$DESTDIR/imageformats/qtga.dll \
-                       $$DESTDIR/imageformats/qtiff.dll \
-                       $$DESTDIR/imageformats/qwbmp.dll \
-                       $$DESTDIR/imageformats/qwebp.dll
-        removeFiles($$FILES_TO_DEL)
+        FILENAMES = qicns.dll qico.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
+        removeFilesInDir($$DESTDIR/imageformats/, $$FILENAMES)
 
-        copyFilesToDESTDIR($$PWD/../../openssl-1.0.2h-bin/*.dll)
+        copyFilesToDir($${SSLDLLDIR}/*.dll, $$DESTDIR)
 
-        # create language folder and copy *.qm
-        RETURN = $$escape_expand(\n\t)
-        LANGFILES = $$shell_path($$PWD/languages/*.qm)
-        LANGDIR = $$shell_path($$DESTDIR/languages/)
-        QMAKE_POST_LINK += $$RETURN $$sprintf($$QMAKE_MKDIR_CMD, $$LANGDIR)
-        QMAKE_POST_LINK += $$RETURN $$QMAKE_COPY $$quote($$LANGFILES) $$quote($$LANGDIR)
-
+        copyFilesToDir($$PWD/languages/*.qm, $$DESTDIR/languages/)
     }
 }

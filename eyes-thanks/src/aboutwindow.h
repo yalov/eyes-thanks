@@ -15,7 +15,9 @@
 #include <QTextBrowser>
 #include <QVBoxLayout>
 #include <QRegularExpression>
+#include <QTextStream>
 #include "QtNetwork/QNetworkAccessManager"
+#include <QSslSocket>
 
 class AboutWindow : public QDialog
 {

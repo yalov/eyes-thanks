@@ -28,5 +28,6 @@
         <file>icons/tooltip.png</file>
         <file>icons/save.png</file>
         <file>fonts/FreeSerif Mod.otf</file>
+        <file>res/character_sets.xml</file>
     </qresource>
 </RCC>

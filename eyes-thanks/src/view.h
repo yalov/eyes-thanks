@@ -20,6 +20,7 @@
 #include "global.h"
 #include "timer.h"
 
+
 class Rect : public QRect {
 public:
     Rect(const QRect r): QRect(r) {}
