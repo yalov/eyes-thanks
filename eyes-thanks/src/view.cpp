@@ -17,7 +17,7 @@ View::View(QWidget *parent): QGraphicsView(parent),
     default_screen(QApplication::desktop()->screenGeometry(-1)),
     desktop(QApplication::desktop()->geometry()),
     clockItem(nullptr), textItem(nullptr), setting(), Item(nullptr),
-    Method(-1), Hue_start(0), IsBackgroundUpdate(false), RunnedFirstTime(false)
+    MethodIndex(-1), Hue_start(0), IsBackgroundUpdate(false), RunnedFirstTime(false)
 {
 #ifdef DEPLOY
     setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -105,8 +105,9 @@ inline static void CreateBlurredBackgroundForItem(const QGraphicsItem *item, QGr
     scene->addItem(rect);
 }
 
-void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock, const QString &text, const  Setting &setting, Timer *viewtimer)
+void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock, const QString &text, const  Setting &_setting, Timer *viewtimer)
 {
+    setting = _setting;
     QElapsedTimer timer; timer.start();
     myscene->setSceneRect(desktop);
     qreal ratio_desk = desktop.ratio();
@@ -115,7 +116,7 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
     // ClockItem and TextItem
     if (!clock.isEmpty() || !text.isEmpty()) {
         int font_size = 30;
-        QFont font(setting.isPrettyFont ? "UKIJ Diwani Yantu" : "FreeSerif Mod", font_size, QFont::Bold);
+        QFont font(setting.isPrettyFont ? "UKIJ Diwani Yantu Mod" : "FreeSerif Mod", font_size, QFont::Bold);
         QColor fill_color(Qt::white);
         QColor outline_color(Qt::black);
         qreal opacity = 0.5;
@@ -140,22 +141,23 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
             textItem->setZValue(3);
             textItem->setBrush(fill_color);
             textItem->setPen(outline_color);
+            //textItem->setPen(Qt::NoPen);
             textItem->setOpacity(opacity);
             myscene->addItem(textItem);
 
-//            QGraphicsRectItem *textItemRect = new QGraphicsRectItem();
-//            textItemRect->setRect(textItem->boundingRect());
-//            textItemRect->setPos(textItem->pos());
-//            textItemRect->setZValue(2);
-//            textItemRect->setPen(Qt::NoPen);
-//            textItemRect->setBrush(Qt::black);
-//            textItemRect->setOpacity(0.5);
+//            QGraphicsRectItem *rect = new QGraphicsRectItem();
+//            rect->setRect(textItem->boundingRect());
+//            rect->setPos(textItem->pos());
+//            rect->setZValue(2);
+//            rect->setPen(Qt::NoPen);
+//            rect->setBrush(Qt::black);
+//            rect->setOpacity(0.5);
 
 //            QGraphicsBlurEffect *blur = new QGraphicsBlurEffect();
 //            blur->setBlurRadius(20);
-//            textItemRect->setGraphicsEffect(blur);
+//            rect->setGraphicsEffect(blur);
 
-            //myscene->addItem(textItemRect);
+//            myscene->addItem(rect);
 
         }
     }
@@ -237,7 +239,7 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
     }
     else {   // pics.size()==0
         Hue_start = qrand() % 360 / 360.0;
-        Method = SetBackground(Hue_start);
+        Method = SetPredeterminedBackground(Hue_start);
     }
 
     // ProgressBar and ButtonRect
@@ -328,7 +330,7 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
 #endif
 }
 
-int View::SetBackground(qreal hue_now)
+int View::SetPredeterminedBackground(qreal hue_now)
 {
     // HSV
     // S - from uncolor to color
@@ -341,45 +343,56 @@ int View::SetBackground(qreal hue_now)
     QElapsedTimer timer;
     timer.start();
 
-    if (Method == -1) {
-        Method = qrand() % COUNT_OF_METHODS;
 
-        if (Method == RANDOM_CIRCLE)
+
+    if (MethodIndex == -1) {
+        if (setting.isSpectrum) MethodsEnabled.append(SPECTRUM);
+        if (setting.isTiling  ) MethodsEnabled.append(TILING);
+        if (setting.isStripes ) MethodsEnabled.append(STRIPES);
+        if (setting.isCircle  ) MethodsEnabled.append(RANDOM_CIRCLE);
+        if (setting.isCircles ) MethodsEnabled.append(RANDOM_CIRCLES);
+        if (setting.isNeo     ) MethodsEnabled.append(NEO);
+
+        if (MethodsEnabled.size()==0) {
+            myscene->setBackgroundBrush(Qt::black);
+            return -1;
+        }
+
+        MethodIndex = qrand() % MethodsEnabled.size();
+
+        if (MethodsEnabled.at(MethodIndex) == RANDOM_CIRCLE)
             IsBackgroundUpdate = true;
     }
 
-    switch (Method) {
-    case RAINBOW: {
-        if (0.20 < Hue_start && Hue_start < 0.35)
-            Hue_start = Hue_start * 5 + 0.35; // 1.35 << 2.10 // no blue in the center
-
+    switch (MethodsEnabled.at(MethodIndex)) {
+    case SPECTRUM: {
         QLinearGradient rainbow(desktop.topLeft(), desktop.topRight());
 
         for (qreal hue = 0; hue <= 1.0; hue += 1. / 25) {
-            QColor c = QColor::fromHsvF(fmod(Hue_start + hue * 0.8, 1), 1, 1);
+            QColor c = QColor::fromHsvF(fmod(0 + hue * 0.8, 1), 1, 1);
             rainbow.setColorAt(hue, c);
         }
         myscene->setBackgroundBrush(QBrush(rainbow));
-        ProgressBar->setBrush(QBrush(rainbow));
-        ProgressBarBackground->setBrush(QBrush(rainbow));
-        ButtonRectItem->setBrush(QBrush(rainbow));
+        //ProgressBar->setBrush(QBrush(rainbow));
+        //ProgressBarBackground->setBrush(QBrush(rainbow));
+        //ButtonRectItem->setBrush(QBrush(rainbow));
 
         QLinearGradient vertical(desktop.topLeft(), desktop.bottomLeft());
         int mode = qrand() % 3;
         if (mode == 0) {
-            vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
-            vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
+            //vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
+            //vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
 
             vertical.setColorAt(0.35,  QColor::fromRgbF(0, 0, 0, 1.0));
             vertical.setColorAt(0.5,  QColor::fromRgbF(0, 0, 0, 0.4));
             vertical.setColorAt(0.65,  QColor::fromRgbF(0, 0, 0, 1.0));
 
-            vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, 1.0));
-            vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
+            //vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, 1.0));
+            //vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
         }
         else if (mode == 1) {
-            vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
-            vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
+            //vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
+            //vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
 
             vertical.setColorAt(0.275, QColor::fromRgbF(0, 0, 0, 1.0));
             vertical.setColorAt(0.375, QColor::fromRgbF(0, 0, 0, 0.4));
@@ -389,11 +402,11 @@ int View::SetBackground(qreal hue_now)
             vertical.setColorAt(0.625, QColor::fromRgbF(0, 0, 0, 0.4));
             vertical.setColorAt(0.725, QColor::fromRgbF(0, 0, 0, 1.0));
 
-            vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, 1.0));
-            vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
+            //vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, 1.0));
+            //vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
         }
         else if (mode == 2) {
-            vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
+            //vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
             vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
             vertical.setColorAt(0.30, QColor::fromRgbF(0, 0, 0, 0.6));
             vertical.setColorAt(0.35, QColor::fromRgbF(0, 0, 0, 1.0));
@@ -405,7 +418,7 @@ int View::SetBackground(qreal hue_now)
             vertical.setColorAt(0.65, QColor::fromRgbF(0, 0, 0, 1.0));
             vertical.setColorAt(0.70, QColor::fromRgbF(0, 0, 0, 0.6));
             vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, 1.0));
-            vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
+            //vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
         }
         QGraphicsRectItem *item = new QGraphicsRectItem(desktop);
         item->setPen(Qt::NoPen);
@@ -569,19 +582,61 @@ int View::SetBackground(qreal hue_now)
 
         break;
     }
+    case STRIPES: {
+        QLinearGradient rainbow(desktop.topLeft(), desktop.topRight());
+
+        for (qreal ratio = 0, hue = 0; ratio <= 1.0; ratio += 1. / 25) {
+            QColor c = QColor::fromHsvF(fmod(Hue_start + hue * 0.8, 1), 1, 0.9);
+            rainbow.setColorAt(1 - ratio, c);
+            hue += 1. / 25;
+        }
+        myscene->setBackgroundBrush(QBrush(rainbow));
+
+        qreal ratio = desktop.ratio();
+        qreal standard_ratio = 16.0 / 9.0;
+        qreal k = ratio / standard_ratio;
+        int stripes_count = 10;
+
+        int stripe_segment = desktop.width() / int(stripes_count * k);
+        int stripe_width = stripe_segment * 0.8;
+
+        bool stripes_gradient = qrand() % 2;
+        if (stripes_gradient) {
+            for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
+                QGraphicsRectItem *item = new QGraphicsRectItem(i, 0, stripe_width, desktop.height());
+                QLinearGradient grad(item->rect().topLeft(), item->rect().topRight());
+                grad.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0));
+                grad.setColorAt(0.5, QColor::fromRgbF(0, 0, 0, 0.9));
+                grad.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
+                item->setPen(Qt::NoPen);
+                item->setBrush(grad);
+                myscene->addItem(item);
+            }
+        }
+        else {
+            stripe_width = stripe_segment * 0.4;
+            for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
+                QGraphicsLineItem *item = new QGraphicsLineItem(i + stripe_width / 2, 0, i + stripe_width / 2, desktop.height());
+                item->setPen(QPen(QColor(Qt::black), stripe_width));
+                item->setOpacity(0.7);
+                myscene->addItem(item);
+            }
+        }
+        break;
+    }
     case RANDOM_CIRCLE: {
         if (Item == nullptr) {
             Item = new QGraphicsEllipseItem();
             myscene->addItem(Item);
         }
-        else {
-            int diameter_dot = qMin(desktop.width(), desktop.height()) / 10;
-            QRect r(qrand() % (desktop.width() - diameter_dot),
-                    qrand() % (desktop.height() - diameter_dot), diameter_dot, diameter_dot);
 
-            Item->setRect(r);
-            Item->setBrush(QColor::fromHsvF(qrand() % 256 / 255.0, 1, 1, 0.5));
-        }
+        int diameter_dot = qMin(desktop.width(), desktop.height()) / 10;
+        QRect r(qrand() % (desktop.width() - diameter_dot),
+                qrand() % (desktop.height() - diameter_dot), diameter_dot, diameter_dot);
+
+        Item->setRect(r);
+        Item->setBrush(QColor::fromHsvF(qrand() % 256 / 255.0, 1, 1, 0.5));
+
         break;
     }
     case RANDOM_CIRCLES: {
@@ -617,9 +672,9 @@ int View::SetBackground(qreal hue_now)
         if (textItem)
             myscene->removeItem(textItem);
 
-        ProgressBar->setBrush(Qt::darkGreen);
-        ProgressBarBackground->setBrush(Qt::darkGreen);
-        ButtonRectItem->setBrush(Qt::darkGreen);
+        //ProgressBar->setBrush(Qt::darkGreen);
+        //ProgressBarBackground->setBrush(Qt::darkGreen);
+        //ButtonRectItem->setBrush(Qt::darkGreen);
 
         if (qrand() % 10 == 0) {
             QString name = transliteraction(qgetenv("USER"));
@@ -706,9 +761,12 @@ int View::SetBackground(qreal hue_now)
         myscene->setBackgroundBrush(Qt::black);
         break;
     }
+    default:{ // MethodIndex == -1 && methodsEnabled.size() == 0
+        myscene->setBackgroundBrush(Qt::black);
+    }
     }
 
-    return Method;
+    return MethodIndex;
 }
 
 void View::SaveSceneToFile(QString dir_path)
@@ -722,7 +780,7 @@ void View::SaveSceneToFile(QString dir_path)
 
     QDir dir(dir_path);
     if (!dir.exists()) dir.mkpath(".");
-    QString methodName = QString(QMetaEnum::fromType<Methods>().valueToKey(Method));
+    QString methodName = QString(QMetaEnum::fromType<Methods>().valueToKey(MethodIndex));
 
     QPainter painter(&image);
     myscene->render(&painter);
@@ -744,7 +802,7 @@ void View::UpdateValues(const QString &remains_str, const qreal &ratio)
         clockItem->setText(QTime::currentTime().toString("hh:mm"));
 
     if (picture_path.isEmpty() && IsBackgroundUpdate)
-        SetBackground(Hue_start + ratio);
+        SetPredeterminedBackground(Hue_start + ratio);
 }
 
 void View::keyPressEvent(QKeyEvent *event)
@@ -763,7 +821,7 @@ void View::keyReleaseEvent(QKeyEvent *event)
                     myscene->removeItem(item);
                     delete item;
                 }
-            SetBackground(qrand() % 360 / 360.);
+            SetPredeterminedBackground(qrand() % 360 / 360.);
         }
     }
     else if (event->key() == Qt::Key_Escape)

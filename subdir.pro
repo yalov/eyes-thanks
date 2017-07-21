@@ -3,6 +3,6 @@ CONFIG += ordered
 SUBDIRS = \
     qutfstring\
     eyes-thanks\
-    console-app-test\
+    qconsole-test\
 
 #eyes-thanks.depends = qutfstring

@@ -49,8 +49,9 @@ public:
     explicit View(QWidget *parent = 0);
 
     enum Methods {
-        RAINBOW,
+        SPECTRUM,
         TILING,
+        STRIPES,
         RANDOM_CIRCLE,
         RANDOM_CIRCLES,
         NEO,
@@ -73,7 +74,7 @@ private:
     void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-    int SetBackground(qreal hue_now);
+    int SetPredeterminedBackground(qreal hue_now);
     void SaveSceneToFile(QString dir_path);
 
     const Rect default_screen;
@@ -95,7 +96,8 @@ private:
     Setting setting;
 
     QGraphicsEllipseItem *Item;
-    int Method;
+    int MethodIndex;
+    QList<int> MethodsEnabled;
     qreal Hue_start;
     bool IsBackgroundUpdate;
     bool RunnedFirstTime;

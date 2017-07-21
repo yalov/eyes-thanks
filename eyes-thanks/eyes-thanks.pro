@@ -9,8 +9,9 @@ include("../qutfstring/include.pri")
 message("$$BUILD_TIME eyes-thanks.pro")
 
 CONFIG  += DEPLOY
+
 APP_NAME  = Eyes’ Thanks
-VERSION   = 1.2.5
+VERSION   = 1.3.0
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
@@ -38,7 +39,7 @@ CONFIG += c++14
 
 win32:RC_ICONS += icons/icon.ico
 
-QMAKE_TARGET_DESCRIPTION = $$APP_NAME
+QMAKE_TARGET_DESCRIPTION = $$TARGET #apostrophe don't work in the taskmanager
 QMAKE_TARGET_COPYRIGHT   = $$DEV_NAME
 
 DEFINES +=    REPO_URL='"\\\"$$REPO_URL\\\""'

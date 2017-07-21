@@ -44,6 +44,7 @@ private slots:
     void ButtonPath_alt_clicked();
     void ButtonGenerateText_clicked();
     void SaveButton_status();
+    void CheckBoxPrettyFont_Enable();
 signals:
     void closedialog();
     void save(const Setting &setting);
@@ -52,25 +53,41 @@ signals:
 private:
     Setting setting;
 
-    QLabel *Label_Path;
-    QLabel *label_Path_alt;
-    QGroupBox *GroupBox_BreakSetting;
-    QLabel *Label_ImageAspectMode;
-    QLabel *Label_UntilBreak     ;
-    QLabel *Label_BreakContinuous;
-    QGroupBox *GroupBox_SystemSetting;
-    QLabel *Label_TrayIconStyle;
+    QTabWidget * TabWidget;
     QLabel *Label_Timer_Prefix;
+    QLabel *Label_Timer;
     QPushButton *buttonSave;
     QPushButton *buttonMinimizeToSystemTray;
+
+    QGroupBox *GroupBox_Tab1;
+    QLabel *Label_UntilBreak     ;
+    QLabel *Label_BreakDuration;
+
+    QGroupBox *GroupBox_SystemSetting;
+    QLabel *Label_TrayIconStyle;
+    QComboBox *Combobox_iconsMode;
+    QSpinBox *Spinbox_UntilBreak;
+    QSpinBox *Spinbox_BreakDuration;
+
+    QGroupBox *GroupBox_Background;
+    QGroupBox *GroupBox_PredeterminedBackground;
+    QGroupBox *GroupBox_Foreground;
+
+    QLabel *Label_Path;
+    QLabel *label_Path_alt;
+    QLabel *Label_ImageAspectMode;
     QLineEdit *LineEdit_Path;
     QLineEdit *LineEdit_Path_alt;
     QPlainTextEdit *TextEdit_Text;
+
+    QCheckBox *CheckBox_Spectrum;
+    QCheckBox *CheckBox_Tiling;
+    QCheckBox *CheckBox_Random_circle;
+    QCheckBox *CheckBox_Random_circles;
+    QCheckBox *CheckBox_Neo;
+    QCheckBox *CheckBox_Stripes;
+
     QComboBox *Combobox_imageAspectMode;
-    QComboBox *Combobox_iconsMode;
-    QSpinBox *Spinbox_RefreshmentInterval;
-    QSpinBox *Spinbox_RefreshmentContinuous;
-    QLabel *Label_Timer;
     QCheckBox *CheckBox_Clock;
     QCheckBox *CheckBox_Message;
     QCheckBox *CheckBox_Logging;

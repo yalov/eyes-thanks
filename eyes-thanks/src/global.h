@@ -22,9 +22,9 @@ enum ImageAspectMode {
 
 
 struct Setting {
-    int counter;
+    int running_counter;
     int pauseInterval;
-    int pauseContinuous;
+    int pauseDuration;
     QString imagesPath;
     QString imagesPathAlternative;
     ImageAspectMode imageAspectMode;
@@ -36,14 +36,20 @@ struct Setting {
     bool isPrettyFont;
     bool isStartupLink;
     QString text;
+    bool isSpectrum      ;
+    bool isTiling        ;
+    bool isStripes       ;
+    bool isCircle ;
+    bool isCircles;
+    bool isNeo           ;
 };
 
 inline bool operator==(const Setting &lhs, const Setting &rhs)
 {
     return
-        lhs.counter               == rhs.counter               &&
+        lhs.running_counter               == rhs.running_counter               &&
         lhs.pauseInterval         == rhs.pauseInterval         &&
-        lhs.pauseContinuous       == rhs.pauseContinuous       &&
+        lhs.pauseDuration       == rhs.pauseDuration       &&
         lhs.imagesPath            == rhs.imagesPath            &&
         lhs.imagesPathAlternative == rhs.imagesPathAlternative &&
         lhs.imageAspectMode       == rhs.imageAspectMode       &&
@@ -54,7 +60,14 @@ inline bool operator==(const Setting &lhs, const Setting &rhs)
         lhs.isMessage30sec        == rhs.isMessage30sec        &&
         lhs.isPrettyFont          == rhs.isPrettyFont          &&
         lhs.isStartupLink         == rhs.isStartupLink         &&
-        lhs.text                  == rhs.text;
+        lhs.text                  == rhs.text                  &&
+        lhs.isSpectrum            == rhs.isSpectrum            &&
+        lhs.isTiling              == rhs.isTiling              &&
+        lhs.isStripes             == rhs.isStripes             &&
+        lhs.isCircle       == rhs.isCircle       &&
+        lhs.isCircles      == rhs.isCircles      &&
+        lhs.isNeo                 == rhs.isNeo
+            ;
 }
 
 inline bool operator!=(const Setting &lhs, const Setting &rhs) { return !operator==(lhs, rhs);}

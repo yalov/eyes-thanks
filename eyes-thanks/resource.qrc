@@ -7,7 +7,6 @@
         <file>icons/help-about.png</file>
         <file>icons/media-playback-pause.png</file>
         <file>icons/media-playback-start.png</file>
-        <file>fonts/UKIJDiY.ttf</file>
         <file>icons/system-software-update.png</file>
         <file>icons/light/pp.png</file>
         <file>icons/light/00.png</file>
@@ -29,5 +28,6 @@
         <file>icons/save.png</file>
         <file>fonts/FreeSerif Mod.otf</file>
         <file>res/character_sets.xml</file>
+        <file>fonts/UKIJ Diwani Yantu Mod.otf</file>
     </qresource>
 </RCC>

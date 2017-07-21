@@ -31,7 +31,7 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     setCurrentIcon(0.0);
 
-    ViewTimer = new Timer(UPDATE_PERIOD_1, setting.pauseContinuous);
+    ViewTimer = new Timer(UPDATE_PERIOD_1, setting.pauseDuration);
     DialogTimer = new Timer(UPDATE_PERIOD_2, setting.pauseInterval, setting.isLogging);
     DialogTimer->start();
 
@@ -47,7 +47,7 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
             this, SLOT(Activated(QSystemTrayIcon::ActivationReason)));
 
 
-    if (setting.counter == 0) ShowDialog();
+    if (setting.running_counter == 1) ShowDialog();
 
 #ifndef DEPLOY
     RefreshmentStart();
@@ -161,9 +161,10 @@ void TrayIcon::readSettings()
 
     settings.beginGroup("Settings");
     loadLanguage(settings.value("lang", QLocale::system().name().split('_').front()).toString());
-    setting.counter         = settings.value("counter", 0).toInt();
+    setting.running_counter         = settings.value("counter", 0).toInt();
+    setting.running_counter++;
     setting.pauseInterval   = settings.value("interval", 60 * 60 * 1000).toInt();
-    setting.pauseContinuous = settings.value("continuous", 60 * 1000).toInt();
+    setting.pauseDuration = settings.value("duration", 60 * 1000).toInt();
 
     setting.imagesPath      = settings.value("background_path", "").toString();
     setting.imagesPathAlternative  = settings.value("background_path_alt", "").toString();
@@ -171,23 +172,26 @@ void TrayIcon::readSettings()
     setting.imageAspectMode = static_cast<ImageAspectMode>(settings.value("aspectMode", ImageAspectMode::Auto).toUInt());
     setting.iconsMode       = static_cast<IconsMode>(settings.value("iconsMode", IconsMode::light).toUInt());
 
-
     setting.isClock         = settings.value("clock_enabled", true).toBool();
     setting.isMessage30sec  = settings.value("message_enabled", true).toBool();
     setting.isLogging       = settings.value("logging_enabled", false).toBool();
     setting.isText          = settings.value("text_enabled", false).toBool();
     setting.isPrettyFont    = settings.value("prettyFont_enabled", true).toBool();
 
-    bool defaultisStartupLink;
-    if (QFile::exists(QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
-                      QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk"))
-        defaultisStartupLink = true;
-    else
-        defaultisStartupLink = false;
+    if (setting.running_counter == 1) QFile::remove(
+                QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
+                QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk");
 
-    setting.isStartupLink   = settings.value("startupLink_enabled", defaultisStartupLink).toBool();
+    setting.isStartupLink   = settings.value("startupLink_enabled", false).toBool();
 
-    setting.text            = settings.value("text", tr("All work and no play\nmakes Jack a dull boy.")).toString();
+    setting.text            = settings.value("text", qApp->translate("App","All work and no play\nmakes Jack a dull boy.")).toString();
+
+    setting.isSpectrum       = settings.value("spectrum_enabled", true).toBool();
+    setting.isTiling         = settings.value("tiling_enabled",   true).toBool();
+    setting.isStripes        = settings.value("stripes_enabled",  false).toBool();
+    setting.isCircle         = settings.value("circle_enabled",   true).toBool();
+    setting.isCircles        = settings.value("circles_enabled",  true).toBool();
+    setting.isNeo            = settings.value("neo_enabled",      true).toBool();
 
     settings.endGroup();
 }
@@ -198,25 +202,32 @@ void TrayIcon::writeSettings()
     qsettings.setIniCodec("utf8");
 
     qsettings.beginGroup("Settings");
-    qsettings.setValue("lang", LangCurrent);
-    qsettings.setValue("counter", setting.counter);
-    qsettings.setValue("interval", setting.pauseInterval);
-    qsettings.setValue("continuous", setting.pauseContinuous);
+    qsettings.setValue("lang",                   LangCurrent);
+    qsettings.setValue("counter",                setting.running_counter);
+    qsettings.setValue("interval",               setting.pauseInterval);
+    qsettings.setValue("duration",             setting.pauseDuration);
 
-    qsettings.setValue("background_path", setting.imagesPath);
-    qsettings.setValue("background_path_alt", setting.imagesPathAlternative);
+    qsettings.setValue("background_path",        setting.imagesPath);
+    qsettings.setValue("background_path_alt",    setting.imagesPathAlternative);
 
-    qsettings.setValue("iconsMode", static_cast<uint>(setting.iconsMode));
-    qsettings.setValue("aspectMode", static_cast<uint>(setting.imageAspectMode));
+    qsettings.setValue("iconsMode",              static_cast<uint>(setting.iconsMode));
+    qsettings.setValue("aspectMode",             static_cast<uint>(setting.imageAspectMode));
 
-    qsettings.setValue("clock_enabled", setting.isClock);
-    qsettings.setValue("message_enabled", setting.isMessage30sec);
-    qsettings.setValue("logging_enabled", setting.isLogging);
-    qsettings.setValue("prettyFont_enabled", setting.isPrettyFont);
-    qsettings.setValue("startupLink_enabled", setting.isStartupLink);
+    qsettings.setValue("clock_enabled",          setting.isClock);
+    qsettings.setValue("message_enabled",        setting.isMessage30sec);
+    qsettings.setValue("logging_enabled",        setting.isLogging);
+    qsettings.setValue("prettyFont_enabled",     setting.isPrettyFont);
+    qsettings.setValue("startupLink_enabled",    setting.isStartupLink);
 
-    qsettings.setValue("text_enabled", setting.isText);
-    qsettings.setValue("text", setting.text);
+    qsettings.setValue("text_enabled",           setting.isText);
+    qsettings.setValue("text",                   setting.text);
+
+    qsettings.setValue("spectrum_enabled",       setting.isSpectrum );
+    qsettings.setValue("riling_enabled",         setting.isTiling   );
+    qsettings.setValue("stripes_enabled",        setting.isStripes  );
+    qsettings.setValue("circle_enabled",         setting.isCircle   );
+    qsettings.setValue("circles_enabled",        setting.isCircles  );
+    qsettings.setValue("neo_enabled",            setting.isNeo      );
 
     qsettings.endGroup();
 }
@@ -246,31 +257,14 @@ void TrayIcon::Save(const Setting &s)
 {
     bool fullrestart = false;
     if (setting.pauseInterval != s.pauseInterval ||
-            setting.pauseContinuous != s.pauseContinuous)
+            setting.pauseDuration != s.pauseDuration)
         fullrestart = true;
 
     // create and delete StartUp Icon, at save time.
     if (setting.isStartupLink != s.isStartupLink)
         createOrDeleteAppStartUpLink(s.isStartupLink);
 
-    setting.pauseInterval = s.pauseInterval;
-    setting.pauseContinuous = s.pauseContinuous;
-    setting.imagesPath = s.imagesPath;
-    setting.imagesPathAlternative = s.imagesPathAlternative;
-
-    setting.imageAspectMode = s.imageAspectMode;
-    setting.iconsMode = s.iconsMode;
-
-    setting.isLogging = s.isLogging;
-    setting.isText = s.isText;
-    setting.isClock = s.isClock;
-    setting.isMessage30sec = s.isMessage30sec;
-    setting.isPrettyFont = s.isPrettyFont;
-    setting.isStartupLink = s.isStartupLink;
-
-    setting.text = s.text;
-
-
+    setting = s;
 
     writeSettings();
     initIcons();
@@ -285,7 +279,7 @@ void TrayIcon::Save(const Setting &s)
         PauseAct->setIcon(QIcon::fromTheme("media-playback-pause"));
 #endif
         DialogTimer->restart(UPDATE_PERIOD_2, setting.pauseInterval);
-        ViewTimer->init(UPDATE_PERIOD_1, setting.pauseContinuous);
+        ViewTimer->init(UPDATE_PERIOD_1, setting.pauseDuration);
 
         TrayMessageShowed = false;
 
@@ -297,7 +291,6 @@ void TrayIcon::Save(const Setting &s)
 
 void TrayIcon::Quit()
 {
-    setting.counter++;
     writeSettings();
     qApp->quit();
 }
@@ -607,8 +600,8 @@ void TrayIcon::ShowView()
     if (setting.isText)    text = setting.text;
     else                   text = "";
 
-    text.replace("%interval", QString::number(setting.pauseInterval / 1000 / 60) + " " + tr("min"));
-    text.replace("%continuous", QString::number(setting.pauseContinuous / 1000) + " " + tr("sec"));
+    text.replace("%until", QString::number(setting.pauseInterval / 1000 / 60) + " " + tr("min"));
+    text.replace("%duration", QString::number(setting.pauseDuration / 1000) + " " + tr("sec"));
 
     emit show_refreshment(pics_path, clock, text, setting, ViewTimer);
 
