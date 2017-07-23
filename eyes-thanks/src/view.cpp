@@ -210,11 +210,14 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
             }
         }
 
+
         QGraphicsPixmapItem *pic_item;
         if (display_case == "Full_desktop Outside") {
             pic = pic.scaled(desktop.size(), Qt::KeepAspectRatioByExpanding);
             pic_item = new QGraphicsPixmapItem(pic);
             pic_item->setPos(desktop.topLeft() + QPoint(desktop.width() - pic.width(), desktop.height() - pic.height()) / 2);
+            qDebug() <<  str_from(desktop) << str_from(pic.rect()) << pic_item->x() << pic_item->y() << display_case;
+
         }
         else if (display_case == "Default_screen Outside") {
             pic = pic.scaled(default_screen.size(), Qt::KeepAspectRatioByExpanding);
@@ -323,10 +326,10 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
     show();
     setGeometry(desktop);
 #else
-    setGeometry(desktop);
     activateWindow();
     showFullScreen();
     setFocus();
+    setGeometry(desktop);
 #endif
 }
 

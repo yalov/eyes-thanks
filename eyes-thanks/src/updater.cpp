@@ -71,7 +71,7 @@ void UpdateAction::replyFinished(QNetworkReply *reply)
 
         QString text;
         if (currVersion == newVersion)
-            text = tr("You are already running the most recent version of <b>Eyes' Thanks</b>.");
+            text = tr("You are already running the most recent version <b>Eyes' Thanks %1</b>.").arg(NewVersionString);
         else if (currVersion < newVersion)
             text = tr("A new version of <b>Eyes' Thanks</b> has been released! "
                       "Version <b>%1</b> is available at <a href=%2>%2</a>.<br><br>"
