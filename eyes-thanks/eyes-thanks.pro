@@ -11,7 +11,7 @@ message("$$BUILD_TIME eyes-thanks.pro")
 CONFIG  += DEPLOY
 
 APP_NAME  = Eyes’ Thanks
-VERSION   = 1.3.1
+VERSION   = 1.3.2
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks

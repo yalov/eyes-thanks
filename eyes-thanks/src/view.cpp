@@ -216,8 +216,6 @@ void View::ShowRefreshment(const QList<QString> &pics_path, const QString &clock
             pic = pic.scaled(desktop.size(), Qt::KeepAspectRatioByExpanding);
             pic_item = new QGraphicsPixmapItem(pic);
             pic_item->setPos(desktop.topLeft() + QPoint(desktop.width() - pic.width(), desktop.height() - pic.height()) / 2);
-            qDebug() <<  str_from(desktop) << str_from(pic.rect()) << pic_item->x() << pic_item->y() << display_case;
-
         }
         else if (display_case == "Default_screen Outside") {
             pic = pic.scaled(default_screen.size(), Qt::KeepAspectRatioByExpanding);
@@ -442,7 +440,7 @@ int View::SetPredeterminedBackground(qreal hue_now)
                 for (int j = 0; j < h; j++) {
                     QGraphicsRectItem *squareItem = new QGraphicsRectItem();
                     squareItem->setPen(QPen(Qt::black, 1));
-                    squareItem->setPos(i * cellw, j * cellh);
+                    squareItem->setPos(desktop.topLeft() + QPoint(i * cellw, j * cellh));
                     squareItem->setRect(0, 0, cellw, cellh);
                     qreal hue = Hue_start + qreal(i) * 0.8 / w ;
                     hue -= floor(hue);
@@ -468,7 +466,7 @@ int View::SetPredeterminedBackground(qreal hue_now)
                 for (int j = 0; j < h + 1; j++) {
                     qreal hue = Hue_start + qreal(i) * 0.8 / w;
                     TilingItem *squareItem = new TilingItem(square, hue);
-                    squareItem->setPos(i * 0.5 * cellw, (j + (i % 2) * 0.5) * cellh);
+                    squareItem->setPos(desktop.topLeft() + QPointF(i * 0.5 * cellw, (j + (i % 2) * 0.5) * cellh));
                     myscene->addItem(squareItem);
                 }
             }
@@ -495,7 +493,7 @@ int View::SetPredeterminedBackground(qreal hue_now)
                 for (int j = 0; j < h + 1; j++) {
                     qreal hue = Hue_start + qreal(i) * 0.8 / w;
                     TilingItem *hexagonItem = new TilingItem(hexagon, hue);
-                    hexagonItem->setPos((0.75 * i - 0.25) * cellw, (j - 0.5) * cellh + (i % 2 ? 0 : 0.5 * cellh));
+                    hexagonItem->setPos(desktop.topLeft() + QPointF((0.75 * i - 0.25) * cellw, (j - 0.5) * cellh + (i % 2 ? 0 : 0.5 * cellh)));
                     myscene->addItem(hexagonItem);
                 }
             }
@@ -519,8 +517,9 @@ int View::SetPredeterminedBackground(qreal hue_now)
                 for (int j = 0; j < h; j++) {
                     qreal hue = Hue_start + qreal(i) * 0.8 / w;
                     TilingItem *triangleItem = new TilingItem(triangle, hue);
-                    triangleItem->setPos(cellw * (0.5 * i),
-                                         cellh * j + cellh * ((j + i) % 2 ? 1.0 / 3.0 : 2.0 / 3.0));
+                    triangleItem->setPos(desktop.topLeft() + QPointF(
+                                             cellw * (0.5 * i),
+                                         cellh * j + cellh * ((j + i) % 2 ? 1.0 / 3.0 : 2.0 / 3.0)));
                     myscene->addItem(triangleItem);
 
                     if ((j + i) % 2) triangleItem->setRotation(180);
@@ -546,7 +545,7 @@ int View::SetPredeterminedBackground(qreal hue_now)
                 for (int j = 0; j < h + 1; j++) {
                     qreal hue = Hue_start + qreal(i) * 0.8 / w;
                     qreal hue1 = hue +  0.5 * 0.8 / w;
-                    QPointF pos = {cell  * i, cell  * j};
+                    QPointF pos = desktop.topLeft() + QPointF{cell  * i, cell  * j};
 
                     QGraphicsItemGroup *group = new QGraphicsItemGroup();
                     myscene->addItem(group);
@@ -606,7 +605,7 @@ int View::SetPredeterminedBackground(qreal hue_now)
         bool stripes_gradient = qrand() % 2;
         if (stripes_gradient) {
             for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
-                QGraphicsRectItem *item = new QGraphicsRectItem(i, 0, stripe_width, desktop.height());
+                QGraphicsRectItem *item = new QGraphicsRectItem(desktop.left() + i, 0, stripe_width, desktop.height());
                 QLinearGradient grad(item->rect().topLeft(), item->rect().topRight());
                 grad.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0));
                 grad.setColorAt(0.5, QColor::fromRgbF(0, 0, 0, 0.9));
@@ -619,7 +618,7 @@ int View::SetPredeterminedBackground(qreal hue_now)
         else {
             stripe_width = stripe_segment * 0.4;
             for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
-                QGraphicsLineItem *item = new QGraphicsLineItem(i + stripe_width / 2, 0, i + stripe_width / 2, desktop.height());
+                QGraphicsLineItem *item = new QGraphicsLineItem(desktop.left() + i + stripe_width / 2, 0, desktop.left() + i + stripe_width / 2, desktop.height());
                 item->setPen(QPen(QColor(Qt::black), stripe_width));
                 item->setOpacity(0.7);
                 myscene->addItem(item);
@@ -634,8 +633,9 @@ int View::SetPredeterminedBackground(qreal hue_now)
         }
 
         int diameter_dot = qMin(desktop.width(), desktop.height()) / 10;
-        QRect r(qrand() % (desktop.width() - diameter_dot),
-                qrand() % (desktop.height() - diameter_dot), diameter_dot, diameter_dot);
+        QRect r(desktop.topLeft() +
+                QPoint(qrand() % (desktop.width() - diameter_dot),
+                qrand() % (desktop.height() - diameter_dot)), QSize(diameter_dot, diameter_dot));
 
         Item->setRect(r);
         Item->setBrush(QColor::fromHsvF(qrand() % 256 / 255.0, 1, 1, 0.5));
@@ -649,8 +649,9 @@ int View::SetPredeterminedBackground(qreal hue_now)
         int count_item = desktop.height() * desktop.width() / (1920.0 * 1080.0) * 100;
         for (int i = 0; i < count_item; i++) {
             int diameter_dot = qrand() % 100 + 50;
-            QRect r(qrand() % (desktop.width() - diameter_dot),
-                    qrand() % (desktop.height() - diameter_dot), diameter_dot, diameter_dot);
+            QRect r(desktop.topLeft() +
+                    QPoint(qrand() % (desktop.width() - diameter_dot),
+                    qrand() % (desktop.height() - diameter_dot)), QSize(diameter_dot, diameter_dot));
 
             QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
             item->setBrush(QColor::fromHsvF(fmod(Hue_start + qreal(i) / count_item / 2, 1), 1, 1));
@@ -674,10 +675,6 @@ int View::SetPredeterminedBackground(qreal hue_now)
         }
         if (textItem)
             myscene->removeItem(textItem);
-
-        //ProgressBar->setBrush(Qt::darkGreen);
-        //ProgressBarBackground->setBrush(Qt::darkGreen);
-        //ButtonRectItem->setBrush(Qt::darkGreen);
 
         if (qrand() % 10 == 0) {
             QString name = transliteraction(qgetenv("USER"));
@@ -735,7 +732,7 @@ int View::SetPredeterminedBackground(qreal hue_now)
                 item->setPen(Qt::NoPen);
                 item->setFont(font_background);
                 item->setText(QUtfString(title.at(index)));
-                item->setPos(basic_width - item->boundingRect().width() / 2, index * basic_height);
+                item->setPos(desktop.topLeft() + QPointF(basic_width - item->boundingRect().width() / 2, index * basic_height));
             }
 
         for (int pos_x = basic_width * (title.isEmpty() ? 1 : 4); pos_x < desktop.width(); pos_x += basic_width * 3) {
@@ -757,7 +754,7 @@ int View::SetPredeterminedBackground(qreal hue_now)
                     }
                 }
                 item->setText(character);
-                item->setPos(pos_x - item->boundingRect().width() / 2, pos_y);
+                item->setPos(desktop.topLeft() + QPointF(pos_x - item->boundingRect().width() / 2, pos_y));
             }
 
         }

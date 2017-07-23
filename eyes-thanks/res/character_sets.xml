@@ -117,9 +117,4 @@
         <title>GajevaLatinica</title>
         <characters>AaBbCcČčĆćDdǅǆÐđEeFfGgHhIiЈјKkLlǈǉMmNnǋǌOoPpRrSsŠšTtUuVvZzŽž</characters>
     </set>
-    <set index="26" name="Binary">
-        <comment>title = 42</comment>
-        <title>00101010</title>
-        <characters>01</characters>
-    </set>
 </sets>
