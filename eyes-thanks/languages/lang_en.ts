@@ -27,14 +27,14 @@
 <context>
     <name>App</name>
     <message>
-        <location filename="../src/dialog.cpp" line="326"/>
-        <location filename="../src/trayicon.cpp" line="545"/>
+        <location filename="../src/dialog.cpp" line="324"/>
+        <location filename="../src/trayicon.cpp" line="582"/>
         <location filename="../src/updater.cpp" line="22"/>
         <source>Eyes&apos; Thanks</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="493"/>
+        <location filename="../src/dialog.cpp" line="492"/>
         <source>Proverbs.</source>
         <translation>All work and no play
 makes Jack a dull boy.
@@ -93,7 +93,7 @@ The key is in not spending time,
 but in investing it.</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="187"/>
+        <location filename="../src/trayicon.cpp" line="198"/>
         <source>All work and no play
 makes Jack a dull boy.</source>
         <translation></translation>
@@ -102,17 +102,17 @@ makes Jack a dull boy.</source>
 <context>
     <name>Dialog</name>
     <message>
-        <location filename="../src/dialog.cpp" line="354"/>
+        <location filename="../src/dialog.cpp" line="353"/>
         <source>Pictures folder</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="357"/>
+        <location filename="../src/dialog.cpp" line="356"/>
         <source>Alternative pictures folder</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="358"/>
+        <location filename="../src/dialog.cpp" line="357"/>
         <source>Use, if you have two different-ratio sets of monitors.
 
 Ex. if sometimes you disconnect your FHD notebook from your FHD monitor,
@@ -127,184 +127,189 @@ FullHD (1920×1080) pictures to “Alternative pictures folder”).
 So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app use FullHD folder.</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="336"/>
+        <location filename="../src/dialog.cpp" line="334"/>
         <source>min</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="330"/>
+        <location filename="../src/dialog.cpp" line="328"/>
         <source>Program Setting</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="335"/>
+        <location filename="../src/dialog.cpp" line="333"/>
         <source>Break duration</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="337"/>
+        <location filename="../src/dialog.cpp" line="335"/>
         <source>sec</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="355"/>
+        <location filename="../src/dialog.cpp" line="344"/>
+        <source>White</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/dialog.cpp" line="354"/>
         <source>Choose folder with images (jpg, png, gif), or leave empty for Predetermined Backgrounds.</source>
         <translation>Choose folder with images (jpg, png, gif), or leave empty for “Predetermined Backgrounds”.</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="365"/>
+        <location filename="../src/dialog.cpp" line="364"/>
         <source>Predetermined Backgrounds</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="366"/>
+        <location filename="../src/dialog.cpp" line="365"/>
         <source>Spectrum</source>
         <translation>Optical spectrum</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="367"/>
+        <location filename="../src/dialog.cpp" line="366"/>
         <source>Tiling</source>
         <translation>Tiling of the plane</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="368"/>
+        <location filename="../src/dialog.cpp" line="367"/>
         <source>Stripes</source>
         <translation>Rainbowed stripes</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="369"/>
+        <location filename="../src/dialog.cpp" line="368"/>
         <source>Circle</source>
         <translation>Interesting circle</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="370"/>
+        <location filename="../src/dialog.cpp" line="369"/>
         <source>Circles</source>
         <translation>Withering circles</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="371"/>
+        <location filename="../src/dialog.cpp" line="370"/>
         <source>Neo</source>
         <translation>Multilingual Neo</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="374"/>
+        <location filename="../src/dialog.cpp" line="373"/>
         <source>Foreground</source>
         <translation>Text</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="375"/>
+        <location filename="../src/dialog.cpp" line="374"/>
         <source>Clock</source>
         <translation>Show clock</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="347"/>
+        <location filename="../src/dialog.cpp" line="346"/>
         <source>30-sec message</source>
         <translation>30-sec message, before break</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="348"/>
+        <location filename="../src/dialog.cpp" line="347"/>
         <source>Logging to .txt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="377"/>
+        <location filename="../src/dialog.cpp" line="376"/>
         <source>UKIJ Diwani Yantu Mod Font</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="378"/>
+        <location filename="../src/dialog.cpp" line="377"/>
         <source>Text</source>
         <translation>Show text</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="349"/>
+        <location filename="../src/dialog.cpp" line="348"/>
         <source>Run on Windows startup</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="384"/>
+        <location filename="../src/dialog.cpp" line="383"/>
         <source>Auto</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="385"/>
+        <location filename="../src/dialog.cpp" line="384"/>
         <source>Outside</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="386"/>
+        <location filename="../src/dialog.cpp" line="385"/>
         <source>Inside</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="344"/>
+        <location filename="../src/dialog.cpp" line="342"/>
         <source>Light</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="345"/>
+        <location filename="../src/dialog.cpp" line="343"/>
         <source>Dark</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="390"/>
+        <location filename="../src/dialog.cpp" line="389"/>
         <source>Image Aspect Mode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="327"/>
-        <location filename="../src/dialog.cpp" line="334"/>
+        <location filename="../src/dialog.cpp" line="325"/>
+        <location filename="../src/dialog.cpp" line="332"/>
         <source>Until break</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="331"/>
+        <location filename="../src/dialog.cpp" line="329"/>
         <source>Showing Break Setting</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="340"/>
+        <location filename="../src/dialog.cpp" line="338"/>
         <source>System Settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="341"/>
+        <location filename="../src/dialog.cpp" line="339"/>
         <source>Tray Icon Style</source>
         <translation>Tray icon style</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="328"/>
+        <location filename="../src/dialog.cpp" line="326"/>
         <source>Save</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="329"/>
+        <location filename="../src/dialog.cpp" line="327"/>
         <source>Close to notification area</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="352"/>
+        <location filename="../src/dialog.cpp" line="351"/>
         <source>User Backgrounds</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="376"/>
+        <location filename="../src/dialog.cpp" line="375"/>
         <source>Pretty Font</source>
         <translation>Use pretty font</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="379"/>
+        <location filename="../src/dialog.cpp" line="378"/>
         <source>Support params</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="380"/>
+        <location filename="../src/dialog.cpp" line="379"/>
         <source>Random proverb</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="477"/>
-        <location filename="../src/dialog.cpp" line="485"/>
+        <location filename="../src/dialog.cpp" line="476"/>
+        <location filename="../src/dialog.cpp" line="484"/>
         <source>Open Directory</source>
         <translation></translation>
     </message>
@@ -317,64 +322,64 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="420"/>
+        <location filename="../src/trayicon.cpp" line="416"/>
         <source>Setting</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="275"/>
-        <location filename="../src/trayicon.cpp" line="318"/>
-        <location filename="../src/trayicon.cpp" line="319"/>
-        <location filename="../src/trayicon.cpp" line="322"/>
-        <location filename="../src/trayicon.cpp" line="421"/>
-        <location filename="../src/trayicon.cpp" line="521"/>
+        <location filename="../src/trayicon.cpp" line="286"/>
+        <location filename="../src/trayicon.cpp" line="329"/>
+        <location filename="../src/trayicon.cpp" line="330"/>
+        <location filename="../src/trayicon.cpp" line="333"/>
+        <location filename="../src/trayicon.cpp" line="417"/>
+        <location filename="../src/trayicon.cpp" line="558"/>
         <source>Pause</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="424"/>
+        <location filename="../src/trayicon.cpp" line="420"/>
         <source>Check for Updates</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="423"/>
+        <location filename="../src/trayicon.cpp" line="419"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="422"/>
+        <location filename="../src/trayicon.cpp" line="418"/>
         <source>Quit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="425"/>
+        <location filename="../src/trayicon.cpp" line="421"/>
         <source>Languages</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="307"/>
+        <location filename="../src/trayicon.cpp" line="318"/>
         <source>Unpause</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="419"/>
+        <location filename="../src/trayicon.cpp" line="415"/>
         <source>Break Now</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="535"/>
-        <location filename="../src/trayicon.cpp" line="545"/>
+        <location filename="../src/trayicon.cpp" line="572"/>
+        <location filename="../src/trayicon.cpp" line="582"/>
         <source>Until break</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="545"/>
-        <location filename="../src/trayicon.cpp" line="604"/>
+        <location filename="../src/trayicon.cpp" line="582"/>
+        <location filename="../src/trayicon.cpp" line="641"/>
         <source>sec</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="603"/>
+        <location filename="../src/trayicon.cpp" line="640"/>
         <source>min</source>
         <translation></translation>
     </message>

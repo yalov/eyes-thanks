@@ -90,7 +90,7 @@ void Dialog::InitWidgets()
     Label_TrayIconStyle = new QLabel();
 
     buttonSave = new QPushButton();
-    buttonSave->setIcon(QIcon(":/icons/save.png"));
+    buttonSave->setIcon(QIcon(":/icons/actions/save.png"));
     buttonSave->setEnabled(false);
     buttonMinimizeToSystemTray = new QPushButton();
     buttonSave->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -229,8 +229,6 @@ void Dialog::InitWidgets()
 #ifdef Q_OS_WIN32
 
     TaskbarButton = new QWinTaskbarButton(this);
-    //TaskbarButton->setOverlayIcon(QIcon(":icons/50.png"));
-
     TaskbarProgress = TaskbarButton->progress();
     TaskbarProgress->setVisible(true);
 
@@ -340,9 +338,10 @@ void Dialog::Translate()
     GroupBox_SystemSetting->setTitle(tr("System Settings") + ":");
     Label_TrayIconStyle->setText(tr("Tray Icon Style") + ":");
     Combobox_iconsMode->clear();
-    Combobox_iconsMode->addItems(QStringList() << "" << "");
+    Combobox_iconsMode->addItems(QStringList() << "" << "" << "");
     Combobox_iconsMode->setItemText(0, tr("Light"));
     Combobox_iconsMode->setItemText(1, tr("Dark"));
+    Combobox_iconsMode->setItemText(2, tr("White"));
 
     CheckBox_Message->setText(tr("30-sec message"));
     CheckBox_Logging->setText(tr("Logging to .txt"));

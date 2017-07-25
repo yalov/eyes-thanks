@@ -11,7 +11,8 @@
 
 enum IconsMode {
     light,
-    dark
+    dark,
+    white
 };
 
 enum ImageAspectMode {

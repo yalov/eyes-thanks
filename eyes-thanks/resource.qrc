@@ -1,13 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/icon.ico</file>
         <file>copying.html</file>
-        <file>icons/application-exit.png</file>
-        <file>icons/configure.png</file>
-        <file>icons/help-about.png</file>
-        <file>icons/media-playback-pause.png</file>
-        <file>icons/media-playback-start.png</file>
-        <file>icons/system-software-update.png</file>
         <file>icons/light/pp.png</file>
         <file>icons/light/00.png</file>
         <file>icons/light/25.png</file>
@@ -15,19 +8,41 @@
         <file>icons/light/75.png</file>
         <file>icons/light/87.png</file>
         <file>icons/light/95.png</file>
-        <file>icons/dark/pp.png</file>
-        <file>icons/dark/00.png</file>
-        <file>icons/dark/25.png</file>
-        <file>icons/dark/50.png</file>
-        <file>icons/dark/75.png</file>
-        <file>icons/dark/87.png</file>
-        <file>icons/dark/95.png</file>
-        <file>icons/video-display.png</file>
         <file>icons/logo.png</file>
         <file>icons/tooltip.png</file>
-        <file>icons/save.png</file>
         <file>fonts/FreeSerif Mod.otf</file>
         <file>res/character_sets.xml</file>
         <file>fonts/UKIJ Diwani Yantu Mod.otf</file>
+        <file>icons/light/12.png</file>
+        <file>icons/light/37.png</file>
+        <file>icons/light/62.png</file>
+        <file>icons/white/00.png</file>
+        <file>icons/white/12.png</file>
+        <file>icons/white/25.png</file>
+        <file>icons/white/37.png</file>
+        <file>icons/white/50.png</file>
+        <file>icons/white/62.png</file>
+        <file>icons/white/75.png</file>
+        <file>icons/white/87.png</file>
+        <file>icons/white/95.png</file>
+        <file>icons/white/pp.png</file>
+        <file>icons/dark/00.png</file>
+        <file>icons/dark/12.png</file>
+        <file>icons/dark/25.png</file>
+        <file>icons/dark/37.png</file>
+        <file>icons/dark/50.png</file>
+        <file>icons/dark/62.png</file>
+        <file>icons/dark/75.png</file>
+        <file>icons/dark/87.png</file>
+        <file>icons/dark/95.png</file>
+        <file>icons/dark/pp.png</file>
+        <file>icons/actions/application-exit.png</file>
+        <file>icons/actions/configure.png</file>
+        <file>icons/actions/help-about.png</file>
+        <file>icons/actions/media-playback-pause.png</file>
+        <file>icons/actions/media-playback-start.png</file>
+        <file>icons/actions/save.png</file>
+        <file>icons/actions/system-software-update.png</file>
+        <file>icons/actions/video-display.png</file>
     </qresource>
 </RCC>

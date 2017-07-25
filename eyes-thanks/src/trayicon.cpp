@@ -101,12 +101,12 @@ void TrayIcon::createActions()
 {
 #ifdef _WIN32
 
-    QIcon testIcon    = QIcon(":icons/video-display.png");
-    QIcon settingIcon = QIcon(":icons/configure.png");
-    QIcon pauseIcon   = QIcon(":icons/media-playback-pause.png");
-    QIcon updateIcon  = QIcon(":icons/system-software-update");
-    QIcon aboutIcon   = QIcon(":icons/help-about.png");
-    QIcon quitIcon    = QIcon(":icons/application-exit.png");
+    QIcon testIcon    = QIcon(":icons/actions/video-display.png");
+    QIcon settingIcon = QIcon(":icons/actions/configure.png");
+    QIcon pauseIcon   = QIcon(":icons/actions/media-playback-pause.png");
+    QIcon updateIcon  = QIcon(":icons/actions/system-software-update");
+    QIcon aboutIcon   = QIcon(":icons/actions/help-about.png");
+    QIcon quitIcon    = QIcon(":icons/actions/application-exit.png");
 
 #else
     QIcon testIcon    = QIcon::fromTheme("video-display"); // preferences-desktop-display
@@ -178,11 +178,22 @@ void TrayIcon::readSettings()
     setting.isText          = settings.value("text_enabled", false).toBool();
     setting.isPrettyFont    = settings.value("prettyFont_enabled", true).toBool();
 
-    if (setting.running_counter == 1) QFile::remove(
-                QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
-                QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk");
+    bool isStartupLinkdefault = false;
+    if (setting.running_counter == 1) {
+        QString startup_lnk =  QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
+                               QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk";
 
-    setting.isStartupLink   = settings.value("startupLink_enabled", false).toBool();
+        if (QFile::exists(startup_lnk)) {
+            isStartupLinkdefault = true;
+            QFile::remove(startup_lnk);
+            QFile::link(QApplication::applicationFilePath(), startup_lnk);
+        }
+        else{
+            isStartupLinkdefault = false;
+        }
+    }
+
+    setting.isStartupLink   = settings.value("startupLink_enabled", isStartupLinkdefault).toBool();
 
     setting.text            = settings.value("text", qApp->translate("App","All work and no play\nmakes Jack a dull boy.")).toString();
 
@@ -274,7 +285,7 @@ void TrayIcon::Save(const Setting &s)
 
         PauseAct->setText(tr("Pause"));
 #ifdef _WIN32
-        PauseAct->setIcon(QIcon(":icons/media-playback-pause.png"));
+        PauseAct->setIcon(QIcon(":icons/actions/media-playback-pause.png"));
 #else
         PauseAct->setIcon(QIcon::fromTheme("media-playback-pause"));
 #endif
@@ -307,7 +318,7 @@ void TrayIcon::Pause()
         PauseAct->setText(tr("Unpause"));
 
 #ifdef _WIN32
-        PauseAct->setIcon(QIcon(":icons/media-playback-start.png"));
+        PauseAct->setIcon(QIcon(":icons/actions/media-playback-start.png"));
 #else
         PauseAct->setIcon(QIcon::fromTheme("media-playback-start"));
 #endif
@@ -321,7 +332,7 @@ void TrayIcon::Pause()
     else {
         PauseAct->setText(tr("Pause"));
 #ifdef _WIN32
-        PauseAct->setIcon(QIcon(":icons/media-playback-pause.png"));
+        PauseAct->setIcon(QIcon(":icons/actions/media-playback-pause.png"));
 #else
         PauseAct->setIcon(QIcon::fromTheme("media-playback-pause"));
 #endif
@@ -348,21 +359,6 @@ void TrayIcon::Activated(QSystemTrayIcon::ActivationReason reason)
     default:
         ;
     }
-}
-
-void TrayIcon::setPauseIcon()
-{
-    setIcon(ipp);
-}
-
-void TrayIcon::setCurrentIconbyCurrentIconRatio()
-{
-    if (CurrentIconRatio == 0.25) setIcon(i25);
-    else if (CurrentIconRatio == 0.5) setIcon(i50);
-    else if (CurrentIconRatio == 0.75) setIcon(i75);
-    else if (CurrentIconRatio == 0.87) setIcon(i87);
-    else if (CurrentIconRatio == 0.95) setIcon(i95);
-    else                                setIcon(i00);  //if CurrentIconRatio == 0 or -1
 }
 
 //-----------------------------------------------------------------
@@ -430,29 +426,61 @@ void TrayIcon::translate()
 
 
 //-----------------------------------------------------------------
+
+void TrayIcon::setPauseIcon()
+{
+    setIcon(ipp);
+}
+
+void TrayIcon::setCurrentIconbyCurrentIconRatio()
+{
+    if      (CurrentIconRatio == 0.125) setIcon(i12);
+    else if (CurrentIconRatio == 0.25) setIcon(i25);
+    else if (CurrentIconRatio == 0.375) setIcon(i37);
+    else if (CurrentIconRatio == 0.50) setIcon(i50);
+    else if (CurrentIconRatio == 0.625) setIcon(i62);
+    else if (CurrentIconRatio == 0.75) setIcon(i75);
+    else if (CurrentIconRatio == 0.875) setIcon(i87);
+    else if (CurrentIconRatio == 0.95) setIcon(i95);
+    else                               setIcon(i00);  //if CurrentIconRatio == 0 or -1
+}
+
+
 void TrayIcon::setCurrentIcon(qreal ratio)
 {
     if (CurrentIconRatio == -1) {
         setIcon(i00);
         CurrentIconRatio = 0;
     }
-    else if (ratio > 0.25 && CurrentIconRatio == 0) {
+    else if (ratio > 0.125 && CurrentIconRatio == 0) {
+        setIcon(i12);
+        CurrentIconRatio = 0.125;
+    }
+    else if (ratio > 0.25 && CurrentIconRatio == 0.125) {
         setIcon(i25);
         CurrentIconRatio = 0.25;
     }
-    else if (ratio > 0.50 && CurrentIconRatio == 0.25) {
-        setIcon(i50);
-        CurrentIconRatio = 0.5;
+    else if (ratio > 0.375 && CurrentIconRatio == 0.25) {
+        setIcon(i37);
+        CurrentIconRatio = 0.375;
     }
-    else if (ratio > 0.75 && CurrentIconRatio == 0.5) {
+    else if (ratio > 0.50 && CurrentIconRatio == 0.375) {
+        setIcon(i50);
+        CurrentIconRatio = 0.50;
+    }
+    else if (ratio > 0.625 && CurrentIconRatio == 0.50) {
+        setIcon(i62);
+        CurrentIconRatio = 0.625;
+    }
+    else if (ratio > 0.75 && CurrentIconRatio == 0.625) {
         setIcon(i75);
         CurrentIconRatio = 0.75;
     }
-    else if (ratio > 0.87 && CurrentIconRatio == 0.75) {
+    else if (ratio > 0.875 && CurrentIconRatio == 0.75) {
         setIcon(i87);
-        CurrentIconRatio = 0.87;
+        CurrentIconRatio = 0.875;
     }
-    else if (ratio > 0.95 && CurrentIconRatio == 0.87) {
+    else if (ratio > 0.95 && CurrentIconRatio == 0.875) {
         setIcon(i95);
         CurrentIconRatio = 0.95;
     }
@@ -463,8 +491,11 @@ void TrayIcon::initIcons()
     if (setting.iconsMode == IconsMode::light) {
         ipp = QIcon(":icons/light/pp.png");
         i00 = QIcon(":icons/light/00.png");
+        i12 = QIcon(":icons/light/12.png");
         i25 = QIcon(":icons/light/25.png");
+        i37 = QIcon(":icons/light/37.png");
         i50 = QIcon(":icons/light/50.png");
+        i62 = QIcon(":icons/light/62.png");
         i75 = QIcon(":icons/light/75.png");
         i87 = QIcon(":icons/light/87.png");
         i95 = QIcon(":icons/light/95.png");
@@ -473,20 +504,26 @@ void TrayIcon::initIcons()
     else if (setting.iconsMode == IconsMode::dark) {
         ipp = QIcon(":icons/dark/pp.png");
         i00 = QIcon(":icons/dark/00.png");
+        i12 = QIcon(":icons/dark/12.png");
         i25 = QIcon(":icons/dark/25.png");
+        i37 = QIcon(":icons/dark/37.png");
         i50 = QIcon(":icons/dark/50.png");
+        i62 = QIcon(":icons/dark/62.png");
         i75 = QIcon(":icons/dark/75.png");
         i87 = QIcon(":icons/dark/87.png");
         i95 = QIcon(":icons/dark/95.png");
     }
-    else {
-        ipp = QIcon(":icons/logo.png");
-        i00 = QIcon(":icons/logo.png");
-        i25 = QIcon(":icons/logo.png");
-        i50 = QIcon(":icons/logo.png");
-        i75 = QIcon(":icons/logo.png");
-        i87 = QIcon(":icons/logo.png");
-        i95 = QIcon(":icons/logo.png");
+    else { // setting.iconsMode == IconsMode::white
+        ipp = QIcon(":icons/white/pp.png");
+        i00 = QIcon(":icons/white/00.png");
+        i12 = QIcon(":icons/white/12.png");
+        i25 = QIcon(":icons/white/25.png");
+        i37 = QIcon(":icons/white/37.png");
+        i50 = QIcon(":icons/white/50.png");
+        i62 = QIcon(":icons/white/62.png");
+        i75 = QIcon(":icons/white/75.png");
+        i87 = QIcon(":icons/white/87.png");
+        i95 = QIcon(":icons/white/95.png");
     }
 }
 
