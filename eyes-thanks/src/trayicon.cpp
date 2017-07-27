@@ -434,14 +434,14 @@ void TrayIcon::setPauseIcon()
 
 void TrayIcon::setCurrentIconbyCurrentIconRatio()
 {
-    if      (CurrentIconRatio == 0.125) setIcon(i12);
-    else if (CurrentIconRatio == 0.25) setIcon(i25);
-    else if (CurrentIconRatio == 0.375) setIcon(i37);
-    else if (CurrentIconRatio == 0.50) setIcon(i50);
-    else if (CurrentIconRatio == 0.625) setIcon(i62);
-    else if (CurrentIconRatio == 0.75) setIcon(i75);
-    else if (CurrentIconRatio == 0.875) setIcon(i87);
-    else if (CurrentIconRatio == 0.95) setIcon(i95);
+    if      (CurrentIconRatio == 2/16.0) setIcon(i02);
+    else if (CurrentIconRatio == 4/16.0) setIcon(i04);
+    else if (CurrentIconRatio == 6/16.0) setIcon(i06);
+    else if (CurrentIconRatio == 8/16.0) setIcon(i08);
+    else if (CurrentIconRatio == 10/16.0) setIcon(i10);
+    else if (CurrentIconRatio == 12/16.0) setIcon(i12);
+    else if (CurrentIconRatio == 14/16.0) setIcon(i14);
+    else if (CurrentIconRatio == 15/16.0) setIcon(i15);
     else                               setIcon(i00);  //if CurrentIconRatio == 0 or -1
 }
 
@@ -452,37 +452,37 @@ void TrayIcon::setCurrentIcon(qreal ratio)
         setIcon(i00);
         CurrentIconRatio = 0;
     }
-    else if (ratio > 0.125 && CurrentIconRatio == 0) {
+    else if (ratio > 1/16.0 && CurrentIconRatio == 0) {
+        setIcon(i02);
+        CurrentIconRatio = 2/16.0;
+    }
+    else if (ratio > 3/16.0 && CurrentIconRatio == 2/16.0) {
+        setIcon(i04);
+        CurrentIconRatio = 4/16.0;
+    }
+    else if (ratio > 5/16.0 && CurrentIconRatio == 4/16.0) {
+        setIcon(i06);
+        CurrentIconRatio = 6/16.0;
+    }
+    else if (ratio > 7/16.0 && CurrentIconRatio == 6/16.0) {
+        setIcon(i08);
+        CurrentIconRatio = 8/16.0;
+    }
+    else if (ratio > 9/16.0 && CurrentIconRatio == 8/16.0) {
+        setIcon(i10);
+        CurrentIconRatio = 10/16.0;
+    }
+    else if (ratio > 11/16.0 && CurrentIconRatio == 10/16.0) {
         setIcon(i12);
-        CurrentIconRatio = 0.125;
+        CurrentIconRatio = 12/16.0;
     }
-    else if (ratio > 0.25 && CurrentIconRatio == 0.125) {
-        setIcon(i25);
-        CurrentIconRatio = 0.25;
+    else if (ratio > 13/16.0 && CurrentIconRatio == 12/16.0) {
+        setIcon(i14);
+        CurrentIconRatio = 14/16.0;
     }
-    else if (ratio > 0.375 && CurrentIconRatio == 0.25) {
-        setIcon(i37);
-        CurrentIconRatio = 0.375;
-    }
-    else if (ratio > 0.50 && CurrentIconRatio == 0.375) {
-        setIcon(i50);
-        CurrentIconRatio = 0.50;
-    }
-    else if (ratio > 0.625 && CurrentIconRatio == 0.50) {
-        setIcon(i62);
-        CurrentIconRatio = 0.625;
-    }
-    else if (ratio > 0.75 && CurrentIconRatio == 0.625) {
-        setIcon(i75);
-        CurrentIconRatio = 0.75;
-    }
-    else if (ratio > 0.875 && CurrentIconRatio == 0.75) {
-        setIcon(i87);
-        CurrentIconRatio = 0.875;
-    }
-    else if (ratio > 0.95 && CurrentIconRatio == 0.875) {
-        setIcon(i95);
-        CurrentIconRatio = 0.95;
+    else if (ratio > 14.5/16.0 && CurrentIconRatio == 14/16.0) {
+        setIcon(i15);
+        CurrentIconRatio = 15/16.0;
     }
 }
 
@@ -491,39 +491,39 @@ void TrayIcon::initIcons()
     if (setting.iconsMode == IconsMode::light) {
         ipp = QIcon(":icons/light/pp.png");
         i00 = QIcon(":icons/light/00.png");
-        i12 = QIcon(":icons/light/12.png");
-        i25 = QIcon(":icons/light/25.png");
-        i37 = QIcon(":icons/light/37.png");
-        i50 = QIcon(":icons/light/50.png");
-        i62 = QIcon(":icons/light/62.png");
-        i75 = QIcon(":icons/light/75.png");
-        i87 = QIcon(":icons/light/87.png");
-        i95 = QIcon(":icons/light/95.png");
+        i02 = QIcon(":icons/light/12.png");
+        i04 = QIcon(":icons/light/25.png");
+        i06 = QIcon(":icons/light/37.png");
+        i08 = QIcon(":icons/light/50.png");
+        i10 = QIcon(":icons/light/62.png");
+        i12 = QIcon(":icons/light/75.png");
+        i14 = QIcon(":icons/light/87.png");
+        i15 = QIcon(":icons/light/95.png");
 
     }
     else if (setting.iconsMode == IconsMode::dark) {
         ipp = QIcon(":icons/dark/pp.png");
         i00 = QIcon(":icons/dark/00.png");
-        i12 = QIcon(":icons/dark/12.png");
-        i25 = QIcon(":icons/dark/25.png");
-        i37 = QIcon(":icons/dark/37.png");
-        i50 = QIcon(":icons/dark/50.png");
-        i62 = QIcon(":icons/dark/62.png");
-        i75 = QIcon(":icons/dark/75.png");
-        i87 = QIcon(":icons/dark/87.png");
-        i95 = QIcon(":icons/dark/95.png");
+        i02 = QIcon(":icons/dark/12.png");
+        i04 = QIcon(":icons/dark/25.png");
+        i06 = QIcon(":icons/dark/37.png");
+        i08 = QIcon(":icons/dark/50.png");
+        i10 = QIcon(":icons/dark/62.png");
+        i12 = QIcon(":icons/dark/75.png");
+        i14 = QIcon(":icons/dark/87.png");
+        i15 = QIcon(":icons/dark/95.png");
     }
     else { // setting.iconsMode == IconsMode::white
         ipp = QIcon(":icons/white/pp.png");
         i00 = QIcon(":icons/white/00.png");
-        i12 = QIcon(":icons/white/12.png");
-        i25 = QIcon(":icons/white/25.png");
-        i37 = QIcon(":icons/white/37.png");
-        i50 = QIcon(":icons/white/50.png");
-        i62 = QIcon(":icons/white/62.png");
-        i75 = QIcon(":icons/white/75.png");
-        i87 = QIcon(":icons/white/87.png");
-        i95 = QIcon(":icons/white/95.png");
+        i02 = QIcon(":icons/white/12.png");
+        i04 = QIcon(":icons/white/25.png");
+        i06 = QIcon(":icons/white/37.png");
+        i08 = QIcon(":icons/white/50.png");
+        i10 = QIcon(":icons/white/62.png");
+        i12 = QIcon(":icons/white/75.png");
+        i14 = QIcon(":icons/white/87.png");
+        i15 = QIcon(":icons/white/95.png");
     }
 }
 

@@ -84,7 +84,7 @@ private:
     QMenu *SubMenuLanguages;
     UpdateAction *UpdaterAct;
 
-    QIcon ipp, i00, i12, i25, i37, i50, i62, i75, i87, i95;
+    QIcon ipp, i00, i02, i04, i06, i08, i10, i12, i14, i15;
 
     Setting setting;
 
