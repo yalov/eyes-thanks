@@ -104,6 +104,7 @@ void TrayIcon::createActions()
     QIcon testIcon    = QIcon(":icons/actions/video-display.png");
     QIcon settingIcon = QIcon(":icons/actions/configure.png");
     QIcon pauseIcon   = QIcon(":icons/actions/media-playback-pause.png");
+    QIcon skipIcon    = QIcon(":icons/actions/media-skip-forward.png");
     QIcon updateIcon  = QIcon(":icons/actions/system-software-update");
     QIcon aboutIcon   = QIcon(":icons/actions/help-about.png");
     QIcon quitIcon    = QIcon(":icons/actions/application-exit.png");
@@ -112,6 +113,7 @@ void TrayIcon::createActions()
     QIcon testIcon    = QIcon::fromTheme("video-display"); // preferences-desktop-display
     QIcon settingIcon = QIcon::fromTheme("document-properties");//QIcon::fromTheme( "configure" );
     QIcon pauseIcon   = QIcon::fromTheme("media-playback-pause");//QWidget().style()->standardIcon(QStyle::SP_MediaPause);
+    QIcon skipIcon    = QIcon::fromTheme("media-skip-forward");
     QIcon updateIcon  = QIcon::fromTheme("system-software-update");
     QIcon aboutIcon   = QIcon::fromTheme("help-about");//QWidget().style()->standardIcon(QStyle::SP_MessageBoxInformation);
     QIcon quitIcon    = QIcon::fromTheme("application-exit");//QWidget().style()->standardIcon(QStyle::SP_DialogCloseButton);
@@ -126,6 +128,10 @@ void TrayIcon::createActions()
 
     PauseAct       = new QAction(pauseIcon, "", this);
     connect(PauseAct, SIGNAL(triggered()), this, SLOT(Pause()));
+
+    SkipAct       = new QAction(skipIcon, "", this);
+    connect(SkipAct, SIGNAL(triggered()), this, SLOT(Skip()));
+
 
     UpdaterAct       = new UpdateAction(updateIcon, "", this);
 
@@ -142,6 +148,7 @@ void TrayIcon::createContextMenu()
     ContextMenu->addAction(TestAct);
     ContextMenu->addAction(ShowSettingAct);
     ContextMenu->addAction(PauseAct);
+    ContextMenu->addAction(SkipAct);
 
     SubMenuLanguages = new QMenu("");
     SubMenuLanguages->addActions(LangActGroup->actions());
@@ -163,7 +170,7 @@ void TrayIcon::readSettings()
     loadLanguage(settings.value("lang", QLocale::system().name().split('_').front()).toString());
     setting.running_counter         = settings.value("counter", 0).toInt();
     setting.running_counter++;
-    setting.pauseInterval   = settings.value("interval", 60 * 60 * 1000).toInt();
+    setting.pauseInterval   = settings.value("interval", 59 * 60 * 1000).toInt();
     setting.pauseDuration = settings.value("duration", 60 * 1000).toInt();
 
     setting.imagesPath      = settings.value("background_path", "").toString();
@@ -345,6 +352,14 @@ void TrayIcon::Pause()
     }
 }
 
+void TrayIcon::Skip()
+{
+    DialogTimer->restart();
+    CurrentIconRatio = -1;
+    setCurrentIconbyCurrentIconRatio();
+    emit updateLabel(DialogTimer->remains_str(), DialogTimer->ratio());
+}
+
 void TrayIcon::Activated(QSystemTrayIcon::ActivationReason reason)
 {
     switch (reason) {
@@ -415,6 +430,7 @@ void TrayIcon::translate()
     TestAct->setText(tr("Break Now"));
     ShowSettingAct->setText(tr("Setting"));
     PauseAct->setText(tr("Pause"));
+    SkipAct->setText(tr("Skip"));
     QuitAct->setText(tr("Quit"));
     AboutAct->setText(tr("About"));
     UpdaterAct->setText(tr("Check for Updates"));

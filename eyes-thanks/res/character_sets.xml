@@ -10,12 +10,12 @@
     </set>
     <set index="2" name="Greek">
         <comment>lowercase</comment>
-        <title></title>
+        <title>ΕλληνικόΑλφάβητο</title>
         <characters>αβγδεζηθικλμνξοπρςστυφχψωϙϛϝϟϑ</characters>
     </set>
     <set index="3" name="Glagolitic">
         <comment>uppercase. Глаголица.</comment>
-        <title></title>
+        <title>Ⰳⰾⰰⰳⱁⰾⰹⱌⰰ</title>
         <characters>ⰀⰁⰂⰃⰄⰅⰆⰇⰈⰉⰊⰋⰌⰍⰎⰏⰐⰑⰒⰓⰔⰕⰖⰗⰘⰙⰚⰛⰜⰝⰞⰟⰠⰡⰢⰣⰤⰥⰦⰧⰨⰩⰪⰫⰬⰭⰮ</characters>
     </set>
     <set index="4" name="Gothic">
@@ -25,7 +25,7 @@
     </set>
     <set index="5" name="Blackletter">
         <comment>aka Gothic script aka Gothic minuscule aka Textura. Готический алфавит.</comment>
-        <title>𝕲𝖔𝖙𝖍𝖎𝖈𝕭𝖑𝖆𝖈𝖐𝖑𝖊𝖙𝖙𝖊𝖗</title>
+        <title>𝕲𝖔𝖙𝖍𝖎𝖈 𝕭𝖑𝖆𝖈𝖐𝖑𝖊𝖙𝖙𝖊𝖗</title>
         <characters>𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟</characters>
     </set>
     <set index="6" name="Phoenician">
@@ -40,7 +40,7 @@
     </set>
     <set index="8" name="Tengwar">
         <comment>Tengwar Alphabet  </comment>
-        <title></title>
+        <title></title>
         <characters></characters>
     </set>
     <set index="9" name="Klingon">
@@ -63,58 +63,59 @@
     </set>
     <set index="13" name="Cyrillic Slavic">
         <comment>Cyrillic Slavic (Russian, Belorussian, Bulgarian, Serbian, Macedonian, Russian, Ukrainian)</comment>
-        <title>КириллицаСлавянскиеАлфавиты</title>
+        <title>Славянские Алфавиты</title>
         <characters>ЁЂЃЄЅІЇЈЉЊЋЌЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяёђѓєѕіїјљњћќўџ</characters>
     </set>
     <set index="14" name="Early Cyrillic Alphabet">
-        <title>СтарославянскаяАзбука</title>
+        <title>Старославянская Азбука</title>
         <characters>АаБбВвГгДдЄєЖжꙂꙃꙀꙁИиІіЇїꙈꙈКкЛлМмНнОоѺѻПпРрСсТтѸѹꙊꙋФфХхѠѡЦцЧчШшЩщЪъꙐꙑЬьѢѣЮюꙖꙗѤѥѦѧѪѫѨѩѬѭѮѯѰѱѲѳѴѵҀҁ</characters>
     </set>
     <set index="15" name="Cyrillic Wide">
-        <title>КириллицаРазное</title>
+        <comment>Кириллица Разное</comment>
+        <title></title>
         <characters>ѤѥѸѹҔҕҠҡҢңҤҥҦҧҴҵӃӄӇӈӔӕӘәӚӛӬӭӼӽԂԃԎԏԒԓԔԕԖԗԘԙԠԡԢԣԤԥꙐꙑꙒꙓꙔꙕꙠꙡꙢꙣꙤꙥꙦꙧꙪꙫꙮꚀꚁꚄꚅꚆꚇꚊꚋꚖꚗ</characters>
     </set>
     <set index="16" name="Chukchi">
-        <title>ЧукотскийАлфавит</title>
+        <title>Чукотский Алфавит</title>
         <characters>АаБбВвГгДдЕеЁёЖжЗзИиЙйКкӃӄЛлԒԓМмНнӇӈОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя</characters>
     </set>
     <set index="17" name="French">
-        <title>Alphabetfrançais</title>
+        <title>Alphabet français</title>
         <characters>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÉéÂâÊêÎîÔôÛûÀàÈèÙùËëÏïÜüŸÿÇç</characters>
     </set>
     <set index="18" name="German">
-        <title>DeutschAlphabet</title>
+        <title>Deutsch Alphabet</title>
         <characters>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄäÖöÜüẞß</characters>
     </set>
     <set index="19" name="Danish and Norwegian">
-        <title>DanishandNorwegianAlphabet</title>
+        <title>Det Dansk Norske Alfabet</title>
         <characters>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÆØÅæøå</characters>
     </set>
     <set index="20" name="Finnish">
-        <title>FinnishAlphabet</title>
+        <title>Finnish Alphabet</title>
         <characters>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÅåÄäÖöŠšŽž</characters>
     </set>
     <set index="21" name="Belarusian Latin">
         <comment>Belarusian Latin Alphabet   (+ ǲ Dź ǅ Ch)</comment>
-        <title>BiełaruskajaŁacinka</title>
+        <title>Biełaruskaja Łacinka</title>
         <characters>AaBbCcĆćČčDdǳdźǆEeFfGgHhIiJjKkLlŁłMmNnŃńOoPpRrSsŚśŠšTtUuŬŭVvYyZzŹźŽžch</characters>
     </set>
     <set index="22" name="Polish">
-        <title>PolskiAlfabet</title>
+        <title>Polski Alfabet</title>
         <characters>AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻaąbcćdeęfghijklłmnńoóprsśtuwyzźż</characters>
     </set>
     <set index="23" name="Czech">
-        <title>ČeskáAbeceda</title>
+        <title>Česká Abeceda</title>
         <characters>AÁBCČDĎEÉĚFGHIÍJKLMNŇOÓPQRŘSŠTŤUÚŮVWXYÝZŽaábcčdďeéěfghiíjklmnňoópqrřsštťuúůvwxyýzžChch</characters>
     </set>
     <set index="24" name="Slovak">
         <comment>Slovak Alphabet is the longest European — 46 characters</comment>
-        <title>SlovenskáAbecedaŠestačtyřicetPísmená</title>
+        <title>Slovenská Abeceda Šestačtyřicet Písmená</title>
         <characters>AaÁáÄäBbCcČčDdĎďǲǳǅǆEeÉéFfGgHhIiÍíJjKkLlĹĺĽľMmNnŇňOoÓóÔôPpQqRrŔŕSsŠšTtŤťUuÚúVvWwXxYyÝýZzŽžChch</characters>
     </set>
     <set index="25" name="Gaj's Latin">
         <comment>Gaj's Latin Alphabet (Bosnian, Croatian, Serbian, Montenegrin). Гаевица.</comment>
-        <title>GajevaLatinica</title>
+        <title>Gajeva Latinica</title>
         <characters>AaBbCcČčĆćDdǅǆÐđEeFfGgHhIiЈјKkLlǈǉMmNnǋǌOoPpRrSsŠšTtUuVvZzŽž</characters>
     </set>
 </sets>

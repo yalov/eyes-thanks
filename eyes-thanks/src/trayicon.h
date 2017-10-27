@@ -42,6 +42,7 @@ private slots:
     void DialogUpdateTime();
     void Activated(QSystemTrayIcon::ActivationReason reason);
     void Pause();
+    void Skip();
     void Quit();
     void About();
     void ShowDialog();
@@ -79,6 +80,7 @@ private:
     QAction *ShowSettingAct;
     QAction *QuitAct;
     QAction *PauseAct;
+    QAction *SkipAct;
     QAction *AboutAct;
     QActionGroup *LangActGroup;
     QMenu *SubMenuLanguages;

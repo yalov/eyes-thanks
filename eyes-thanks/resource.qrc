@@ -44,5 +44,6 @@
         <file>icons/actions/save.png</file>
         <file>icons/actions/system-software-update.png</file>
         <file>icons/actions/video-display.png</file>
+        <file>icons/actions/media-skip-forward.png</file>
     </qresource>
 </RCC>
