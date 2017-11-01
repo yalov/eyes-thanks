@@ -37,6 +37,7 @@ private:
 
 public slots:
     void UpdateLabel(const QString &time, const qreal &ratio);
+    void UpdateLabelPause(const QString &time, const qreal &ratio);
 
 private slots:
     void SaveValues();

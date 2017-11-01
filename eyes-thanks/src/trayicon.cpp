@@ -185,20 +185,7 @@ void TrayIcon::readSettings()
     setting.isText          = settings.value("text_enabled", false).toBool();
     setting.isPrettyFont    = settings.value("prettyFont_enabled", true).toBool();
 
-    bool isStartupLinkdefault = false;
-    if (setting.running_counter == 1) {
-        QString startup_lnk =  QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
-                               QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk";
-
-        if (QFile::exists(startup_lnk)) {
-            isStartupLinkdefault = true;
-            QFile::remove(startup_lnk);
-            QFile::link(QApplication::applicationFilePath(), startup_lnk);
-        }
-        else{
-            isStartupLinkdefault = false;
-        }
-    }
+    bool isStartupLinkdefault = CheckStartupLink();
 
     setting.isStartupLink   = settings.value("startupLink_enabled", isStartupLinkdefault).toBool();
 
@@ -212,6 +199,25 @@ void TrayIcon::readSettings()
     setting.isNeo            = settings.value("neo_enabled",      true).toBool();
 
     settings.endGroup();
+}
+
+bool TrayIcon::CheckStartupLink(){
+    bool isStartupLinkdefault = false;
+    if (setting.running_counter == 1) {
+        QString startup_lnk =  QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
+                               QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk";
+
+        if (QFile::exists(startup_lnk)) {
+
+            QFile::remove(startup_lnk);
+            QFile::link(QApplication::applicationFilePath(), startup_lnk);
+            isStartupLinkdefault = true;
+        }
+        else{
+            isStartupLinkdefault = false;
+        }
+    }
+    return isStartupLinkdefault;
 }
 
 void TrayIcon::writeSettings()
@@ -322,6 +328,29 @@ void TrayIcon::About()
 void TrayIcon::Pause()
 {
     if (DialogTimer->isActive) {
+        setPauseAct(false);
+        setPauseIcon();
+
+        DialogTimer->pause();
+
+        auto pause_str = QString(" (%1)").arg(tr("Pause"));
+        setToolTip(tr("Until break") + ": " + TimeRemains + pause_str);
+        emit updateLabelPause(DialogTimer->remains_str() + pause_str, -DialogTimer->ratio());
+    }
+    else {
+        setPauseAct(true);
+        DialogTimer->unpause();
+
+        setCurrentIconbyCurrentIconRatio();
+
+        emit updateLabelPause(DialogTimer->remains_str(), DialogTimer->ratio());
+    }
+}
+
+
+void TrayIcon::setPauseAct(bool setpause)
+{
+    if (!setpause) {
         PauseAct->setText(tr("Unpause"));
 
 #ifdef _WIN32
@@ -329,12 +358,6 @@ void TrayIcon::Pause()
 #else
         PauseAct->setIcon(QIcon::fromTheme("media-playback-start"));
 #endif
-
-        DialogTimer->pause();
-
-        setPauseIcon();
-        setToolTip(toolTip() + " (" + tr("Pause") + ")");
-        emit updateLabel(DialogTimer->remains_str() +  " (" + tr("Pause") + ")", -DialogTimer->ratio());
     }
     else {
         PauseAct->setText(tr("Pause"));
@@ -343,21 +366,22 @@ void TrayIcon::Pause()
 #else
         PauseAct->setIcon(QIcon::fromTheme("media-playback-pause"));
 #endif
-
-        DialogTimer->unpause();
-
-        setCurrentIconbyCurrentIconRatio();
-
-        emit updateLabel(DialogTimer->remains_str(), DialogTimer->ratio());
     }
+}
+
+void TrayIcon::restartGui(){
+
+    CurrentIconRatio = -1;
+    setCurrentIconbyCurrentIconRatio();
+    TrayMessageShowed = false;
+    setPauseAct(true);
+    DialogUpdateTime();
 }
 
 void TrayIcon::Skip()
 {
     DialogTimer->restart();
-    CurrentIconRatio = -1;
-    setCurrentIconbyCurrentIconRatio();
-    emit updateLabel(DialogTimer->remains_str(), DialogTimer->ratio());
+    restartGui();
 }
 
 void TrayIcon::Activated(QSystemTrayIcon::ActivationReason reason)
@@ -423,7 +447,6 @@ void TrayIcon::loadLanguage(const QString &rLanguage)
     }
 }
 
-
 //-----------------------------------------------------------------
 void TrayIcon::translate()
 {
@@ -439,7 +462,6 @@ void TrayIcon::translate()
     if (dialog)
         dialog->Translate();
 }
-
 
 //-----------------------------------------------------------------
 
@@ -460,7 +482,6 @@ void TrayIcon::setCurrentIconbyCurrentIconRatio()
     else if (CurrentIconRatio == 15/16.0) setIcon(i15);
     else                               setIcon(i00);  //if CurrentIconRatio == 0 or -1
 }
-
 
 void TrayIcon::setCurrentIcon(qreal ratio)
 {
@@ -543,16 +564,16 @@ void TrayIcon::initIcons()
     }
 }
 
-
 void TrayIcon::ShowDialog()
 {
     dialog = new Dialog();
     connect(dialog, SIGNAL(closedialog()), this, SLOT(CloseDialog()));
     connect(dialog, SIGNAL(save(Setting)), this, SLOT(Save(Setting)));
 
-    connect(dialog, SIGNAL(TimerStatusRequest()), this, SLOT(TimerStatusSend()));
+    connect(dialog, SIGNAL(TimerStatusRequest()), this, SLOT(DialogUpdateTime()));
 
     connect(this, SIGNAL(updateLabel(QString, qreal)), dialog, SLOT(UpdateLabel(QString, qreal)));
+    connect(this, SIGNAL(updateLabelPause(QString, qreal)), dialog, SLOT(UpdateLabelPause(QString, qreal)));
 
     ShowSettingAct->setEnabled(false);
 
@@ -566,24 +587,21 @@ void TrayIcon::ShowDialog()
 #endif
 }
 
-void TrayIcon::TimerStatusSend()
-{
-    if (DialogTimer->isActive)
-        emit updateLabel(DialogTimer->remains_str(), DialogTimer->ratio());
-    else
-        emit updateLabel(DialogTimer->remains_str() +  " (" + tr("Pause") + ")", -DialogTimer->ratio());
-}
-
-
-
 void TrayIcon::DialogUpdateTime()
 {
     qint64 remains =  DialogTimer->remains();;
     TimeRemains = DialogTimer->remains_str();
     qreal ratio = DialogTimer->ratio();
 
-
-    emit updateLabel(TimeRemains, ratio);
+    if (ViewTimer->isActive) {
+        if (DialogTimer->isActive)
+            emit updateLabel(TimeRemains, ratio);
+        else
+            emit updateLabel(TimeRemains +  " (" + tr("Pause") + ")", -ratio);
+    }
+    else{
+            emit updateLabelPause(TimeRemains, ratio);
+    }
 
     setToolTip(tr("Until break") + ": " + TimeRemains);
 
@@ -606,9 +624,7 @@ void TrayIcon::DialogUpdateTime()
 void TrayIcon::RefreshmentStart()
 {
     DialogTimer->stop();
-    TrayMessageShowed = false;
-    CurrentIconRatio = -1;
-    DialogUpdateTime();
+    restartGui();
 
     ViewTimer->start();
     ShowView();

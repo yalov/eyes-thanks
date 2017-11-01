@@ -28,13 +28,13 @@
     <name>App</name>
     <message>
         <location filename="../src/dialog.cpp" line="324"/>
-        <location filename="../src/trayicon.cpp" line="582"/>
+        <location filename="../src/trayicon.cpp" line="610"/>
         <location filename="../src/updater.cpp" line="22"/>
         <source>Eyes&apos; Thanks</source>
         <translation>Eyes&apos; Thanks</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="492"/>
+        <location filename="../src/dialog.cpp" line="493"/>
         <source>Proverbs.</source>
         <translation>Делу %until, а потехе %duration.
 
@@ -104,7 +104,7 @@
 Ум придет, да время уйдет.</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="198"/>
+        <location filename="../src/trayicon.cpp" line="205"/>
         <source>All work and no play
 makes Jack a dull boy.</source>
         <translation>Делу %until,
@@ -324,8 +324,8 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>Свернуть в область уведомлений</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="476"/>
-        <location filename="../src/dialog.cpp" line="484"/>
+        <location filename="../src/dialog.cpp" line="477"/>
+        <location filename="../src/dialog.cpp" line="485"/>
         <source>Open Directory</source>
         <translation>Папка с изображениями</translation>
     </message>
@@ -333,49 +333,54 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
 <context>
     <name>TrayIcon</name>
     <message>
-        <location filename="../src/trayicon.cpp" line="416"/>
+        <location filename="../src/trayicon.cpp" line="448"/>
         <source>Setting</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="286"/>
-        <location filename="../src/trayicon.cpp" line="329"/>
+        <location filename="../src/trayicon.cpp" line="293"/>
         <location filename="../src/trayicon.cpp" line="330"/>
-        <location filename="../src/trayicon.cpp" line="333"/>
-        <location filename="../src/trayicon.cpp" line="417"/>
-        <location filename="../src/trayicon.cpp" line="558"/>
+        <location filename="../src/trayicon.cpp" line="357"/>
+        <location filename="../src/trayicon.cpp" line="449"/>
+        <location filename="../src/trayicon.cpp" line="594"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="415"/>
+        <location filename="../src/trayicon.cpp" line="447"/>
         <source>Break Now</source>
         <translation>Перерыв сейчас</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="418"/>
+        <location filename="../src/trayicon.cpp" line="450"/>
+        <source>Skip</source>
+        <translation>Пропустить</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="451"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="419"/>
+        <location filename="../src/trayicon.cpp" line="452"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="420"/>
+        <location filename="../src/trayicon.cpp" line="453"/>
         <source>Check for Updates</source>
         <oldsource>Check Update</oldsource>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="572"/>
-        <location filename="../src/trayicon.cpp" line="582"/>
+        <location filename="../src/trayicon.cpp" line="331"/>
+        <location filename="../src/trayicon.cpp" line="600"/>
+        <location filename="../src/trayicon.cpp" line="610"/>
         <source>Until break</source>
         <translation>До перерыва</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="421"/>
+        <location filename="../src/trayicon.cpp" line="454"/>
         <source>Languages</source>
         <translation>Языки</translation>
     </message>
@@ -385,18 +390,18 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="318"/>
+        <location filename="../src/trayicon.cpp" line="348"/>
         <source>Unpause</source>
         <translation>Продолжить</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="582"/>
-        <location filename="../src/trayicon.cpp" line="641"/>
+        <location filename="../src/trayicon.cpp" line="610"/>
+        <location filename="../src/trayicon.cpp" line="667"/>
         <source>sec</source>
         <translation>сек</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="640"/>
+        <location filename="../src/trayicon.cpp" line="666"/>
         <source>min</source>
         <translation>мин</translation>
     </message>

@@ -28,13 +28,13 @@
     <name>App</name>
     <message>
         <location filename="../src/dialog.cpp" line="324"/>
-        <location filename="../src/trayicon.cpp" line="582"/>
+        <location filename="../src/trayicon.cpp" line="610"/>
         <location filename="../src/updater.cpp" line="22"/>
         <source>Eyes&apos; Thanks</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="492"/>
+        <location filename="../src/dialog.cpp" line="493"/>
         <source>Proverbs.</source>
         <translation>All work and no play
 makes Jack a dull boy.
@@ -93,7 +93,7 @@ The key is in not spending time,
 but in investing it.</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="198"/>
+        <location filename="../src/trayicon.cpp" line="205"/>
         <source>All work and no play
 makes Jack a dull boy.</source>
         <translation></translation>
@@ -308,8 +308,8 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="476"/>
-        <location filename="../src/dialog.cpp" line="484"/>
+        <location filename="../src/dialog.cpp" line="477"/>
+        <location filename="../src/dialog.cpp" line="485"/>
         <source>Open Directory</source>
         <translation></translation>
     </message>
@@ -322,64 +322,69 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="416"/>
+        <location filename="../src/trayicon.cpp" line="448"/>
         <source>Setting</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="286"/>
-        <location filename="../src/trayicon.cpp" line="329"/>
+        <location filename="../src/trayicon.cpp" line="293"/>
         <location filename="../src/trayicon.cpp" line="330"/>
-        <location filename="../src/trayicon.cpp" line="333"/>
-        <location filename="../src/trayicon.cpp" line="417"/>
-        <location filename="../src/trayicon.cpp" line="558"/>
+        <location filename="../src/trayicon.cpp" line="357"/>
+        <location filename="../src/trayicon.cpp" line="449"/>
+        <location filename="../src/trayicon.cpp" line="594"/>
         <source>Pause</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="420"/>
+        <location filename="../src/trayicon.cpp" line="453"/>
         <source>Check for Updates</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="419"/>
+        <location filename="../src/trayicon.cpp" line="452"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="418"/>
+        <location filename="../src/trayicon.cpp" line="450"/>
+        <source>Skip</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="451"/>
         <source>Quit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="421"/>
+        <location filename="../src/trayicon.cpp" line="454"/>
         <source>Languages</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="318"/>
+        <location filename="../src/trayicon.cpp" line="348"/>
         <source>Unpause</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="415"/>
+        <location filename="../src/trayicon.cpp" line="447"/>
         <source>Break Now</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="572"/>
-        <location filename="../src/trayicon.cpp" line="582"/>
+        <location filename="../src/trayicon.cpp" line="331"/>
+        <location filename="../src/trayicon.cpp" line="600"/>
+        <location filename="../src/trayicon.cpp" line="610"/>
         <source>Until break</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="582"/>
-        <location filename="../src/trayicon.cpp" line="641"/>
+        <location filename="../src/trayicon.cpp" line="610"/>
+        <location filename="../src/trayicon.cpp" line="667"/>
         <source>sec</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="640"/>
+        <location filename="../src/trayicon.cpp" line="666"/>
         <source>min</source>
         <translation></translation>
     </message>

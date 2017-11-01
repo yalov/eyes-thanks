@@ -439,25 +439,26 @@ void Dialog::SetValues(const Setting &setting)
 void Dialog::UpdateLabel(const QString &time, const qreal &ratio)
 {
     Label_Timer->setText(time);
+    TaskbarProgress->setValue(qRound(ratio * 100));
+}
+
+
+void Dialog::UpdateLabelPause(const QString &time, const qreal &ratio)
+{
+    Label_Timer->setText(time);
 
     if (ratio >= 0) {
         TaskbarProgress->resume();
-        TaskbarProgress->setValue(ratio * 100);
-
-        //qDebug() << "Set time " << time;
+        TaskbarProgress->setValue(qRound(ratio * 100));
     }
     else {
         TaskbarProgress->pause();
-        TaskbarProgress->setValue(-ratio * 100);
-        //qDebug() << "pause " << time;
+        TaskbarProgress->setValue(qRound(-ratio * 100));
     }
-
-
 }
 
 bool Dialog::event(QEvent *event)
 {
-
     if (event->type() == QEvent::Close) {
         //event->accept();
         emit closedialog();
@@ -497,9 +498,6 @@ void Dialog::ButtonGenerateText_clicked()
 
 void Dialog::SaveValues()
 {
-    //emit TimerStatusRequest();
-    //Label_Timer->setText(QString("%1:00").arg(Spinbox_RefreshmentInterval->value(),2,10,QLatin1Char(' ')));
-
     setting = Setting{
         setting.running_counter,
         Spinbox_UntilBreak->value() * 60 * 1000,

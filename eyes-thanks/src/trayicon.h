@@ -33,6 +33,7 @@ public:
 
 signals:
     void updateLabel(const QString &text, const qreal &ratio);
+    void updateLabelPause(const QString &text, const qreal &ratio);
     void show_refreshment(QList<QString>, QString, QString, Setting, Timer*);
 
 private slots:
@@ -49,12 +50,15 @@ private slots:
     void CloseDialog();
     void Save(const Setting &s);
 
-    void TimerStatusSend();
     void LanguageChanged(QAction *action);  // this slot is called by the language menu actions
 
 private:
     void readSettings();
     void writeSettings();
+    bool CheckStartupLink();
+
+    void setPauseAct(bool setpause);
+    void restartGui();
 
     void initIcons();
     void setCurrentIcon(qreal ratio);
