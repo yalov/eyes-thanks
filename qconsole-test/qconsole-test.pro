@@ -4,6 +4,7 @@ TARGET = ConsoleAppTest
 INCLUDEPATH += $$PWD/../eyes-thanks/src
 
 QT -= gui
+QT += widgets
 
 CONFIG += c++14
 CONFIG += console

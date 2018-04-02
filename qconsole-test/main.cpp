@@ -1,8 +1,10 @@
 #include <QCoreApplication>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QDebug>
 #include <QString>
 #include <QXmlStreamWriter>
 
-#include <QDebug>
 #include "transliteration-iso9a.h"
 #include "global.h"
 
@@ -165,10 +167,18 @@ inline CharacterSets readXml(QString filepath)
     return sets;
 }
 
-int main(/*int argc, char *argv[]*/)
+inline QString str_from(QRect r)
 {
-    auto css = readXml("c:/Users/User/Repositories/eyes-thanks/EyesThanks/character_sets2.xml");
+    return QString("(%1,%2)[%3x%4]").arg(r.x(), 5).arg(r.y(), 5).arg(r.width(), 4).arg(r.height(), 4);
+}
 
-    for (auto cs: css)
-        qDebug() <<  cs.name;
+void f4()
+{
+    qDebug() << str_from(QApplication::desktop()->geometry());
+}
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    f4();
 }

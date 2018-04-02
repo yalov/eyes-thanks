@@ -235,7 +235,7 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
     <message>
         <location filename="../src/dialog.cpp" line="364"/>
         <source>Predetermined Backgrounds</source>
-        <translation>Предопределённый фон</translation>
+        <translation>Сгенерированный фон</translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="365"/>
@@ -255,12 +255,12 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
     <message>
         <location filename="../src/dialog.cpp" line="368"/>
         <source>Circle</source>
-        <translation>Интересная окружность</translation>
+        <translation>Интересный круг</translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="369"/>
         <source>Circles</source>
-        <translation>Увядающие окружности</translation>
+        <translation>Увядающие круги</translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="370"/>

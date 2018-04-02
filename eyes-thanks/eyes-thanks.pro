@@ -8,10 +8,10 @@ include("functions.pri")
 include("../qutfstring/include.pri")
 message("$$BUILD_TIME eyes-thanks.pro")
 
-CONFIG  += DEPLOY
+#CONFIG  += DEPLOY
 
 APP_NAME  = Eyes’ Thanks
-VERSION   = 1.3.8
+VERSION   = 1.3.9
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
@@ -19,7 +19,7 @@ TARGET    = "Eyes\' Thanks"
 
 CONFIG(release, debug|release) {
 DESTDIR =   $$PWD/../../EyesThanks
-SSLDLLDIR = $$PWD/../../../openssl-1.0.2h-bin
+SSLDLLDIR = $$PWD/../../../openssl-1.0.2j-i386-win32
 }
 
 # subfolders in debug and release folder
@@ -76,13 +76,14 @@ RESOURCES    += resource.qrc
 # windeployqt only release and only DEPLOY variable
 CONFIG(release, debug|release) {
     DEPLOY {
-        message("DEPLOY")
+        message("$$BUILD_TIME DEPLOY")
 
         DEFINES += QT_NO_DEBUG_OUTPUT DEPLOY
 
         windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)
 
         removeDirRecursive($$DESTDIR/bearer)
+        removeDirRecursive($$DESTDIR/styles)
 
         FILENAMES = qicns.dll qico.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
         removeFilesInDir($$DESTDIR/imageformats/, $$FILENAMES)

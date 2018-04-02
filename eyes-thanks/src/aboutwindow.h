@@ -25,16 +25,19 @@ class AboutWindow : public QDialog
 public:
     AboutWindow(QWidget *parent = 0): QDialog(parent)
     {
-        QString win_title = tr("About Eyes' Thanks");
-        QString app_name = QString(APP_NAME);
-        QString app_version = QString(APP_VERSION);
-        QString dev_name = QString(DEV_NAME);
-        QString dev_email = QString(DEV_EMAIL);
-        QString repository_url = QString(REPO_URL);
-        QString license_url = "http://www.gnu.org/licenses/gpl-3.0.html";
-        QString license_path = ":/copying.html";
-        QString license_name = "GNU GPLv3";
-        QString logo_path = ":icons/logo.png";
+        const QString win_title = tr("About Eyes' Thanks");
+        const QString app_name = QString(APP_NAME);
+        const QString app_version = QString(APP_VERSION);
+        const QString dev_name = QString(DEV_NAME);
+        const QString dev_email = QString(DEV_EMAIL);
+        const QString repository_url = QString(REPO_URL);
+        const QString license_url = "http://www.gnu.org/licenses/gpl-3.0.html";
+        const QString license_path = ":/copying.html";
+        const QString license_name = "GNU GPLv3";
+        const QString logo_path = ":icons/logo.png";
+        const QString build_year = __DATE__ + 7;
+        const QString Qt_version_compiletime = QString(QT_VERSION_STR);
+        const QString Qt_version_runtime = qVersion();
 
         QRegularExpression re("\\S+\\s+\\d+\\.\\d+\\.\\S+");
 
@@ -43,9 +46,6 @@ public:
 
         if (OpenSSL_version_run == "")
             OpenSSL_version_run = "OpenSSL dlls are missing";
-
-        QString Qt_version_compiletime = QString(QT_VERSION_STR);
-        QString Qt_version_runtime = qVersion();
 
 
 #ifdef _WIN32
@@ -110,11 +110,11 @@ public:
                     "Repository"  ": <a href=\"%1\">%1</a>"
                     "</p>"
                     "<p align = center>"
-                    "Copyright © 2016 License: <a href=\"%2\">%3</a>"  "<br>"
-                    "%4 <a href='mailto:%5'>%5</a>"
+                    "Copyright © %2 License: <a href=\"%3\">%4</a>"  "<br>"
+                    "%5 <a href='mailto:%6'>%6</a>"
                     "</p>"
                     "</font>"
-                ).arg(repository_url, license_url, license_name, dev_name, dev_email);
+                ).arg(repository_url, build_year, license_url, license_name, dev_name, dev_email);
 
 
             QLabel *lb_aboutText = new QLabel(aboutText);
