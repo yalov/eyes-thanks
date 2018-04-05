@@ -28,13 +28,14 @@
     <name>App</name>
     <message>
         <location filename="../src/dialog.cpp" line="324"/>
-        <location filename="../src/trayicon.cpp" line="610"/>
+        <location filename="../src/trayicon.cpp" line="644"/>
         <location filename="../src/updater.cpp" line="22"/>
         <source>Eyes&apos; Thanks</source>
         <translation>Eyes&apos; Thanks</translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="493"/>
+        <location filename="../src/trayicon.cpp" line="192"/>
         <source>Proverbs.</source>
         <translation>Делу %until, а потехе %duration.
 
@@ -104,10 +105,9 @@
 Ум придет, да время уйдет.</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="205"/>
         <source>All work and no play
 makes Jack a dull boy.</source>
-        <translation>Делу %until,
+        <translation type="vanished">Делу %until,
 а потехе %duration.</translation>
     </message>
 </context>
@@ -333,54 +333,79 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
 <context>
     <name>TrayIcon</name>
     <message>
-        <location filename="../src/trayicon.cpp" line="448"/>
+        <location filename="../src/trayicon.cpp" line="482"/>
         <source>Setting</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="293"/>
-        <location filename="../src/trayicon.cpp" line="330"/>
-        <location filename="../src/trayicon.cpp" line="357"/>
-        <location filename="../src/trayicon.cpp" line="449"/>
-        <location filename="../src/trayicon.cpp" line="594"/>
+        <location filename="../src/trayicon.cpp" line="363"/>
+        <location filename="../src/trayicon.cpp" line="390"/>
+        <location filename="../src/trayicon.cpp" line="483"/>
+        <location filename="../src/trayicon.cpp" line="628"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="447"/>
+        <source>FirstLaunchNonUniqueText</source>
+        <translation type="vanished">Это первый запуск Eyes&apos; Thanks, но найден ярлык к другой версии приложения (%1).</translation>
+    </message>
+    <message>
+        <source>FirstLaunchNonUniqueInformativeText</source>
+        <translation type="vanished">Вы хотите заменить его на ярлык к этой версии (%2), или оставить как есть?</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="231"/>
+        <source>Accept</source>
+        <translation>Заменить</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="232"/>
+        <source>Leave</source>
+        <translation>Оставить</translation>
+    </message>
+    <message>
+        <source>FirstLaunchUniqueText</source>
+        <translation type="vanished">Это первый запуск программы Eyes&apos; Thanks.</translation>
+    </message>
+    <message>
+        <source>FirstLaunchUniqueInformativeText</source>
+        <translation type="vanished">Вы хотите запускать приложение при старте Windows?</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="481"/>
         <source>Break Now</source>
         <translation>Перерыв сейчас</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="450"/>
+        <location filename="../src/trayicon.cpp" line="484"/>
         <source>Skip</source>
         <translation>Пропустить</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="451"/>
+        <location filename="../src/trayicon.cpp" line="485"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="452"/>
+        <location filename="../src/trayicon.cpp" line="486"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="453"/>
+        <location filename="../src/trayicon.cpp" line="487"/>
         <source>Check for Updates</source>
         <oldsource>Check Update</oldsource>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="331"/>
-        <location filename="../src/trayicon.cpp" line="600"/>
-        <location filename="../src/trayicon.cpp" line="610"/>
+        <location filename="../src/trayicon.cpp" line="364"/>
+        <location filename="../src/trayicon.cpp" line="634"/>
+        <location filename="../src/trayicon.cpp" line="644"/>
         <source>Until break</source>
         <translation>До перерыва</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="454"/>
+        <location filename="../src/trayicon.cpp" line="488"/>
         <source>Languages</source>
         <translation>Языки</translation>
     </message>
@@ -390,18 +415,38 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="348"/>
+        <location filename="../src/trayicon.cpp" line="228"/>
+        <source>Shortcut is founded in the Startup Folder.</source>
+        <translation>Это первый запуск Eyes&apos; Thanks, но в автозагрузке найден ярлык к другой версии приложения %1</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="229"/>
+        <source>Replace?</source>
+        <translation>Вы хотите заменить его на ярлык к запущенной версии, или оставить как есть?</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="236"/>
+        <source>It is the first launch of Eyes&apos; Thanks.</source>
+        <translation>Это первый запуск программы Eyes&apos; Thanks.</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="237"/>
+        <source>Do you want to run the app on Windows startup?</source>
+        <translation>Вы хотите запускать приложение при старте Windows?</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="381"/>
         <source>Unpause</source>
         <translation>Продолжить</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="610"/>
-        <location filename="../src/trayicon.cpp" line="667"/>
+        <location filename="../src/trayicon.cpp" line="644"/>
+        <location filename="../src/trayicon.cpp" line="701"/>
         <source>sec</source>
         <translation>сек</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="666"/>
+        <location filename="../src/trayicon.cpp" line="700"/>
         <source>min</source>
         <translation>мин</translation>
     </message>

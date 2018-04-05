@@ -321,7 +321,7 @@ void Dialog::SaveButton_status()
 void Dialog::Translate()
 {
     // mutual
-    setWindowTitle(qApp->translate("App", "Eyes' Thanks"));
+    setWindowTitle(APP_NAME);
     Label_Timer_Prefix->setText(tr("Until break") + ":");
     buttonSave->setText(tr("Save"));
     buttonMinimizeToSystemTray->setText(tr("Close to notification area"));

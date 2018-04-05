@@ -43,7 +43,7 @@ private slots:
     void DialogUpdateTime();
     void Activated(QSystemTrayIcon::ActivationReason reason);
     void Pause();
-    void Skip();
+    void Restart();
     void Quit();
     void About();
     void ShowDialog();

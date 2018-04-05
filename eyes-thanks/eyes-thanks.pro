@@ -8,14 +8,18 @@ include("functions.pri")
 include("../qutfstring/include.pri")
 message("$$BUILD_TIME eyes-thanks.pro")
 
-#CONFIG  += DEPLOY
+CONFIG  += DEPLOY
+
+#LIBS +=  -static
+#CONFIG += staticlib
 
 APP_NAME  = Eyes’ Thanks
-VERSION   = 1.3.9
+VERSION   = 1.4.0
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
 TARGET    = "Eyes\' Thanks"
+#TARGET    = "EyesThanks"
 
 CONFIG(release, debug|release) {
 DESTDIR =   $$PWD/../../EyesThanks

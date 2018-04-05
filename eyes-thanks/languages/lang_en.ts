@@ -28,13 +28,14 @@
     <name>App</name>
     <message>
         <location filename="../src/dialog.cpp" line="324"/>
-        <location filename="../src/trayicon.cpp" line="610"/>
+        <location filename="../src/trayicon.cpp" line="644"/>
         <location filename="../src/updater.cpp" line="22"/>
         <source>Eyes&apos; Thanks</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="493"/>
+        <location filename="../src/trayicon.cpp" line="192"/>
         <source>Proverbs.</source>
         <translation>All work and no play
 makes Jack a dull boy.
@@ -91,12 +92,6 @@ or master your time and master your life.
 
 The key is in not spending time,
 but in investing it.</translation>
-    </message>
-    <message>
-        <location filename="../src/trayicon.cpp" line="205"/>
-        <source>All work and no play
-makes Jack a dull boy.</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -322,69 +317,114 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="448"/>
+        <location filename="../src/trayicon.cpp" line="482"/>
         <source>Setting</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="293"/>
-        <location filename="../src/trayicon.cpp" line="330"/>
-        <location filename="../src/trayicon.cpp" line="357"/>
-        <location filename="../src/trayicon.cpp" line="449"/>
-        <location filename="../src/trayicon.cpp" line="594"/>
+        <location filename="../src/trayicon.cpp" line="363"/>
+        <location filename="../src/trayicon.cpp" line="390"/>
+        <location filename="../src/trayicon.cpp" line="483"/>
+        <location filename="../src/trayicon.cpp" line="628"/>
         <source>Pause</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="453"/>
+        <location filename="../src/trayicon.cpp" line="487"/>
         <source>Check for Updates</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="452"/>
+        <location filename="../src/trayicon.cpp" line="486"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="450"/>
+        <source>FirstLaunchNonUniqueText</source>
+        <translation type="vanished">It is first launch this portable application, but shortcut to other Eyes&apos; Thanks instance (%1) was found in the Startup Folder.</translation>
+    </message>
+    <message>
+        <source>FirstLaunchNonUniqueInformativeText</source>
+        <translation type="vanished">Do you want link shortcut to the &amp;new instance (%2), or leave link to &amp;old instance?</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="231"/>
+        <source>Accept</source>
+        <translation>&amp;New</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="232"/>
+        <source>Leave</source>
+        <translation>Remain unchanged</translation>
+    </message>
+    <message>
+        <source>FirstLaunchUniqueText</source>
+        <translation type="vanished">It is the first launch of Eyes&apos; Thanks.</translation>
+    </message>
+    <message>
+        <source>FirstLaunchUniqueInformativeText</source>
+        <translation type="vanished">Do you want to run the app on Windows startup?</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="484"/>
         <source>Skip</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="451"/>
+        <location filename="../src/trayicon.cpp" line="485"/>
         <source>Quit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="454"/>
+        <location filename="../src/trayicon.cpp" line="488"/>
         <source>Languages</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="348"/>
+        <location filename="../src/trayicon.cpp" line="381"/>
         <source>Unpause</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="447"/>
+        <location filename="../src/trayicon.cpp" line="481"/>
         <source>Break Now</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="331"/>
-        <location filename="../src/trayicon.cpp" line="600"/>
-        <location filename="../src/trayicon.cpp" line="610"/>
+        <location filename="../src/trayicon.cpp" line="364"/>
+        <location filename="../src/trayicon.cpp" line="634"/>
+        <location filename="../src/trayicon.cpp" line="644"/>
         <source>Until break</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="610"/>
-        <location filename="../src/trayicon.cpp" line="667"/>
+        <location filename="../src/trayicon.cpp" line="228"/>
+        <source>Shortcut is founded in the Startup Folder.</source>
+        <translation>It is first launch this portable application, but shortcut to other Eyes&apos; Thanks instance was found in the Startup Folder %1</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="229"/>
+        <source>Replace?</source>
+        <translation>Do you want to link shortcut to the running instance of the application?</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="236"/>
+        <source>It is the first launch of Eyes&apos; Thanks.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="237"/>
+        <source>Do you want to run the app on Windows startup?</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="644"/>
+        <location filename="../src/trayicon.cpp" line="701"/>
         <source>sec</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/trayicon.cpp" line="666"/>
+        <location filename="../src/trayicon.cpp" line="700"/>
         <source>min</source>
         <translation></translation>
     </message>

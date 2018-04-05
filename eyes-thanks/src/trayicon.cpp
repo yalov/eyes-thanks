@@ -49,7 +49,7 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     if (setting.running_counter == 1) ShowDialog();
 
-#ifndef DEPLOY
+#ifdef false
     RefreshmentStart();
 #endif
 }
@@ -130,7 +130,7 @@ void TrayIcon::createActions()
     connect(PauseAct, SIGNAL(triggered()), this, SLOT(Pause()));
 
     SkipAct       = new QAction(skipIcon, "", this);
-    connect(SkipAct, SIGNAL(triggered()), this, SLOT(Skip()));
+    connect(SkipAct, SIGNAL(triggered()), this, SLOT(Restart()));
 
 
     UpdaterAct       = new UpdateAction(updateIcon, "", this);
@@ -189,7 +189,7 @@ void TrayIcon::readSettings()
 
     setting.isStartupLink   = settings.value("startupLink_enabled", isStartupLinkdefault).toBool();
 
-    setting.text            = settings.value("text", qApp->translate("App","All work and no play\nmakes Jack a dull boy.")).toString();
+    setting.text            = settings.value("text", qApp->translate("App", "Proverbs.").split("\n\n")[0]).toString();
 
     setting.isSpectrum       = settings.value("spectrum_enabled", true).toBool();
     setting.isTiling         = settings.value("tiling_enabled",   true).toBool();
@@ -199,21 +199,62 @@ void TrayIcon::readSettings()
     setting.isNeo            = settings.value("neo_enabled",      true).toBool();
 
     settings.endGroup();
+
+
+    if (setting.running_counter == 1) writeSettings();
 }
 
 bool TrayIcon::CheckStartupLink(){
     bool isStartupLinkdefault = false;
     if (setting.running_counter == 1) {
+
         QString startup_lnk =  QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
-                               QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk";
+                QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk";
 
-        if (QFile::exists(startup_lnk)) {
+        bool is_link = QFile::exists(startup_lnk);
+        QString link_trg = QFile(startup_lnk).symLinkTarget();
 
+        if (is_link && link_trg == QApplication::applicationFilePath())
+            return true;
+
+        QMessageBox * mb = new QMessageBox();
+        mb->setWindowTitle(APP_NAME);
+        mb->setWindowIcon(QIcon(":icons/logo.png"));
+        mb->setIcon(QMessageBox::Question);
+        //mb->setIconPixmap(QPixmap(":icons/logo.png").scaledToWidth(64, Qt::SmoothTransformation));
+
+        QPushButton * Accept, * Reject;
+
+        if (is_link)
+        {
+            mb->setText(tr("Shortcut is founded in the Startup Folder.").arg("<br><nobr>" + link_trg+"</nobr>"));
+            mb->setInformativeText("<nobr>" + tr("Replace?") + "</nobr>" );
+
+            Accept = mb->addButton(tr("Accept"), QMessageBox::AcceptRole);
+            Reject = mb->addButton(tr("Leave"), QMessageBox::RejectRole);
+        }
+        else
+        {
+            mb->setText(tr("It is the first launch of Eyes' Thanks."));
+            mb->setInformativeText(tr("Do you want to run the app on Windows startup?"));
+
+            Accept = mb->addButton(QMessageBox::Yes);
+            Reject = mb->addButton(QMessageBox::No);
+        }
+
+        mb->setDefaultButton(Accept);
+        mb->setEscapeButton(Reject);
+
+        mb->exec();
+
+        if (mb->clickedButton() == Accept)
+        {
             QFile::remove(startup_lnk);
             QFile::link(QApplication::applicationFilePath(), startup_lnk);
             isStartupLinkdefault = true;
         }
-        else{
+        else
+        {
             isStartupLinkdefault = false;
         }
     }
@@ -271,18 +312,20 @@ void TrayIcon::createOrDeleteAppStartUpLink(bool create)
     QString startup_lnk =  QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) +
                            QDir::separator() + "Startup" + QDir::separator() + "Eyes' Thanks.lnk";
 
-    if (create)
+    if (create){
+        QFile::remove(startup_lnk);
         QFile::link(QApplication::applicationFilePath(), startup_lnk);
+    }
     else
         QFile::remove(startup_lnk);
 }
 
 void TrayIcon::Save(const Setting &s)
 {
-    bool fullrestart = false;
+    bool need_fullrestart = false;
     if (setting.pauseInterval != s.pauseInterval ||
             setting.pauseDuration != s.pauseDuration)
-        fullrestart = true;
+        need_fullrestart = true;
 
     // create and delete StartUp Icon, at save time.
     if (setting.isStartupLink != s.isStartupLink)
@@ -293,29 +336,14 @@ void TrayIcon::Save(const Setting &s)
     writeSettings();
     initIcons();
 
-    if (fullrestart) {
-        CurrentIconRatio = -1;
-
-        PauseAct->setText(tr("Pause"));
-#ifdef _WIN32
-        PauseAct->setIcon(QIcon(":icons/actions/media-playback-pause.png"));
-#else
-        PauseAct->setIcon(QIcon::fromTheme("media-playback-pause"));
-#endif
-        DialogTimer->restart(UPDATE_PERIOD_2, setting.pauseInterval);
-        ViewTimer->init(UPDATE_PERIOD_1, setting.pauseDuration);
-
-        TrayMessageShowed = false;
-
-        emit updateLabel(DialogTimer->remains_str(), DialogTimer->ratio());
-    }
+    if (need_fullrestart)
+        Restart();
 
     setCurrentIconbyCurrentIconRatio();
 }
 
 void TrayIcon::Quit()
 {
-    writeSettings();
     qApp->quit();
 }
 
@@ -378,9 +406,10 @@ void TrayIcon::restartGui(){
     DialogUpdateTime();
 }
 
-void TrayIcon::Skip()
+void TrayIcon::Restart()
 {
-    DialogTimer->restart();
+    DialogTimer->restart(UPDATE_PERIOD_2, setting.pauseInterval);
+    ViewTimer->init(UPDATE_PERIOD_1, setting.pauseDuration);
     restartGui();
 }
 

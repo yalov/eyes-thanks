@@ -81,7 +81,7 @@ public:
 
             QHBoxLayout *lay1 = new QHBoxLayout(tab1);
             QLabel *pic = new QLabel();
-            pic->setPixmap(QPixmap(logo_path).scaledToWidth(128));
+            pic->setPixmap(QPixmap(logo_path).scaledToWidth(128, Qt::SmoothTransformation));
             pic->setFixedSize(pic->sizeHint());
             pic->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
