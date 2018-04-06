@@ -6,10 +6,14 @@
 
 #include "trayicon.h"
 #include <QApplication>
+#include <iostream>
+
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    qSetMessagePattern("[%{time h:mm:ss.zzz}] %{message}");
 
     a.setQuitOnLastWindowClosed(false);
 

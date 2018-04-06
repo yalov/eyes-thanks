@@ -28,6 +28,7 @@ public:
     inline qreal heightF() const { return qreal(height()); }
     inline qreal   ratio() const { return widthF() / heightF(); }
 };
+
 class TilingItem : public QGraphicsPolygonItem {
 public:
     TilingItem(const QPolygonF &hexagon, qreal &hue, int pen_width = 2, QColor pen_color = Qt::black): QGraphicsPolygonItem()
@@ -62,7 +63,7 @@ public:
     void UpdateValues(const QString &remains_str, const qreal &ratio);
 
 public slots:
-    void ShowRefreshment(const QList<QString> &pics_path, const QString &clock, const QString &ProgressBarText, const Setting &setting, Timer *viewtimer);
+    void ShowRefreshment(const QString &clock, const QString &ProgressBarText, const Setting &setting, Timer *viewtimer);
 
 signals:
     void view_close();
@@ -74,7 +75,8 @@ private:
     void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-    int SetPredeterminedBackground(qreal hue_now);
+    void SetPredeterminedBackground();
+    QString SetImageBackground(qreal ratio_pic, QPixmap pic);
     void SaveSceneToFile(QString dir_path);
 
     const Rect default_screen;
@@ -91,6 +93,7 @@ private:
     QGraphicsSimpleTextItem *ProgressBarText;
     QRect ProgressBarRect;
     QGraphicsRectItem *ButtonRectItem;
+    QGraphicsRectItem *ButtonBound;
     QGraphicsSimpleTextItem *ButtonText;
 
     Setting setting;
@@ -98,9 +101,9 @@ private:
     QGraphicsEllipseItem *Item;
     int MethodIndex;
     QList<int> MethodsEnabled;
-    qreal Hue_start;
     bool IsBackgroundUpdate;
     bool RunnedFirstTime;
+
 };
 
 #endif // VIEW_H

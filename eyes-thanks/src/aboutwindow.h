@@ -7,6 +7,7 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
+
 #include <QDialog>
 #include <QFile>
 #include <QLabel>
@@ -36,17 +37,17 @@ public:
         const QString license_name = "GNU GPLv3";
         const QString logo_path = ":icons/logo.png";
         const QString build_year = __DATE__ + 7;
-        const QString Qt_version_compiletime = QString(QT_VERSION_STR);
-        const QString Qt_version_runtime = qVersion();
+        const QString Qt_CT = QString(QT_VERSION_STR);
+        const QString Qt_RT = qVersion();
 
-        QRegularExpression re("\\S+\\s+\\d+\\.\\d+\\.\\S+");
+        //OpenSSL 1.0.2j  26 Sep 2016
+        QRegularExpression re(R"(\d+\.\d+\.\S+)");
 
-        QString OpenSSL_version_compile = re.match(QSslSocket::sslLibraryBuildVersionString()).captured();
-        QString OpenSSL_version_run = re.match(QSslSocket::sslLibraryVersionString()).captured();
+        QString OpenSSL_inQT_RT = re.match(QSslSocket::sslLibraryBuildVersionString()).captured();
+        QString OpenSSL_RT = re.match(QSslSocket::sslLibraryVersionString()).captured();
 
-        if (OpenSSL_version_run == "")
-            OpenSSL_version_run = "OpenSSL dlls are missing";
-
+        if (OpenSSL_RT == "")
+            OpenSSL_RT = "missing dlls";
 
 #ifdef _WIN32
         QIcon aboutIcon     = QIcon(":icons/help-about.png");
@@ -95,15 +96,14 @@ public:
                     "<br></p>") +
                 QString(
                     "<p align = center>"
-                    "Compile time:<br>Qt %1, %2"
+                    "%1<br>"
+                    "Qt %2 %3<br>"
+                    "OpenSSL %4 %5"
                     "</p>"
-
-                    "<p align = center>"
-                    "Runtime:<br>Qt %4 (%3 inside),<br>%5"
-                    "</p>"
-                ).arg("<nobr>" + Qt_version_compiletime + "</nobr>", CompilerInfo(),
-                      "<nobr>" +  OpenSSL_version_compile + "</nobr>", "<nobr>" + Qt_version_runtime + "</nobr>",
-                      "<nobr>" + OpenSSL_version_run + "</nobr>") +
+                ).arg(CompilerInfo(),
+                      "<nobr>" + Qt_CT + "</nobr>", Qt_CT != Qt_RT?" / <nobr>" + Qt_RT + "</nobr>":QString(),
+                      "<nobr>" +  OpenSSL_inQT_RT + "</nobr>", OpenSSL_inQT_RT != OpenSSL_RT?" / <nobr>" + OpenSSL_RT + "</nobr>":QString()
+                     ) +
 
                 QString(
                     "<p align = center>"
@@ -131,11 +131,8 @@ public:
         if (file.open(QFile::ReadOnly | QFile::Text)) {
             QWidget *tab2 = new QWidget;
             tabs->addTab(tab2, QIcon(), tr("License"));
-
             QVBoxLayout *lay2 = new QVBoxLayout(tab2);
-
             QTextBrowser *textBrowser = new QTextBrowser();
-
             QTextStream ReadFile(&file);
             textBrowser->setText(ReadFile.readAll());
             textBrowser->setOpenExternalLinks(true);
@@ -155,19 +152,19 @@ private:
 #else
         compiler_info += "GCC ";
 #endif
-        compiler_info += QString("%1.%2.%3,").arg(__GNUC__).arg(__GNUC_MINOR__).arg(__GNUC_PATCHLEVEL__);
+        compiler_info += QString("%1.%2.%3").arg(__GNUC__).arg(__GNUC_MINOR__).arg(__GNUC_PATCHLEVEL__);
 #endif
 
 #ifdef _MSC_VER
         compiler_info += "MSVC++ ";
-        if (_MSC_VER >= 2000) compiler_info += "14.0+";
+        if (_MSC_VER >= 1910) compiler_info += "14.1+";     // VS 2017 v15.0 MSVC++14.1
         else if (_MSC_VER >= 1900) compiler_info += "14.0"; // VS 2015
         else if (_MSC_VER >= 1800) compiler_info += "12.0";
         else if (_MSC_VER >= 1700) compiler_info += "11.0";
         else if (_MSC_VER >= 1600) compiler_info += "10.0";
         else if (_MSC_VER >= 1500) compiler_info += "9.0";
         else if (_MSC_VER >= 1400) compiler_info += "8.0";
-        else                      compiler_info += "< 8.0";
+        else                       compiler_info += "<8.0";
 
         compiler_info += ",";
 
@@ -179,10 +176,6 @@ private:
             break;
         case 4:
             compiler_info += " x86";
-            break;
-
-        default:
-            compiler_info += " ORLY?";
             break;
         }
 

@@ -19,7 +19,7 @@ UpdateAction::UpdateAction(const QIcon &icon, const QString &text, QObject *pare
 
 void UpdateAction::showmessagebox()
 {
-    mbx = new QMessageBox(QMessageBox::Icon::NoIcon, qApp->translate("App", "Eyes' Thanks"), tr("Checking update..."),
+    mbx = new QMessageBox(QMessageBox::Icon::NoIcon, APP_NAME, tr("Checking update..."),
                                       QMessageBox::StandardButton::Cancel);
     QFontMetrics fm(mbx->font());
     int height =  fm.boundingRect("A").height() * 6;
@@ -78,7 +78,7 @@ void UpdateAction::replyFinished(QNetworkReply *reply)
                       "You can download this version using the link:<br>"
                       "<a href=%3>%3</a>").arg(NewVersionString).arg(REPO_URL).arg(NewVersionUrl);
         else
-            text = tr("Fantastic! You are have <b>Eyes' Thanks %1</b>, "
+            text = tr("Fantastic! You have <b>Eyes' Thanks %1</b>, "
                       "but last available version is <b>%2</b>.<br><br>"
                       "Please, upload new version to <a href=%3>%3</a>.").arg(APP_VERSION).arg(NewVersionString).arg(REPO_URL);
 

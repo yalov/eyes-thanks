@@ -14,12 +14,11 @@ CONFIG  += DEPLOY
 #CONFIG += staticlib
 
 APP_NAME  = Eyes’ Thanks
-VERSION   = 1.4.0
+VERSION   = 1.4.1
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
 TARGET    = "Eyes\' Thanks"
-#TARGET    = "EyesThanks"
 
 CONFIG(release, debug|release) {
 DESTDIR =   $$PWD/../../EyesThanks
@@ -43,7 +42,7 @@ CONFIG += c++14
 
 win32:RC_ICONS += icons/icon.ico
 
-QMAKE_TARGET_DESCRIPTION = $$TARGET #apostrophe don't work in the taskmanager
+QMAKE_TARGET_DESCRIPTION = $$TARGET
 QMAKE_TARGET_COPYRIGHT   = $$DEV_NAME
 
 DEFINES +=    REPO_URL='"\\\"$$REPO_URL\\\""'
@@ -77,7 +76,7 @@ TRANSLATIONS += languages/lang_ru.ts languages/lang_en.ts
 RESOURCES    += resource.qrc
 
 
-# windeployqt only release and only DEPLOY variable
+# windeployqt only for release and DEPLOY variable
 CONFIG(release, debug|release) {
     DEPLOY {
         message("$$BUILD_TIME DEPLOY")
@@ -87,7 +86,7 @@ CONFIG(release, debug|release) {
         windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)
 
         removeDirRecursive($$DESTDIR/bearer)
-        removeDirRecursive($$DESTDIR/styles)
+#        removeDirRecursive($$DESTDIR/styles)
 
         FILENAMES = qicns.dll qico.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
         removeFilesInDir($$DESTDIR/imageformats/, $$FILENAMES)

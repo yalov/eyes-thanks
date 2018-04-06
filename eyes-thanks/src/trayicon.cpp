@@ -74,11 +74,11 @@ void TrayIcon::createLangActionGroup()
         QTranslator translator;
         translator.load(fileName, LangPath);
 
-        auto locale = fileName.split('.').first().split('_').last();  // ru
+        auto locale = fileName.split('.').first().split('_').last();  // en, ru
 
         if (locale == "en") haveEnglish_qm = true;
 
-        QString lang = translator.translate("TrayIcon", "English");
+        QString lang = translator.translate("App", "Language_name");
 
         QAction *action = new QAction(lang, this);
         action->setCheckable(true);
@@ -362,7 +362,7 @@ void TrayIcon::Pause()
         DialogTimer->pause();
 
         auto pause_str = QString(" (%1)").arg(tr("Pause"));
-        setToolTip(tr("Until break") + ": " + TimeRemains + pause_str);
+        setToolTip(qApp->translate("App", "Until break") + ": " + TimeRemains + pause_str);
         emit updateLabelPause(DialogTimer->remains_str() + pause_str, -DialogTimer->ratio());
     }
     else {
@@ -632,7 +632,7 @@ void TrayIcon::DialogUpdateTime()
             emit updateLabelPause(TimeRemains, ratio);
     }
 
-    setToolTip(tr("Until break") + ": " + TimeRemains);
+    setToolTip(qApp->translate("App", "Until break") + ": " + TimeRemains);
 
     if (setting.isMessage30sec && remains < 30000 && !TrayMessageShowed) {
         if (setting.isLogging) {
@@ -642,7 +642,7 @@ void TrayIcon::DialogUpdateTime()
 
             LogToFile("LoggingTimer.txt", message);
         }
-        showMessage(qApp->translate("App", "Eyes' Thanks"), QString(tr("Until break") + " %1 " + tr("sec")).arg(qRound(remains / 1000.)));
+        showMessage(APP_NAME, QString(qApp->translate("App", "Until break") + " %1 " + qApp->translate("App", "sec")).arg(qRound(remains / 1000.)));
         TrayMessageShowed = true;
     }
 
@@ -664,46 +664,35 @@ void TrayIcon::ShowView()
 {
 
     QElapsedTimer timer; timer.start();
-    qDebug().noquote() << QTime::currentTime().toString("ss.zzz") << "ShowView start";
+    qDebug().noquote()  << "TrayIcon::ShowView(), start";
 
     view = new View();
-    connect(this, SIGNAL(show_refreshment(QList<QString>, QString, QString, Setting, Timer*)),
-            view, SLOT(ShowRefreshment(QList<QString>, QString, QString, Setting, Timer*)));
+    connect(this, SIGNAL(show_refreshment(QString, QString, Setting, Timer*)),
+            view, SLOT(ShowRefreshment(QString, QString, Setting, Timer*)));
     connect(ViewTimer, SIGNAL(finished()),   view,        SLOT(close())); // close() run view->closeEvent()
     //connect(view,      SIGNAL(view_close()), view,        SLOT(close()));
     connect(view,      SIGNAL(view_close()), DialogTimer, SLOT(start()));
     connect(view,      SIGNAL(view_close()), ViewTimer,   SLOT(stop()));
 
-    qDebug().noquote() << QTime::currentTime().toString("ss.zzz") << "TrayIcon::ShowView(), view constuctor in" << timer.elapsed() << "ms." ;
+    qDebug().noquote()  << "TrayIcon::ShowView(), view constuctor in" << timer.elapsed() << "ms." ;
 
-    QList<QString> pics_path;
 
-    QStringList images = QDir(setting.imagesPath).entryList(QStringList() << "*.jpg" << "*.png");
-    if (!images.isEmpty()) {
-        QString pic_path = setting.imagesPath + "/" + images[qrand() % images.size()];
-        pics_path.append(pic_path);
+
+
+
+    QString clock = "";
+    QString text = "";
+    if (setting.isClock)   clock = QTime::currentTime().toString("hh:mm"); 
+    if (setting.isText)
+    {
+        text = setting.text;
+        text.replace("%until", QString::number(setting.pauseInterval / 1000 / 60) + " " + qApp->translate("App", "min"));
+        text.replace("%duration", QString::number(setting.pauseDuration / 1000) + " " + qApp->translate("App", "sec"));
     }
 
-    QStringList images_alt = QDir(setting.imagesPathAlternative).entryList(QStringList() << "*.jpg" << "*.png");
-    if (!images_alt.isEmpty()) {
-        QString pic_path_alt = setting.imagesPathAlternative + "/" + images_alt[qrand() % images_alt.size()];
-        pics_path.append(pic_path_alt);
-    }
+    emit show_refreshment(clock, text, setting, ViewTimer);
 
-    QString clock;
-    if (setting.isClock)   clock = QTime::currentTime().toString("hh:mm");
-    else                   clock = "";
-
-    QString text;
-    if (setting.isText)    text = setting.text;
-    else                   text = "";
-
-    text.replace("%until", QString::number(setting.pauseInterval / 1000 / 60) + " " + tr("min"));
-    text.replace("%duration", QString::number(setting.pauseDuration / 1000) + " " + tr("sec"));
-
-    emit show_refreshment(pics_path, clock, text, setting, ViewTimer);
-
-    qDebug().noquote() << QTime::currentTime().toString("ss.zzz") << "ShowView end in" << timer.elapsed() << "ms." ;
+    qDebug().noquote()  << "TrayIcon::ShowView end in" << timer.elapsed() << "ms." ;
 }
 
 
