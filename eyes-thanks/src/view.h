@@ -19,6 +19,7 @@
 
 #include "global.h"
 #include "timer.h"
+#include "viewitem.h"
 
 
 class Rect : public QRect {
@@ -87,14 +88,8 @@ private:
     QGraphicsScene *myscene;
     QGraphicsSimpleTextItem *clockItem;
     QGraphicsSimpleTextItem *textItem;
-    QGraphicsRectItem *ProgressBar;
-    QGraphicsRectItem *ProgressBarBound;
-    QGraphicsRectItem *ProgressBarBackground;
-    QGraphicsSimpleTextItem *ProgressBarText;
-    QRect ProgressBarRect;
-    QGraphicsRectItem *ButtonRectItem;
-    QGraphicsRectItem *ButtonBound;
-    QGraphicsSimpleTextItem *ButtonText;
+    ViewItem *ProgressBarItem;
+    ViewItem *ButtonItem;
 
     Setting setting;
 

@@ -60,56 +60,13 @@ View::View(QWidget *parent): QGraphicsView(parent),
     myscene->setBackgroundBrush(Qt::black);
     setScene(myscene);
 
-    ProgressBarText = new QGraphicsSimpleTextItem();
-    QFont font;
-    font.setPointSize(16);
-    ProgressBarText->setFont(font);
-    ProgressBarText->setBrush(Qt::black);
-    ProgressBarText->setZValue(3);
-    ProgressBarText->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    myscene->addItem(ProgressBarText);
+    ProgressBarItem = new ViewItem(true,16);
+    myscene->addItem(ProgressBarItem);
 
-    ProgressBar = new QGraphicsRectItem();
-    ProgressBar->setPen(Qt::NoPen);
-    ProgressBar->setBrush(Qt::white);
-    ProgressBar->setOpacity(0.8);
-    ProgressBar->setZValue(2.5);
-    ProgressBar->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    myscene->addItem(ProgressBar);
 
-    ProgressBarBackground = new QGraphicsRectItem();
-    ProgressBarBackground->setPen(Qt::NoPen);
-    ProgressBarBackground->setBrush(Qt::white);
-    ProgressBarBackground->setOpacity(0.4);
-    ProgressBarBackground->setZValue(2);
-    myscene->addItem(ProgressBarBackground);
-
-    ProgressBarBound = new QGraphicsRectItem();
-    ProgressBarBound->setPen(QPen(Qt::black));
-    ProgressBarBound->setBrush(Qt::NoBrush);
-    ProgressBarBound->setZValue(3);
-    myscene->addItem(ProgressBarBound);
-
-    ButtonText = new QGraphicsSimpleTextItem();
-    font.setPointSize(14);
-    ButtonText->setFont(font);
-    ButtonText->setBrush(Qt::black);
-    ButtonText->setZValue(3);
-    ButtonText->setText(tr("Close"));
-    myscene->addItem(ButtonText);
-
-    ButtonRectItem = new QGraphicsRectItem();
-    ButtonRectItem->setPen(QPen(Qt::NoPen));
-    ButtonRectItem->setBrush(Qt::white);
-    ButtonRectItem->setOpacity(0.4);
-    ButtonRectItem->setZValue(2);
-    myscene->addItem(ButtonRectItem);
-
-    ButtonBound = new QGraphicsRectItem();
-    ButtonBound->setPen(QPen(Qt::black));
-    ButtonBound->setBrush(Qt::NoBrush);
-    ButtonBound->setZValue(3);
-    myscene->addItem(ButtonBound);
+    ButtonItem = new ViewItem(false, 14);
+    ButtonItem->setText(tr("Close"));
+    myscene->addItem(ButtonItem);
 }
 
 
@@ -131,23 +88,12 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
     // ProgressBar and ButtonRect
     {
 
-        ProgressBarText->setText(viewtimer->remains_str());
-        QPoint textsize = QPoint(ProgressBarText->boundingRect().width(), ProgressBarText->boundingRect().height());
-        int y_pos = default_screen.height() - textsize.y() - 25 ;
-        ProgressBarRect = QRect(default_screen.left() + default_screen.width() / 5, y_pos,
-                                3 * default_screen.width() / 5, textsize.y());
+        ProgressBarItem->setText(viewtimer->remains_str());
+        ProgressBarItem->setSize(3 * default_screen.width() / 5.0);
+        ProgressBarItem->setPos(default_screen.left() + default_screen.width() / 5, default_screen.height() - ProgressBarItem->rect().height() - 25);
 
-        ProgressBarBackground->setRect(ProgressBarRect);
-        ProgressBar->setRect(ProgressBarRect);
-        ProgressBarBound->setRect(ProgressBarRect.adjusted(-1, -1, 1, 1));
-        ProgressBarText->setPos(ProgressBarRect.center() - textsize / 2);
-
-        ButtonRectItem->setRect(QRect(ProgressBarBackground->boundingRect().right() + 25, y_pos, 100, textsize.y()));
-        ButtonBound->setRect(ButtonRectItem->rect().adjusted(-1, -1, 1, 1));
-
-        QPointF p = ButtonRectItem->rect().center() -
-                    QPoint(ButtonText->boundingRect().width(), ButtonText->boundingRect().height()) / 2;
-        ButtonText->setPos(p.x(), p.y());
+        ButtonItem->setSize(100, ProgressBarItem->rect().height());
+        ButtonItem->setPos(ProgressBarItem->sceneBoundingRect().topRight() + QPointF(25,0));
 
 
     }
@@ -804,10 +750,8 @@ void View::SaveSceneToFile(QString dir_path)
 
 void View::UpdateValues(const QString &remains_str, const qreal &ratio)
 {
-    ProgressBarRect.setRight(qRound(ProgressBarBackground->rect().left() + ProgressBarBackground->rect().width() * (1 - ratio)));
-    ProgressBar->setRect(ProgressBarRect);
-
-    ProgressBarText->setText(remains_str);
+    ProgressBarItem->setText(remains_str);
+    ProgressBarItem->setProgress(ratio);
 
     if (clockItem != nullptr)
         clockItem->setText(QTime::currentTime().toString("hh:mm"));
@@ -842,15 +786,15 @@ void View::keyReleaseEvent(QKeyEvent *event)
 void View::mousePressEvent(QMouseEvent *event)
 {
     for (auto i : items(event->pos())) {
-        if (ButtonRectItem == i)
-            ButtonRectItem->setOpacity(1);
+        if (ButtonItem == i)
+            ButtonItem->setOpacity(1);
     }
 }
 
 void View::mouseReleaseEvent(QMouseEvent *event)
 {
     for (auto i : items(event->pos()))
-        if (ButtonRectItem == i)
+        if (ButtonItem == i)
             close();
 }
 
@@ -858,17 +802,17 @@ void View::mouseMoveEvent(QMouseEvent *event)
 {
     bool IsButton = false;
     for (auto i : items(event->pos()))
-        if (ButtonRectItem == i)
+        if (ButtonItem == i)
             IsButton = true;
 
     if (IsButton) {
         if (event->buttons() == Qt::NoButton)
-            ButtonRectItem->setOpacity(0.8);
+            ButtonItem->setOpacity(0.8);
         else
-            ButtonRectItem->setOpacity(1);
+            ButtonItem->setOpacity(1);
     }
     else
-        ButtonRectItem->setOpacity(0.4);
+        ButtonItem->setOpacity(0.4);
 }
 
 void View::closeEvent(QCloseEvent *event)

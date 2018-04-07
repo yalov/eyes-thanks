@@ -8,7 +8,7 @@ include("functions.pri")
 include("../qutfstring/include.pri")
 message("$$BUILD_TIME eyes-thanks.pro")
 
-CONFIG  += DEPLOY
+#CONFIG  += DEPLOY
 
 #LIBS +=  -static
 #CONFIG += staticlib
@@ -54,13 +54,15 @@ DEFINES +=   DEV_EMAIL='"\\\"$$DEV_EMAIL\\\""'
 # '+' will automatically be performed as the QStringBuilder '%' everywhere.
 DEFINES *= QT_USE_QSTRINGBUILDER
 
-SOURCES += src/dialog.cpp \
-           src/main.cpp \
-           src/trayicon.cpp \
-           src/view.cpp \
-           src/updater.cpp \
-           src/timer.cpp \
-           src/charactersets.cpp
+SOURCES  += src/dialog.cpp \
+            src/main.cpp \
+            src/trayicon.cpp \
+            src/view.cpp \
+            src/updater.cpp \
+            src/timer.cpp \
+            src/charactersets.cpp \
+            src/viewitem.cpp
+
 
 HEADERS  += src/aboutwindow.h \
             src/dialog.h \
@@ -70,7 +72,9 @@ HEADERS  += src/aboutwindow.h \
             src/updater.h \
             src/global.h \
             src/transliteration-iso9a.h \
-            src/charactersets.h
+            src/charactersets.h \
+            src/viewitem.h
+
 
 TRANSLATIONS += languages/lang_ru.ts languages/lang_en.ts
 RESOURCES    += resource.qrc
