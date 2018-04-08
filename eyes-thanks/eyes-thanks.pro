@@ -8,21 +8,23 @@ include("functions.pri")
 include("../qutfstring/include.pri")
 message("$$BUILD_TIME eyes-thanks.pro")
 
-#CONFIG  += DEPLOY
+CONFIG  += DEPLOY
 
 #LIBS +=  -static
 #CONFIG += staticlib
 
-APP_NAME  = Eyes’ Thanks
-VERSION   = 1.4.1
+APP_NAME  = "Eyes’ Thanks"
+VERSION   = 1.4.2
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
-TARGET    = "Eyes\' Thanks"
+win32-msvc*: TARGET    = "EyesThanks"
+win32-g++*: TARGET     = "Eyes\' Thanks"
 
 CONFIG(release, debug|release) {
-DESTDIR =   $$PWD/../../EyesThanks
-SSLDLLDIR = $$PWD/../../../openssl-1.0.2j-i386-win32
+    win32-msvc*: DESTDIR =   $$PWD/../../EyesThanksMSVC
+    win32-g++*: DESTDIR  =   $$PWD/../../EyesThanks
+    SSLDLLDIR = $$PWD/../../../openssl-1.0.2j-i386-win32
 }
 
 # subfolders in debug and release folder
@@ -82,21 +84,22 @@ RESOURCES    += resource.qrc
 
 # windeployqt only for release and DEPLOY variable
 CONFIG(release, debug|release) {
-    DEPLOY {
-        message("$$BUILD_TIME DEPLOY")
+    win32-g++* {
+        DEPLOY {
+            message("$$BUILD_TIME DEPLOY")
 
-        DEFINES += QT_NO_DEBUG_OUTPUT DEPLOY
+            DEFINES += QT_NO_DEBUG_OUTPUT DEPLOY
 
-        windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)
+            windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)
 
-        removeDirRecursive($$DESTDIR/bearer)
-#        removeDirRecursive($$DESTDIR/styles)
+            removeDirRecursive($$DESTDIR/bearer)
 
-        FILENAMES = qicns.dll qico.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
-        removeFilesInDir($$DESTDIR/imageformats/, $$FILENAMES)
+            FILENAMES = qicns.dll qico.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
+            removeFilesInDir($$DESTDIR/imageformats/, $$FILENAMES)
 
-        copyFilesToDir($${SSLDLLDIR}/*.dll, $$DESTDIR)
+            copyFilesToDir($${SSLDLLDIR}/*.dll, $$DESTDIR)
 
-        copyFilesToDir($$PWD/languages/*.qm, $$DESTDIR/languages/)
+            copyFilesToDir($$PWD/languages/*.qm, $$DESTDIR/languages/)
+        }
     }
 }

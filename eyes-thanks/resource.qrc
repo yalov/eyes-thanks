@@ -45,5 +45,6 @@
         <file>icons/actions/system-software-update.png</file>
         <file>icons/actions/video-display.png</file>
         <file>icons/actions/media-skip-forward.png</file>
+        <file>res/iso9a.txt</file>
     </qresource>
 </RCC>

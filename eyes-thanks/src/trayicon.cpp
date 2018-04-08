@@ -218,7 +218,7 @@ bool TrayIcon::CheckStartupLink(){
             return true;
 
         QMessageBox * mb = new QMessageBox();
-        mb->setWindowTitle(APP_NAME);
+        mb->setWindowTitle(tr("Eyes' Thanks"));
         mb->setWindowIcon(QIcon(":icons/logo.png"));
         mb->setIcon(QMessageBox::Question);
         //mb->setIconPixmap(QPixmap(":icons/logo.png").scaledToWidth(64, Qt::SmoothTransformation));
@@ -288,7 +288,7 @@ void TrayIcon::writeSettings()
     qsettings.setValue("text",                   setting.text);
 
     qsettings.setValue("spectrum_enabled",       setting.isSpectrum );
-    qsettings.setValue("riling_enabled",         setting.isTiling   );
+    qsettings.setValue("tiling_enabled",         setting.isTiling   );
     qsettings.setValue("stripes_enabled",        setting.isStripes  );
     qsettings.setValue("circle_enabled",         setting.isCircle   );
     qsettings.setValue("circles_enabled",        setting.isCircles  );
@@ -642,7 +642,7 @@ void TrayIcon::DialogUpdateTime()
 
             LogToFile("LoggingTimer.txt", message);
         }
-        showMessage(APP_NAME, QString(qApp->translate("App", "Until break") + " %1 " + qApp->translate("App", "sec")).arg(qRound(remains / 1000.)));
+        showMessage(tr("Eyes' Thanks"), QString(qApp->translate("App", "Until break") + " %1 " + qApp->translate("App", "sec")).arg(qRound(remains / 1000.)));
         TrayMessageShowed = true;
     }
 

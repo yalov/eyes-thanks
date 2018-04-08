@@ -27,7 +27,7 @@ public:
     AboutWindow(QWidget *parent = 0): QDialog(parent)
     {
         const QString win_title = tr("About Eyes' Thanks");
-        const QString app_name = QString(APP_NAME);
+        const QString app_name = tr("Eyes' Thanks");
         const QString app_version = QString(APP_VERSION);
         const QString dev_name = QString(DEV_NAME);
         const QString dev_email = QString(DEV_EMAIL);
@@ -157,8 +157,13 @@ private:
 
 #ifdef _MSC_VER
         compiler_info += "MSVC++ ";
-        if (_MSC_VER >= 1910) compiler_info += "14.1+";     // VS 2017 v15.0 MSVC++14.1
-        else if (_MSC_VER >= 1900) compiler_info += "14.0"; // VS 2015
+        if      (_MSC_VER >  1914) compiler_info += "14.14+";
+        else if (_MSC_VER == 1914) compiler_info += "14.14";    // VS 2017 v15.7 MSVC++14.14
+        else if (_MSC_VER == 1913) compiler_info += "14.13";    // VS 2017 v15.6 MSVC++14.13
+        else if (_MSC_VER == 1912) compiler_info += "14.12";    // VS 2017 v15.5 MSVC++14.12
+        else if (_MSC_VER == 1911) compiler_info += "14.11";    // VS 2017 v15.3 MSVC++14.11
+        else if (_MSC_VER == 1910) compiler_info += "14.1";     // VS 2017 v15.0 MSVC++14.1
+        else if (_MSC_VER >= 1900) compiler_info += "14.0";     // VS 2015 v14.0 MSVC++14.0
         else if (_MSC_VER >= 1800) compiler_info += "12.0";
         else if (_MSC_VER >= 1700) compiler_info += "11.0";
         else if (_MSC_VER >= 1600) compiler_info += "10.0";

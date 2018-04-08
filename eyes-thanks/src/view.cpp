@@ -637,7 +637,7 @@ void View::SetPredeterminedBackground()
                 QString name = transliteraction(qgetenv("USER"));
                 if (name.isEmpty()) name = transliteraction(qgetenv("USERNAME"));
                 if (name.isEmpty() || name == "User" || name.size() > 25 || (qrand() % 10 == 0))
-                    name = transliteraction(QString("Neo"));
+                    name = QString("Neo");
 
                 QGraphicsSimpleTextItem *centerTextItem = new QGraphicsSimpleTextItem();
                 myscene->addItem(centerTextItem);
