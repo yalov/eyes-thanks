@@ -8,10 +8,12 @@ include("functions.pri")
 include("../qutfstring/include.pri")
 message("$$BUILD_TIME eyes-thanks.pro")
 
+LIBS += -ladvapi32
+LIBS += -lnetapi32
+
+
 CONFIG  += DEPLOY
 
-#LIBS +=  -static
-#CONFIG += staticlib
 
 APP_NAME  = "Eyes’ Thanks"
 VERSION   = 1.4.2

@@ -15,6 +15,7 @@ inline static bool check_rus_compatibility(QString input)
                     && (u.toLower() != QChar(0x0454)) // є
                     && (u.toLower() != QChar(0x0451)) // ё
                     && (u.toLower() != QChar(0x0456)) // і
+                    && (u.toLower() != 'i')           // i - lat
                     && (u.toLower() != QChar(0x0457)) // ї
                     && (u.toLower() != QChar(0x045E)) // ў
                     && (u.toLower() != QChar(0x0491)) // ґ

@@ -1,4 +1,6 @@
 TEMPLATE = lib
+
+
 TARGET = qutfstring
 
 CONFIG += staticlib
