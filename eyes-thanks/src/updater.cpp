@@ -19,7 +19,7 @@ UpdateAction::UpdateAction(const QIcon &icon, const QString &text, QObject *pare
 
 void UpdateAction::showmessagebox()
 {
-    mbx = new QMessageBox(QMessageBox::Icon::NoIcon, tr("Eyes' Thanks"), tr("Checking update..."),
+    mbx = new QMessageBox(QMessageBox::Icon::NoIcon, qApp->translate("App", "Eyes' Thanks"), tr("Checking update..."),
                                       QMessageBox::StandardButton::Cancel);
     QFontMetrics fm(mbx->font());
     int height =  fm.boundingRect("A").height() * 6;

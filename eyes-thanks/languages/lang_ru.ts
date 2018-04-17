@@ -4,22 +4,22 @@
 <context>
     <name>AboutWindow</name>
     <message>
-        <location filename="../src/aboutwindow.h" line="29"/>
+        <location filename="../src/aboutwindow.h" line="30"/>
         <source>About Eyes&apos; Thanks</source>
         <translation>О Eyes&apos; Thanks</translation>
     </message>
     <message>
-        <location filename="../src/aboutwindow.h" line="81"/>
+        <location filename="../src/aboutwindow.h" line="82"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="../src/aboutwindow.h" line="93"/>
+        <location filename="../src/aboutwindow.h" line="94"/>
         <source>Eyes&apos; Thanks is a software that protect your eyes. The program frequently alerts you to take rest breaks by showing fullscreen image (random from the folder). It supports multiple monitor system and wide image for all monitors.</source>
         <translation>Eyes&apos; Thanks is a software that protect your eyes. The program frequently alerts you to take rest breaks by showing fullscreen image (random from the folder). It supports multiple monitor system and wide image for all monitors.</translation>
     </message>
     <message>
-        <location filename="../src/aboutwindow.h" line="133"/>
+        <location filename="../src/aboutwindow.h" line="134"/>
         <source>License</source>
         <translation>Лицензия</translation>
     </message>
@@ -123,6 +123,15 @@
         <location filename="../src/trayicon.cpp" line="81"/>
         <source>Language_name</source>
         <translation>Русский</translation>
+    </message>
+    <message>
+        <location filename="../src/aboutwindow.h" line="31"/>
+        <location filename="../src/dialog.cpp" line="324"/>
+        <location filename="../src/trayicon.cpp" line="221"/>
+        <location filename="../src/trayicon.cpp" line="645"/>
+        <location filename="../src/updater.cpp" line="22"/>
+        <source>Eyes&apos; Thanks</source>
+        <translation>Eyes’ Thanks</translation>
     </message>
 </context>
 <context>
@@ -352,6 +361,16 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>Оставить</translation>
     </message>
     <message>
+        <location filename="../src/trayicon.cpp" line="241"/>
+        <source>Yes</source>
+        <translation>Да</translation>
+    </message>
+    <message>
+        <location filename="../src/trayicon.cpp" line="242"/>
+        <source>No</source>
+        <translation>Нет</translation>
+    </message>
+    <message>
         <location filename="../src/trayicon.cpp" line="482"/>
         <source>Break Now</source>
         <translation>Перерыв сейчас</translation>
@@ -440,7 +459,7 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
 <context>
     <name>View</name>
     <message>
-        <location filename="../src/view.cpp" line="98"/>
+        <location filename="../src/view.cpp" line="71"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>

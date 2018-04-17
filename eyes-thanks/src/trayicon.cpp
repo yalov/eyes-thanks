@@ -218,7 +218,7 @@ bool TrayIcon::CheckStartupLink(){
             return true;
 
         QMessageBox * mb = new QMessageBox();
-        mb->setWindowTitle(tr("Eyes' Thanks"));
+        mb->setWindowTitle(qApp->translate("App", "Eyes' Thanks"));
         mb->setWindowIcon(QIcon(":icons/logo.png"));
         mb->setIcon(QMessageBox::Question);
         //mb->setIconPixmap(QPixmap(":icons/logo.png").scaledToWidth(64, Qt::SmoothTransformation));
@@ -238,8 +238,8 @@ bool TrayIcon::CheckStartupLink(){
             mb->setText(tr("It is the first launch of Eyes' Thanks."));
             mb->setInformativeText(tr("Do you want to run the app on Windows startup?"));
 
-            Accept = mb->addButton(QMessageBox::Yes);
-            Reject = mb->addButton(QMessageBox::No);
+            Accept = mb->addButton(tr("Yes"), QMessageBox::YesRole);
+            Reject = mb->addButton(tr("No"), QMessageBox::NoRole);
         }
 
         mb->setDefaultButton(Accept);
@@ -642,7 +642,7 @@ void TrayIcon::DialogUpdateTime()
 
             LogToFile("LoggingTimer.txt", message);
         }
-        showMessage(tr("Eyes' Thanks"), QString(qApp->translate("App", "Until break") + " %1 " + qApp->translate("App", "sec")).arg(qRound(remains / 1000.)));
+        showMessage(qApp->translate("App", "Eyes' Thanks"), QString(qApp->translate("App", "Until break") + " %1 " + qApp->translate("App", "sec")).arg(qRound(remains / 1000.)));
         TrayMessageShowed = true;
     }
 

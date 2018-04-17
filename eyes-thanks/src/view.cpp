@@ -46,13 +46,14 @@ View::View(QWidget *parent): QGraphicsView(parent),
     clockItem(nullptr), textItem(nullptr), setting(), Item(nullptr),
     MethodIndex(-1), IsBackgroundUpdate(false), RunnedFirstTime(false)
 {
-#ifdef DEPLOY
+
     setWindowFlags(Qt::WindowStaysOnTopHint);
-#endif
+
 
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     setAttribute(Qt::WA_DeleteOnClose);
     setRenderHint(QPainter::Antialiasing);
+    setFocusPolicy(Qt::StrongFocus);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setMouseTracking(true);
@@ -204,19 +205,20 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
             QMetaEnum metaEnum = QMetaEnum::fromType<Methods>();
             display_case = metaEnum.valueToKey(MethodIndex);
         }
+
         Logging_str += QString("%1 Display case = %2, %3 ms., items = %4\n")
                 .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
                 .arg(display_case).arg(timer.elapsed()).arg(myscene->items().size());
 
         for (int i = 0; i < images.size(); i++) {
-            Logging_str += QString(" - %4      %1  %2 %3\n")
+            Logging_str += QString(" -   %4      %1  %2 %3\n")
                     .arg(images[i].ratio, 4, 'f', 2).arg(str_from(images[i].pic.size())).arg(images[i].path)
                     .arg(image.path == images[i].path?"image showed ":"image        ");
 
         }
 
 
-        Logging_str += QString(" -   %3      %1  %2\n")
+        Logging_str +=     QString(" -   %3      %1  %2\n")
                 .arg(ratio_desk, 4, 'f', 2).arg(str_from(desktop.size()))
                 .arg(default_screen == desktop?"single screen":"full desktop ");;
 
@@ -235,10 +237,11 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
     }
 
 
+#ifndef DEPLOY
     // SaveSceneToFile
-    SaveSceneToFile("c:/Users/User/Pictures/Screenshots/EyesThanks");
-    qDebug().noquote() << "ShowRefreshment saving by" << timer.restart() << "ms.";
-
+    //SaveSceneToFile("c:/Users/User/Pictures/Screenshots/EyesThanks");
+    //qDebug().noquote() << "ShowRefreshment saving by" << timer.restart() << "ms.";
+#endif
 
 #ifdef __linux__ // showFullScreen() doesn't work
     setWindowFlags(Qt::X11BypassWindowManagerHint);
@@ -803,7 +806,7 @@ void View::UpdateValues(const QString &remains_str, const qreal &ratio)
 
 void View::keyPressEvent(QKeyEvent *event)
 {
-    event->accept();
+    event->ignore();
 }
 
 void View::keyReleaseEvent(QKeyEvent *event)

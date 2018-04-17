@@ -19,6 +19,7 @@
 #include <QTextStream>
 #include "QtNetwork/QNetworkAccessManager"
 #include <QSslSocket>
+#include <QApplication>
 
 class AboutWindow : public QDialog
 {
@@ -27,7 +28,7 @@ public:
     AboutWindow(QWidget *parent = 0): QDialog(parent)
     {
         const QString win_title = tr("About Eyes' Thanks");
-        const QString app_name = tr("Eyes' Thanks");
+        const QString app_name = qApp->translate("App", "Eyes' Thanks");
         const QString app_version = QString(APP_VERSION);
         const QString dev_name = QString(DEV_NAME);
         const QString dev_email = QString(DEV_EMAIL);
@@ -153,9 +154,7 @@ private:
         compiler_info += "GCC ";
 #endif
         compiler_info += QString("%1.%2.%3").arg(__GNUC__).arg(__GNUC_MINOR__).arg(__GNUC_PATCHLEVEL__);
-#endif
-
-#ifdef _MSC_VER
+#elif _MSC_VER
         compiler_info += "MSVC++ ";
         if      (_MSC_VER >  1914) compiler_info += "14.14+";
         else if (_MSC_VER == 1914) compiler_info += "14.14";    // VS 2017 v15.7 MSVC++14.14
@@ -170,10 +169,9 @@ private:
         else if (_MSC_VER >= 1500) compiler_info += "9.0";
         else if (_MSC_VER >= 1400) compiler_info += "8.0";
         else                       compiler_info += "<8.0";
+#endif
 
         compiler_info += ",";
-
-#endif
 
         switch (sizeof(void *)) {
         case 8:

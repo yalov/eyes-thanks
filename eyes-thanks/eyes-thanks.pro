@@ -16,7 +16,7 @@ CONFIG  += DEPLOY
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.4.2
+VERSION   = 1.4.3
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
@@ -86,11 +86,13 @@ RESOURCES    += resource.qrc
 
 # windeployqt only for release and DEPLOY variable
 CONFIG(release, debug|release) {
-    win32-g++* {
-        DEPLOY {
-            message("$$BUILD_TIME DEPLOY")
+    DEPLOY {
+        DEFINES += QT_NO_DEBUG_OUTPUT DEPLOY
 
-            DEFINES += QT_NO_DEBUG_OUTPUT DEPLOY
+        copyFilesToDir($$PWD/languages/*.qm, $$DESTDIR/languages/)
+
+        win32-g++* {
+            message("$$BUILD_TIME windeployqt")
 
             windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)
 
@@ -100,8 +102,6 @@ CONFIG(release, debug|release) {
             removeFilesInDir($$DESTDIR/imageformats/, $$FILENAMES)
 
             copyFilesToDir($${SSLDLLDIR}/*.dll, $$DESTDIR)
-
-            copyFilesToDir($$PWD/languages/*.qm, $$DESTDIR/languages/)
         }
     }
 }
