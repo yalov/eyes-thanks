@@ -16,16 +16,28 @@ CONFIG  += DEPLOY
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.4.3
+VERSION   = 1.4.4
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
 win32-msvc*: TARGET    = "EyesThanks"
 win32-g++*: TARGET     = "Eyes\' Thanks"
 
+
 CONFIG(release, debug|release) {
-    win32-msvc*: DESTDIR =   $$PWD/../../EyesThanksMSVC
-    win32-g++*: DESTDIR  =   $$PWD/../../EyesThanks
+    win32-g++* {
+        message("mingw x86 build")
+        DESTDIR  =   $$PWD/../../EyesThanks
+    }
+    win32-msvc* {
+        !contains(QMAKE_TARGET.arch, x86_64) {
+            message("msvc x86 build")
+            DESTDIR =   $$PWD/../../EyesThanksMSVC32
+        } else {
+            message("msvc x86_64 build")
+            DESTDIR =   $$PWD/../../EyesThanksMSVC64
+        }
+    }
     SSLDLLDIR = $$PWD/../../../openssl-1.0.2j-i386-win32
 }
 
@@ -51,7 +63,7 @@ QMAKE_TARGET_COPYRIGHT   = $$DEV_NAME
 
 DEFINES +=    REPO_URL='"\\\"$$REPO_URL\\\""'
 DEFINES += APP_VERSION='"\\\"$$VERSION\\\""'
-DEFINES +=    APP_NAME='"\\\"$$APP_NAME\\\""'
+#DEFINES +=    APP_NAME='"\\\"$$APP_NAME\\\""'
 DEFINES +=    DEV_NAME='"\\\"$$DEV_NAME\\\""'
 DEFINES +=   DEV_EMAIL='"\\\"$$DEV_EMAIL\\\""'
 

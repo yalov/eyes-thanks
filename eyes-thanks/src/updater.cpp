@@ -64,10 +64,12 @@ void UpdateAction::replyFinished(QNetworkReply *reply)
         QRegularExpressionMatch match2 = re2.match(QString(reply->readAll()));
         for (int i = 0; i < match2.lastCapturedIndex(); ++i) // 0..2
             newVersion[i] = match2.captured(i+1).toInt();
+        qDebug() <<  currVersion << currVersion;
 
         QString NewVersionString  = QString("%1.%2.%3").arg(newVersion[0]).arg(newVersion[1]).arg(newVersion[2]);
-        QString NewVersionUrl =
-            QString("https://github.com/yalov/eyes-thanks/releases/download/%1/EyesThanks_v%1.7z").arg(NewVersionString);
+        QString NewVersionUrl = QString("https://github.com/yalov/eyes-thanks/releases/download/%1/EyesThanks_v%1%2.7z")
+                .arg(NewVersionString).arg(sizeof(void *) == 8?"_x64":"");
+
 
         QString text;
         if (currVersion == newVersion)
