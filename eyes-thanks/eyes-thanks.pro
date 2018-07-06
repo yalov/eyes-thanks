@@ -16,7 +16,7 @@ CONFIG  += DEPLOY
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.4.4
+VERSION   = 1.4.5
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
@@ -92,7 +92,7 @@ HEADERS  += src/aboutwindow.h \
             src/viewitem.h
 
 
-TRANSLATIONS += languages/lang_ru.ts languages/lang_en.ts
+TRANSLATIONS += languages/lang_en.ts languages/lang_ru.ts languages/lang_it.ts
 RESOURCES    += resource.qrc
 
 

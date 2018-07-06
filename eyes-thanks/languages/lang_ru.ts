@@ -226,7 +226,8 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
 Например, у вас FullHD ноутбук + FullHD стационарный монитор;
 широкие изображения на 2 экрана (3860×1080) в «папке с изображениями»,
 и обычные изображения (1920×1080) в «папке с альтернативными изображениями»,
-тогда при соединении и отсоединении ноутбука вы будете видеть случайные изображения только из соответствующей папки.</translation>
+тогда при соединении и отсоединении ноутбука вы будете видеть
+случайные изображения только из соответствующей папки.</translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="347"/>
@@ -440,17 +441,17 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>Возникла ошибка при подключении к &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/updater.cpp" line="74"/>
+        <location filename="../src/updater.cpp" line="76"/>
         <source>You are already running the most recent version &lt;b&gt;Eyes&apos; Thanks %1&lt;/b&gt;.</source>
         <translation>У вас уже установлена последняя версия &lt;b&gt;Eyes&apos; Thanks %1&lt;/b&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/updater.cpp" line="81"/>
+        <location filename="../src/updater.cpp" line="83"/>
         <source>Fantastic! You have &lt;b&gt;Eyes&apos; Thanks %1&lt;/b&gt;, but last available version is &lt;b&gt;%2&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Please, upload new version to &lt;a href=%3&gt;%3&lt;/a&gt;.</source>
         <translation>Ого! У вас &lt;b&gt;Eyes&apos; Thanks %1&lt;/b&gt;, а последняя доступная на репозитории версия &lt;b&gt;%2&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Не забудьте загрузить новую версию на &lt;a href=%3&gt;%3&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/updater.cpp" line="76"/>
+        <location filename="../src/updater.cpp" line="78"/>
         <source>A new version of &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt; has been released! Version &lt;b&gt;%1&lt;/b&gt; is available at &lt;a href=%2&gt;%2&lt;/a&gt;.&lt;br&gt;&lt;br&gt;You can download this version using the link:&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;</source>
         <oldsource>Fantastic! You are have &lt;b&gt;Eyes&apos; Thanks %1&lt;/b&gt;, but last available version is &lt;b&gt;%2&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Please, upload new version to %3.</oldsource>
         <translation>Выпущена новая версия программы &lt;b&gt;Eyes&apos; Thanks&lt;/b&gt;! Версия &lt;b&gt;%1&lt;/b&gt; доступна на &lt;a href=%2&gt;%2&lt;/a&gt;.&lt;br&gt;&lt;br&gt;Вы можете скачать эту версию, используя следующую прямую ссылку:&lt;br&gt;&lt;a href=%3&gt;%3&lt;/a&gt;</translation>
