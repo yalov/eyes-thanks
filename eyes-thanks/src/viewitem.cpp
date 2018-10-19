@@ -4,7 +4,7 @@
 #include <QPen>
 #include <QDebug>
 
-ViewItem::ViewItem(bool is_progress_bar = false, int text_size = 16)
+ViewItem::ViewItem(bool is_progress_bar, int text_size = 16)
     :Text(nullptr), Background(nullptr), Foreground(nullptr)
 {
     // main object is rectangle's outline.

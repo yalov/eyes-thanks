@@ -110,7 +110,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
             clockItem = new QGraphicsSimpleTextItem();
             clockItem->setText(clock);
             clockItem->setFont(font);
-            clockItem->setPos(default_screen.topRight() + QPoint(-50 - clockItem->boundingRect().width(), 25));
+            clockItem->setPos(default_screen.topRight() + QPointF(-50 - clockItem->boundingRect().width(), 25));
             clockItem->setZValue(3);
             clockItem->setBrush(fill_color);
             clockItem->setPen(outline_color);
@@ -122,7 +122,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
             textItem = new QGraphicsSimpleTextItem();
             textItem->setText(text);
             textItem->setFont(font);
-            textItem->setPos(default_screen.topLeft() + QPoint(50, 25));
+            textItem->setPos(default_screen.topLeft() + QPointF(50, 25));
             textItem->setZValue(3);
             textItem->setBrush(fill_color);
             textItem->setPen(outline_color);
@@ -148,7 +148,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
             QString rand_pic_path = setting.imagesPath + "/" + images_names[qrand() % images_names.size()];
             QPixmap pic = QPixmap(rand_pic_path);
             if (!pic.isNull()) {
-                images.append(Image{pic, (qreal)pic.width() / pic.height(),
+                images.append(Image{pic, qreal(pic.width()) / pic.height(),
                                     rand_pic_path, images_names.count()});
             }
         }
@@ -158,11 +158,11 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
         // find out which one of pic apropriate, if "inside" - comparison to def screen, if outside or auto - comparison to desk
         qreal ratio = (setting.imageAspectMode == ImageAspectMode::Inside) ? ratio_default_screen : ratio_desk;
         qreal min_value = std::numeric_limits<qreal>::max();
-        qreal min_index = 0;
+        int min_index = 0;
 
         for (int i = 0; i < images.size(); i++) {
-            if (abs(images[i].ratio - ratio) < min_value) {
-                min_value = abs(images[i].ratio - ratio);
+            if (qFabs(images[i].ratio - ratio) < min_value) {
+                min_value = qFabs(images[i].ratio - ratio);
                 min_index = i;
             }
         }
@@ -183,7 +183,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
 
     if (variants) {
         int variant = qrand() % variants;
-        qDebug() <<QString("variant: {1}/{2}").arg(variant,variants);
+        qDebug() << QString("variant: {1}/{2}").arg(variant,variants);
         if (variant < image.count)
             display_case = SetImageBackground(image.ratio, image.pic);
         else{
@@ -211,22 +211,25 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
                 .arg(display_case).arg(timer.elapsed()).arg(myscene->items().size());
 
         for (int i = 0; i < images.size(); i++) {
-            Logging_str += QString(" -   %4      %1  %2 %3\n")
+            Logging_str += QString(" -   %4  %5    %1  %2 %3\n")
                     .arg(images[i].ratio, 4, 'f', 2).arg(str_from(images[i].pic.size())).arg(images[i].path)
-                    .arg(image.path == images[i].path?"image showed ":"image        ");
+                    .arg(image.path == images[i].path?"image showed ":"image        ")
+                    .arg(display_case.split(' ')[0] == "Full_desktop"
+                          ?images[i].ratio/desktop.ratio()
+                          :images[i].ratio/default_screen.ratio(),4,'f',2);
 
         }
 
 
-        Logging_str +=     QString(" -   %3      %1  %2\n")
+        Logging_str +=     QString(" -   %3          %1  %2\n")
                 .arg(ratio_desk, 4, 'f', 2).arg(str_from(desktop.size()))
                 .arg(default_screen == desktop?"single screen":"full desktop ");;
 
         if (QApplication::desktop()->screenCount() > 1)
             for (int i = 0; i < QApplication::desktop()->screenCount(); i++) {
                 QRect scr_i = QApplication::desktop()->screenGeometry(i);
-                Logging_str += QString(" - - %4 screen #%1  %2  %3\n").arg(i)
-                        .arg((qreal)scr_i.width() / scr_i.height(), 4, 'f', 2)
+                Logging_str += QString(" - - %4 screen #%1      %2  %3\n").arg(i)
+                        .arg(qreal(scr_i.width()) / scr_i.height(), 4, 'f', 2)
                         .arg(str_from(scr_i))
                         .arg(QApplication::desktop()->primaryScreen() == i?"default":"       ");
             }
@@ -397,7 +400,7 @@ void View::SetPredeterminedBackground()
                 for (int j = 0; j < h; j++) {
                     QGraphicsRectItem *squareItem = new QGraphicsRectItem();
                     squareItem->setPen(QPen(Qt::black, 1));
-                    squareItem->setPos(desktop.topLeft() + QPoint(i * cellw, j * cellh));
+                    squareItem->setPos(desktop.topLeft() + QPointF(i * cellw, j * cellh));
                     squareItem->setRect(0, 0, cellw, cellh);
                     qreal hue = Hue_start + qreal(i) * 0.8 / w ;
                     hue -= floor(hue);
@@ -557,7 +560,7 @@ void View::SetPredeterminedBackground()
         int stripes_count = 10;
 
         int stripe_segment = desktop.width() / int(stripes_count * k);
-        int stripe_width = stripe_segment * 0.8;
+        int stripe_width = int(stripe_segment * 0.8);
 
         bool stripes_gradient = qrand() % 2;
         if (stripes_gradient) {
@@ -573,7 +576,7 @@ void View::SetPredeterminedBackground()
             }
         }
         else {
-            stripe_width = stripe_segment * 0.4;
+            stripe_width = int(stripe_segment * 0.4);
             for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
                 QGraphicsLineItem *item = new QGraphicsLineItem(desktop.left() + i + stripe_width / 2, 0, desktop.left() + i + stripe_width / 2, desktop.height());
                 item->setPen(QPen(QColor(Qt::black), stripe_width));
@@ -603,7 +606,7 @@ void View::SetPredeterminedBackground()
         QGraphicsItemGroup *group =  new QGraphicsItemGroup();
         myscene->addItem(group);
 
-        int count_item = desktop.height() * desktop.width() / (1920.0 * 1080.0) * 100;
+        int count_item = qRound(desktop.height() * desktop.width() / (1920.0 * 1080.0) * 100);
         for (int i = 0; i < count_item; i++) {
             int diameter_dot = qrand() % 100 + 50;
             QRect r(desktop.topLeft() +
@@ -633,26 +636,32 @@ void View::SetPredeterminedBackground()
         if (textItem)
             myscene->removeItem(textItem);
 
-        if (qrand() % 10 == 0) {
+        if (qrand() % 5 == 0) { // chance to show a username
             QString name;
-            TCHAR  infoBuf[32767];
-            DWORD  bufCharCount = 32767;
-            //GetComputerName( infoBuf, &bufCharCount );
-            //qDebug() << QString::fromWCharArray(infoBuf);
-            GetUserName( infoBuf, &bufCharCount );
-            LPUSER_INFO_0 pBuf = NULL;
-            NetUserGetInfo(NULL,infoBuf,2, (LPBYTE *) & pBuf);
-            if (pBuf != NULL)
-            {
-                LPUSER_INFO_2 pBuf2 = (LPUSER_INFO_2) pBuf;
-                QStringList full_name = QString::fromWCharArray( pBuf2->usri2_full_name ).split(" ");
-                std::sort(full_name.begin(), full_name.end(),[](QString& a, QString& b) { return a.size() < b.size(); } );
-                name = transliteraction(full_name.last());
+
+            if (name.isEmpty()){  // Trying to get Windows 10 Username
+                TCHAR  infoBuf[32767];
+                DWORD  bufCharCount = 32767;
+
+                GetUserName( infoBuf, &bufCharCount );
+                LPUSER_INFO_0 pBuf = nullptr;
+                NetUserGetInfo(nullptr,infoBuf,2, reinterpret_cast<LPBYTE*>(&pBuf));   // infoBuf - username
+                if (pBuf != nullptr)
+                {
+                    LPUSER_INFO_2 pBuf2 = LPUSER_INFO_2(pBuf);
+                    QStringList full_name = QString::fromWCharArray( pBuf2->usri2_full_name ).split(" ");
+                    // take the largest from user names: James T.K. -> James
+                    std::sort(full_name.begin(), full_name.end(),[](QString& a, QString& b) { return a.size() < b.size(); } );
+                    name = transliteraction(full_name.last());
+                    qDebug() << "full_name" << full_name;
+                }
             }
 
+            // trying to get at least username
             if (name.isEmpty()) name = transliteraction(qgetenv("USER"));
             if (name.isEmpty()) name = transliteraction(qgetenv("USERNAME"));
-            if (name.isEmpty() || name == "User" || name.size() > 50 || (qrand() % 10 == 0))
+
+            if (name.isEmpty() || name == "User" || name.size() > 50 || (qrand() % 5 == 0))
                 name = QString("Neo");
 
             QString title = QString("Wake up, %1...").arg(name);
@@ -712,7 +721,7 @@ void View::SetPredeterminedBackground()
             }
 
         for (int pos_x = default_screen.left()+ basic_width * (title.isEmpty() ? 1 : 4); pos_x < desktop.right(); pos_x += basic_width * 3) {
-            int max_pos_y = 1.0 / 4.0 * desktop.height() + 3.0 / 4.0 * (qrand() % desktop.height());
+            int max_pos_y = int(1.0 / 4.0 * desktop.height() + 3.0 / 4.0 * (qrand() % desktop.height()));
             for (int pos_y = 0; pos_y < max_pos_y; pos_y += basic_height) {
                 QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
                 group->addToGroup(item);
@@ -736,7 +745,7 @@ void View::SetPredeterminedBackground()
         }
 
         for (int pos_x = default_screen.left() -2 * basic_width; pos_x >  desktop.left(); pos_x -= basic_width * 3) {
-            int max_pos_y = 1.0 / 4.0 * desktop.height() + 3.0 / 4.0 * (qrand() % desktop.height());
+            int max_pos_y = int(1.0 / 4.0 * desktop.height() + 3.0 / 4.0 * (qrand() % desktop.height()));
             for (int pos_y = 0; pos_y < max_pos_y; pos_y += basic_height) {
                 QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
                 group->addToGroup(item);
@@ -816,7 +825,7 @@ void View::keyReleaseEvent(QKeyEvent *event)
 
         if (pic.exists() && pic.remove()) {
             for (auto item : myscene->items())
-                if (item->zValue() == -2) {
+                if (qFuzzyCompare(item->zValue(), -2)) {
                     myscene->removeItem(item);
                     delete item;
                 }

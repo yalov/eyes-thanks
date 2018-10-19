@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QString>
 #include <QTextStream>
+#include <QVector>
 
 inline static bool check_rus_compatibility(QString input)
 {

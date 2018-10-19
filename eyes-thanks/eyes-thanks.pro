@@ -12,7 +12,7 @@ LIBS += -ladvapi32
 LIBS += -lnetapi32
 
 
-CONFIG  += DEPLOY
+# CONFIG  += DEPLOY
 
 
 APP_NAME  = "Eyes’ Thanks"

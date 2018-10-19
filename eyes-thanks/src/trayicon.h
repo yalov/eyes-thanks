@@ -28,7 +28,7 @@ class TrayIcon : public QSystemTrayIcon
     Q_OBJECT
 
 public:
-    TrayIcon(QWidget *parent = 0);
+    TrayIcon(QWidget *parent = nullptr);
     ~TrayIcon();
 
 signals:
@@ -99,7 +99,7 @@ private:
 
     bool TrayMessageShowed;
     QString TimeRemains;
-    qreal CurrentIconRatio;
+    int CurrentIconIndex;
 };
 
 #endif // TRAYICON_H

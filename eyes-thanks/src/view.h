@@ -48,7 +48,7 @@ class View : public QGraphicsView {
     Q_OBJECT
 
 public:
-    explicit View(QWidget *parent = 0);
+    explicit View(QWidget *parent = nullptr);
 
     enum Methods {
         SPECTRUM,
@@ -60,6 +60,7 @@ public:
 
         COUNT_OF_METHODS
     }; Q_ENUM(Methods)
+
 
     void UpdateValues(const QString &remains_str, const qreal &ratio);
 

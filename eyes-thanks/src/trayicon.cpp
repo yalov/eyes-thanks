@@ -8,11 +8,12 @@
 
 #include <QMenu>
 #include <QApplication>
+#include <QtGlobal>
 
 TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
-    dialog(nullptr), TrayMessageShowed(false), TimeRemains(""), CurrentIconRatio(-1)
+    dialog(nullptr), TrayMessageShowed(false), TimeRemains(""), CurrentIconIndex(-1)
 {
-    qsrand(QTime::currentTime().msec());
+    qsrand(uint(QTime::currentTime().msec()));
     LangPath = "languages";
     Translator = new QTranslator();
 
@@ -399,7 +400,7 @@ void TrayIcon::setPauseAct(bool setpause)
 
 void TrayIcon::restartGui(){
 
-    CurrentIconRatio = -1;
+    CurrentIconIndex = -1;
     setCurrentIconbyCurrentIconRatio();
     TrayMessageShowed = false;
     setPauseAct(true);
@@ -433,7 +434,7 @@ void TrayIcon::Activated(QSystemTrayIcon::ActivationReason reason)
 // Called every time, when a menu entry of the language menu is called
 void TrayIcon::LanguageChanged(QAction *action)
 {
-    if (0 != action) {
+    if (action != nullptr) {
         // load the language dependant on the action content
         loadLanguage(action->data().toString());
         writeSettings();
@@ -501,55 +502,28 @@ void TrayIcon::setPauseIcon()
 
 void TrayIcon::setCurrentIconbyCurrentIconRatio()
 {
-    if      (CurrentIconRatio == 2/16.0) setIcon(i02);
-    else if (CurrentIconRatio == 4/16.0) setIcon(i04);
-    else if (CurrentIconRatio == 6/16.0) setIcon(i06);
-    else if (CurrentIconRatio == 8/16.0) setIcon(i08);
-    else if (CurrentIconRatio == 10/16.0) setIcon(i10);
-    else if (CurrentIconRatio == 12/16.0) setIcon(i12);
-    else if (CurrentIconRatio == 14/16.0) setIcon(i14);
-    else if (CurrentIconRatio == 15/16.0) setIcon(i15);
-    else                               setIcon(i00);  //if CurrentIconRatio == 0 or -1
+    if      (CurrentIconIndex == 2 ) setIcon(i02);
+    else if (CurrentIconIndex == 4 ) setIcon(i04);
+    else if (CurrentIconIndex == 6 ) setIcon(i06);
+    else if (CurrentIconIndex == 8 ) setIcon(i08);
+    else if (CurrentIconIndex == 10) setIcon(i10);
+    else if (CurrentIconIndex == 12) setIcon(i12);
+    else if (CurrentIconIndex == 14) setIcon(i14);
+    else if (CurrentIconIndex == 15) setIcon(i15);
+    else                             setIcon(i00);  //if CurrentIconRatio == 0 or -1
 }
 
 void TrayIcon::setCurrentIcon(qreal ratio)
 {
-    if (CurrentIconRatio == -1) {
-        setIcon(i00);
-        CurrentIconRatio = 0;
-    }
-    else if (ratio > 1/16.0 && CurrentIconRatio == 0) {
-        setIcon(i02);
-        CurrentIconRatio = 2/16.0;
-    }
-    else if (ratio > 3/16.0 && CurrentIconRatio == 2/16.0) {
-        setIcon(i04);
-        CurrentIconRatio = 4/16.0;
-    }
-    else if (ratio > 5/16.0 && CurrentIconRatio == 4/16.0) {
-        setIcon(i06);
-        CurrentIconRatio = 6/16.0;
-    }
-    else if (ratio > 7/16.0 && CurrentIconRatio == 6/16.0) {
-        setIcon(i08);
-        CurrentIconRatio = 8/16.0;
-    }
-    else if (ratio > 9/16.0 && CurrentIconRatio == 8/16.0) {
-        setIcon(i10);
-        CurrentIconRatio = 10/16.0;
-    }
-    else if (ratio > 11/16.0 && CurrentIconRatio == 10/16.0) {
-        setIcon(i12);
-        CurrentIconRatio = 12/16.0;
-    }
-    else if (ratio > 13/16.0 && CurrentIconRatio == 12/16.0) {
-        setIcon(i14);
-        CurrentIconRatio = 14/16.0;
-    }
-    else if (ratio > 14.5/16.0 && CurrentIconRatio == 14/16.0) {
-        setIcon(i15);
-        CurrentIconRatio = 15/16.0;
-    }
+    if      (CurrentIconIndex == -1)                    { setIcon(i00); CurrentIconIndex =  0; }
+    else if (CurrentIconIndex ==  0 && ratio >  1/16.0) { setIcon(i02); CurrentIconIndex =  2; }
+    else if (CurrentIconIndex ==  2 && ratio >  3/16.0) { setIcon(i04); CurrentIconIndex =  4; }
+    else if (CurrentIconIndex ==  4 && ratio >  5/16.0) { setIcon(i06); CurrentIconIndex =  6; }
+    else if (CurrentIconIndex ==  6 && ratio >  7/16.0) { setIcon(i08); CurrentIconIndex =  8; }
+    else if (CurrentIconIndex ==  8 && ratio >  9/16.0) { setIcon(i10); CurrentIconIndex = 10; }
+    else if (CurrentIconIndex == 10 && ratio > 11/16.0) { setIcon(i12); CurrentIconIndex = 12; }
+    else if (CurrentIconIndex == 12 && ratio > 13/16.0) { setIcon(i14); CurrentIconIndex = 14; }
+    else if (CurrentIconIndex == 14 && ratio>14.5/16.0) { setIcon(i15); CurrentIconIndex = 15; }
 }
 
 void TrayIcon::initIcons()

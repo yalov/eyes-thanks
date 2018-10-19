@@ -25,7 +25,7 @@ class AboutWindow : public QDialog
 {
     Q_OBJECT
 public:
-    AboutWindow(QWidget *parent = 0): QDialog(parent)
+    AboutWindow(QWidget *parent = nullptr): QDialog(parent)
     {
         const QString win_title = tr("About Eyes' Thanks");
         const QString app_name = qApp->translate("App", "Eyes' Thanks");
@@ -38,6 +38,7 @@ public:
         const QString license_name = "GNU GPLv3";
         const QString logo_path = ":icons/logo.png";
         const QString build_year = __DATE__ + 7;
+
         const QString Qt_CT = QString(QT_VERSION_STR);
         const QString Qt_RT = qVersion();
 
