@@ -18,8 +18,8 @@ public:
     explicit UpdateAction(const QIcon &icon, const QString &text, QObject *parent);
 
 private:
-    QNetworkAccessManager *manager;
-    QMessageBox *mbx;
+    QNetworkAccessManager *manager{};
+    QMessageBox *mbx {};
 
 private slots:
     void showmessagebox();

@@ -1,8 +1,17 @@
-Bug: does not detect second folder?
 
-## Version 1.4.5 (Unrealeased)
- * fixes Clang Code Model warnings
- * fixes alternative folder doesn't loaded
+Version 1.5.2 (Unrealeased)
+ * trying to get rid of UtfString
+
+Version 1.5.1 (Unrealeased)
+ * Clang-format. refactor charsets.
+
+## Version 1.5.0 (Unrealeased)
+ * fixed Clang Code Model warnings
+ * fixed alternative folder doesn't loaded
+ * reverted Dynamic builds
+ * stopped support of x86
+ * patreon?
+ * remove replacement of char?
 
 Version 1.4.4
  * Static build for x86 and x64

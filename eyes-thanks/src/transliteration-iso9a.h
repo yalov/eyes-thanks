@@ -6,7 +6,7 @@
 #include <QTextStream>
 #include <QVector>
 
-inline static bool check_rus_compatibility(QString input)
+inline static bool check_rus_compatibility(const QString& input)
 {
     bool compatibility = true;
     for (auto letter : input) {
@@ -31,34 +31,31 @@ inline static bool check_rus_compatibility(QString input)
 
 inline static QString transliteraction(QString input)
 {
-    if (check_rus_compatibility(input))
-    {
-        QFile file(":res/iso9a.txt");
-        QVector<QStringList> table;
+    if (!check_rus_compatibility(input)) return input;
 
-        if(file.open(QIODevice::ReadOnly)) {
-            QTextStream in(&file);
-            in.setCodec("UTF-8");
-            while(!in.atEnd())
-                table.append(in.readLine().split(" "));
-            file.close();
-        }
+    QFile file(":res/iso9a.txt");
+    QVector<QStringList> table;
 
-        QString output;
-        for (auto letter : input) {
-            QString ltr_out;
-
-            for (auto rule: table)
-                if (letter.toLower() == rule[0]) ltr_out = rule[1];
-            if (letter.isUpper()) ltr_out = ltr_out.toUpper();
-            if (ltr_out.isEmpty())     ltr_out = letter;
-
-            output += ltr_out;
-        }
-        return output;
+    if(file.open(QIODevice::ReadOnly)) {
+        QTextStream in(&file);
+        in.setCodec("UTF-8");
+        while(!in.atEnd())
+            table.append(in.readLine().split(" "));
+        file.close();
     }
-    else return input;
 
+    QString output;
+    for (auto letter : input) {
+        QString ltr_out;
+
+        for (auto rule: table)
+            if (letter.toLower() == rule[0]) ltr_out = rule[1];
+        if (letter.isUpper()) ltr_out = ltr_out.toUpper();
+        if (ltr_out.isEmpty())     ltr_out = letter;
+
+        output += ltr_out;
+    }
+    return output;
 
 }
 

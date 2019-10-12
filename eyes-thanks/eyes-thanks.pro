@@ -14,7 +14,7 @@ LIBS += -lnetapi32
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.4.5
+VERSION   = 1.5.1
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks

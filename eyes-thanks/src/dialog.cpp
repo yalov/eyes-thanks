@@ -18,7 +18,6 @@ Dialog::Dialog(): QDialog()
 #ifdef _WIN32
     setWindowFlags(Qt::WindowTitleHint | Qt::CustomizeWindowHint);
     setAttribute(Qt::WA_DeleteOnClose, true);
-
 #endif
 
     InitWidgets();
@@ -27,6 +26,7 @@ Dialog::Dialog(): QDialog()
 
 void Dialog::InitWidgets()
 {
+
     QVBoxLayout *TopLayout = new QVBoxLayout();
     setLayout(TopLayout);
 
@@ -46,15 +46,18 @@ void Dialog::InitWidgets()
     tab1->setLayout(Tab1Layout);
     tab2->setLayout(Tab2Layout);
 
+    const int ButtonsMaxWidth = 25;
+    const int Spacing = 30;
+
     Label_Path = new QLabel();
     LineEdit_Path = new QLineEdit();
     QPushButton *ButtonPath = new QPushButton("...");
-    ButtonPath->setMaximumWidth(25);
+    ButtonPath->setMaximumWidth(ButtonsMaxWidth);
 
     label_Path_alt = new QLabel();
     LineEdit_Path_alt = new QLineEdit();
     QPushButton *ButtonPath_alt = new QPushButton("...");
-    ButtonPath_alt->setMaximumWidth(25);
+    ButtonPath_alt->setMaximumWidth(ButtonsMaxWidth);
 
     Spinbox_UntilBreak   = new QSpinBox();
     Spinbox_BreakDuration = new QSpinBox();
@@ -113,7 +116,7 @@ void Dialog::InitWidgets()
 
     Tab1Layout->addWidget(GroupBox_Tab1);
 
-    Tab1Layout->addSpacing(30);
+    Tab1Layout->addSpacing(Spacing);
 
     // --
     GroupBox_SystemSetting = new QGroupBox();
@@ -185,16 +188,16 @@ void Dialog::InitWidgets()
     layout_Foreground->setColumnStretch(1, 1);
 
     Tab2Layout->addWidget(GroupBox_Background);
-    Tab2Layout->addSpacing(15);
+    Tab2Layout->addSpacing(Spacing/2);
     Tab2Layout->addWidget(GroupBox_PredeterminedBackground);
     Tab2Layout->addStretch();
-    Tab2Layout->addSpacing(30);
+    Tab2Layout->addSpacing(Spacing);
     Tab2Layout->addWidget(GroupBox_Foreground);
 
     //----------
 
     TopLayout->addStretch();
-    TopLayout->addSpacing(15);
+    TopLayout->addSpacing(Spacing/2);
 
     QHBoxLayout *layout_Label_timer = new QHBoxLayout();
 
@@ -216,7 +219,7 @@ void Dialog::InitWidgets()
 
     TopLayout->addLayout(layout_Label_timer);
     TopLayout->addStretch();
-    TopLayout->addSpacing(15);
+    TopLayout->addSpacing(Spacing/2);
 
     //-----
     QHBoxLayout *layout_buttons = new QHBoxLayout();

@@ -16,26 +16,26 @@ enum ImageAspectMode { Auto, Outside, Inside };
 
 struct Setting
 {
-    int running_counter;
-    int pauseInterval;
-    int pauseDuration;
-    QString imagesPath;
-    QString imagesPathAlternative;
-    ImageAspectMode imageAspectMode;
-    IconsMode iconsMode;
-    bool isLogging;
-    bool isText;
-    bool isClock;
-    bool isMessage30sec;
-    bool isPrettyFont;
-    bool isStartupLink;
-    QString text;
-    bool isSpectrum;
-    bool isTiling;
-    bool isStripes;
-    bool isCircle;
-    bool isCircles;
-    bool isNeo;
+    int running_counter{};
+    int pauseInterval{};
+    int pauseDuration{};
+    QString imagesPath{};
+    QString imagesPathAlternative{};
+    ImageAspectMode imageAspectMode{};
+    IconsMode iconsMode{};
+    bool isLogging{};
+    bool isText{};
+    bool isClock{};
+    bool isMessage30sec{};
+    bool isPrettyFont{};
+    bool isStartupLink{};
+    QString text{};
+    bool isSpectrum{};
+    bool isTiling{};
+    bool isStripes{};
+    bool isCircle{};
+    bool isCircles{};
+    bool isNeo{};
 };
 
 inline bool operator==(const Setting &lhs, const Setting &rhs)
@@ -55,7 +55,7 @@ inline bool operator!=(const Setting &lhs, const Setting &rhs)
     return !operator==(lhs, rhs);
 }
 
-inline static void LogToFile(QString filepath, QString text, bool append = true)
+inline static void LogToFile(const QString& filepath, const QString& text, bool append = true)
 {
     QFile file(filepath);
     if (file.open(append ? QIODevice::Append : QIODevice::WriteOnly)) {

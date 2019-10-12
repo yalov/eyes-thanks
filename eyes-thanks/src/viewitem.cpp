@@ -4,13 +4,11 @@
 #include <QPen>
 #include <QDebug>
 
-ViewItem::ViewItem(bool is_progress_bar, int text_size = 16)
-    :Text(nullptr), Background(nullptr), Foreground(nullptr)
+ViewItem::ViewItem(bool is_progress_bar, int text_size): IsProgressBar(is_progress_bar)
+
 {
     // main object is rectangle's outline.
 
-
-    IsProgressBar = is_progress_bar;
     setPen(QPen(Qt::black,1));
     setBrush(Qt::NoBrush);
     setZValue(3);
@@ -40,7 +38,7 @@ ViewItem::ViewItem(bool is_progress_bar, int text_size = 16)
 }
 
 
-void ViewItem::setText(const QString& text){
+void ViewItem::setText(const QString & text){
     Text->setText(text);
 }
 

@@ -32,7 +32,7 @@ public:
 
 class TilingItem : public QGraphicsPolygonItem {
 public:
-    TilingItem(const QPolygonF &hexagon, qreal &hue, int pen_width = 2, QColor pen_color = Qt::black): QGraphicsPolygonItem()
+    TilingItem(const QPolygonF &hexagon, qreal &hue, int pen_width = 2, const QColor& pen_color = Qt::black): QGraphicsPolygonItem()
     {
         setPolygon(hexagon);
         setPen(QPen(pen_color, pen_width));
@@ -71,12 +71,12 @@ signals:
     void view_close();
 
 private:
-    void closeEvent(QCloseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
+    void closeEvent(QCloseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
     void SetPredeterminedBackground();
     QString SetImageBackground(qreal ratio_pic, QPixmap pic);
     void SaveSceneToFile(QString dir_path);
@@ -87,18 +87,18 @@ private:
     QString picture_path;
 
     QGraphicsScene *myscene;
-    QGraphicsSimpleTextItem *clockItem;
-    QGraphicsSimpleTextItem *textItem;
+    QGraphicsSimpleTextItem *clockItem{};
+    QGraphicsSimpleTextItem *textItem{};
     ViewItem *ProgressBarItem;
     ViewItem *ButtonItem;
 
-    Setting setting;
+    Setting setting{};
 
-    QGraphicsEllipseItem *Item;
-    int MethodIndex;
+    QGraphicsEllipseItem *Item{};
+    int MethodIndex{-1};
     QList<int> MethodsEnabled;
-    bool IsBackgroundUpdate;
-    bool RunnedFirstTime;
+    bool IsBackgroundUpdate{false};
+    bool RunnedFirstTime{false};
 
 };
 

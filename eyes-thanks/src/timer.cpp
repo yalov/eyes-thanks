@@ -10,7 +10,8 @@
 
 #include "timer.h"
 
-Timer::Timer(int updateinterval, int finishedinterval, bool logging): isActive(false)
+Timer::Timer(int updateinterval, int finishedinterval, bool logging):
+       interval(0),  _isActive(false), elapsed_summand(0)
 {
     init(updateinterval, finishedinterval);
     Logging = logging;
@@ -21,14 +22,14 @@ Timer::Timer(int updateinterval, int finishedinterval, bool logging): isActive(f
 
 void  Timer::stop()
 {
-    isActive = false;
+    _isActive = false;
     qtimer.stop();
     elapsed_summand = 0;
 }
 
 void Timer::start()
 {
-    isActive = true;
+    _isActive = true;
     qtimer.start();
     elatimer.start();
     elapsed_summand = 0;
@@ -75,23 +76,26 @@ void Timer::qtimer_timeout()
 
 void Timer::pause()
 {
-    isActive = false;
+    _isActive = false;
     qtimer.stop();
     elapsed_summand += elatimer.elapsed();
 }
 
 void Timer::unpause()
 {
-    isActive = true;
+    _isActive = true;
     qtimer.start();
     elatimer.start();
 }
 
-
+bool Timer::isActive()
+{
+    return _isActive;
+}
 
 qint64 Timer::elapsed()
 {
-    return elapsed_summand + ((isActive) ? elatimer.elapsed() : 0);
+    return elapsed_summand + ((_isActive) ? elatimer.elapsed() : 0);
 }
 
 qint64 Timer::remains()
@@ -104,23 +108,19 @@ qreal Timer::ratio()
     return qreal(elapsed()) / interval;
 }
 
-QString Timer::remains_str()
-{
-    qint64 r = remains();
-
-    return QString("%1:%2")
-                    .arg((r + 500) / 60000, 2, 10, QLatin1Char(' '))
-                    .arg((r + 500) / 1000 % 60, 2, 10, QLatin1Char('0'));
-}
 
 QString Timer::remains_str(bool isDeciSec)
 {
     qint64 r = remains();
 
-    if (isDeciSec) return QString("%1:%2.%3")
+    if (isDeciSec)
+        return QString("%1:%2.%3")
                               .arg(r / 60000, 2, 10, QLatin1Char(' '))
                               .arg(r / 1000 % 60, 2, 10, QLatin1Char('0'))
                               .arg(r / 100 % 10);
 
-    else return remains_str();
+    else
+        return QString("%1:%2")
+                .arg((r + 500) / 60000, 2, 10, QLatin1Char(' '))
+                .arg((r + 500) / 1000 % 60, 2, 10, QLatin1Char('0'));
 }

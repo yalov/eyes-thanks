@@ -117,7 +117,63 @@
 
 Минутка час бережет.
 
-Ум придет, да время уйдет.</translation>
+Ум придет, да время уйдет.
+
+All work and no play
+makes Jack a dull boy.
+
+All that really belongs to us is time;
+even he who has nothing else has that.
+
+Time is what we want most, but...
+what we use worst.
+
+We must use time as a tool,
+not as a crutch.
+
+If we take care of the moments, 
+the years will take care of themselves.
+
+Regret for wasted time
+is more wasted time.
+
+Yesterday&apos;s the past,
+tomorrow&apos;s the future,
+but today is a gift.
+That&apos;s why it&apos;s called the present.
+
+Time is the most valuable thing
+a man can spend.
+
+Time flies over us,
+but leaves its shadow behind.
+
+Those who make the worst use of their time 
+are the first to complain of its brevity.
+
+Time is an illusion.
+
+Time is a created thing.
+To say &apos;I don&apos;t have time,&apos;
+is like saying, &apos;I don&apos;t want to.
+
+Time takes it all,
+whether you want it to or not.
+
+Better three hours too soon,
+than one minute too late.
+
+Time is the wisest counselor of all.
+
+Nothing is a waste of time
+if you use the experience wisely.
+
+Time = life;
+therefore, waste your time and waste of your life,
+or master your time and master your life.
+
+The key is in not spending time,
+but in investing it.</translation>
     </message>
     <message>
         <location filename="../src/trayicon.cpp" line="81"/>

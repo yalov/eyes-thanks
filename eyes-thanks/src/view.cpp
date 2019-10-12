@@ -42,13 +42,9 @@ inline static void CreateBlurredBackgroundForItem(const QGraphicsItem *item, QGr
 
 View::View(QWidget *parent): QGraphicsView(parent),
     default_screen(QApplication::desktop()->screenGeometry(-1)),
-    desktop(QApplication::desktop()->geometry()),
-    clockItem(nullptr), textItem(nullptr), setting(), Item(nullptr),
-    MethodIndex(-1), IsBackgroundUpdate(false), RunnedFirstTime(false)
+    desktop(QApplication::desktop()->geometry())
 {
-
     setWindowFlags(Qt::WindowStaysOnTopHint);
-
 
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     setAttribute(Qt::WA_DeleteOnClose);
@@ -75,9 +71,9 @@ View::View(QWidget *parent): QGraphicsView(parent),
 
 struct Image{
     QPixmap pic;
-    qreal ratio;
+    qreal ratio {};
     QString path;
-    int count = 0;       // Count of image in the same folder;
+    int count {};       // Count of image in the same folder;
 };
 
 void View::ShowRefreshment(const QString &clock, const QString &text, const  Setting &_setting, Timer *viewtimer)
@@ -90,27 +86,34 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
 
     // ProgressBar and Button
     {
-        ProgressBarItem->setText(viewtimer->remains_str());
-        ProgressBarItem->setSize(3 * default_screen.width() / 5.0);
-        ProgressBarItem->setPos(default_screen.left() + default_screen.width() / 5, default_screen.height() - ProgressBarItem->rect().height() - 25);
+        const qreal REL_PBAR_WIDTH = 3/5.0;
+        const qreal REL_PBAR_POS = 1/5.0;
+        const int BUTTON_WIDTH = 100;
 
-        ButtonItem->setSize(100, ProgressBarItem->rect().height());
+        ProgressBarItem->setText(viewtimer->remains_str());
+        ProgressBarItem->setSize(default_screen.width() *REL_PBAR_WIDTH);
+        ProgressBarItem->setPos(default_screen.left() + default_screen.width()*REL_PBAR_POS,
+                                default_screen.height() - ProgressBarItem->rect().height() - 25);
+
+        ButtonItem->setSize(BUTTON_WIDTH, ProgressBarItem->rect().height());
         ButtonItem->setPos(ProgressBarItem->sceneBoundingRect().topRight() + QPointF(25,0));
     }
 
     // ClockItem and TextItem
     if (setting.isClock || setting.isText) {
-        int font_size = 30;
-        QFont font(setting.isPrettyFont ? "UKIJ Diwani Yantu Mod" : "FreeSerif Mod", font_size, QFont::Bold);
-        QColor fill_color(Qt::white);
-        QColor outline_color(Qt::black);
-        qreal opacity = 0.5;
+        const int FONT_SIZE = 30;
+        const QFont font(setting.isPrettyFont ? "UKIJ Diwani Yantu Mod" : "FreeSerif Mod", FONT_SIZE, QFont::Bold);
+        const QColor fill_color(Qt::white);
+        const QColor outline_color(Qt::black);
+        const qreal opacity = 0.5;
+        const int TOP_MARGIN = 25;
+        const int SIDE_MARGIN = 50;
 
         if (setting.isClock) {
             clockItem = new QGraphicsSimpleTextItem();
             clockItem->setText(clock);
             clockItem->setFont(font);
-            clockItem->setPos(default_screen.topRight() + QPointF(-50 - clockItem->boundingRect().width(), 25));
+            clockItem->setPos(default_screen.topRight() + QPointF(-SIDE_MARGIN - clockItem->boundingRect().width(), TOP_MARGIN));
             clockItem->setZValue(3);
             clockItem->setBrush(fill_color);
             clockItem->setPen(outline_color);
@@ -122,7 +125,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
             textItem = new QGraphicsSimpleTextItem();
             textItem->setText(text);
             textItem->setFont(font);
-            textItem->setPos(default_screen.topLeft() + QPointF(50, 25));
+            textItem->setPos(default_screen.topLeft() + QPointF(SIDE_MARGIN, TOP_MARGIN));
             textItem->setZValue(3);
             textItem->setBrush(fill_color);
             textItem->setPen(outline_color);
@@ -142,7 +145,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
     QList<QString> folders({setting.imagesPath, setting.imagesPathAlternative});
 
 
-    for (auto folder : folders)
+    for (const auto& folder : folders)
     {
         QStringList images_names = QDir(folder).entryList(QStringList() << "*.jpg" << "*.png");
         if (!images_names.isEmpty()) {
@@ -155,7 +158,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
         }
     }
 
-    if (images.size() > 0) {
+    if (!images.empty()) {
         // find out which one of pic apropriate, if "inside" - comparison to def screen, if outside or auto - comparison to desk
         qreal ratio = (setting.imageAspectMode == ImageAspectMode::Inside) ? ratio_default_screen : ratio_desk;
         qreal min_value = std::numeric_limits<qreal>::max();
@@ -335,52 +338,42 @@ void View::SetPredeterminedBackground()
             rainbow.setColorAt(hue, c);
         }
         myscene->setBackgroundBrush(QBrush(rainbow));
-        //ProgressBar->setBrush(QBrush(rainbow));
-        //ProgressBarBackground->setBrush(QBrush(rainbow));
-        //ButtonRectItem->setBrush(QBrush(rainbow));
 
         QLinearGradient vertical(desktop.topLeft(), desktop.bottomLeft());
+        const qreal more_opaque = 0.4;
+        const qreal less_opaque = 0.6;
+        const qreal transparent  = 1.0;
+
         int mode = Random(3);
         if (mode == 0) {
-            //vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
-            //vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(0.35,  QColor::fromRgbF(0, 0, 0, transparent));
+            vertical.setColorAt(0.5,  QColor::fromRgbF(0, 0, 0, more_opaque));
+            vertical.setColorAt(0.65,  QColor::fromRgbF(0, 0, 0, transparent));
 
-            vertical.setColorAt(0.35,  QColor::fromRgbF(0, 0, 0, 1.0));
-            vertical.setColorAt(0.5,  QColor::fromRgbF(0, 0, 0, 0.4));
-            vertical.setColorAt(0.65,  QColor::fromRgbF(0, 0, 0, 1.0));
-
-            //vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, 1.0));
-            //vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
         }
         else if (mode == 1) {
-            //vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
-            //vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
 
-            vertical.setColorAt(0.275, QColor::fromRgbF(0, 0, 0, 1.0));
-            vertical.setColorAt(0.375, QColor::fromRgbF(0, 0, 0, 0.4));
-            vertical.setColorAt(0.475, QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(0.275, QColor::fromRgbF(0, 0, 0, transparent));
+            vertical.setColorAt(0.375, QColor::fromRgbF(0, 0, 0, more_opaque));
+            vertical.setColorAt(0.475, QColor::fromRgbF(0, 0, 0, transparent));
 
-            vertical.setColorAt(0.525, QColor::fromRgbF(0, 0, 0, 1.0));
-            vertical.setColorAt(0.625, QColor::fromRgbF(0, 0, 0, 0.4));
-            vertical.setColorAt(0.725, QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(0.525, QColor::fromRgbF(0, 0, 0, transparent));
+            vertical.setColorAt(0.625, QColor::fromRgbF(0, 0, 0, more_opaque));
+            vertical.setColorAt(0.725, QColor::fromRgbF(0, 0, 0, transparent));
 
-            //vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, 1.0));
-            //vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
         }
         else if (mode == 2) {
-            //vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
-            vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
-            vertical.setColorAt(0.30, QColor::fromRgbF(0, 0, 0, 0.6));
-            vertical.setColorAt(0.35, QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, transparent));
+            vertical.setColorAt(0.30, QColor::fromRgbF(0, 0, 0, less_opaque));
+            vertical.setColorAt(0.35, QColor::fromRgbF(0, 0, 0, transparent));
 
-            vertical.setColorAt(0.4,  QColor::fromRgbF(0, 0, 0, 1.0));
-            vertical.setColorAt(0.5,  QColor::fromRgbF(0, 0, 0, 0.4));
-            vertical.setColorAt(0.6,  QColor::fromRgbF(0, 0, 0, 1.0));
+            vertical.setColorAt(0.4,  QColor::fromRgbF(0, 0, 0, transparent));
+            vertical.setColorAt(0.5,  QColor::fromRgbF(0, 0, 0, more_opaque));
+            vertical.setColorAt(0.6,  QColor::fromRgbF(0, 0, 0, transparent));
 
-            vertical.setColorAt(0.65, QColor::fromRgbF(0, 0, 0, 1.0));
-            vertical.setColorAt(0.70, QColor::fromRgbF(0, 0, 0, 0.6));
-            vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, 1.0));
-            //vertical.setColorAt(1,    QColor::fromRgbF(0, 0, 0, 0.6));
+            vertical.setColorAt(0.65, QColor::fromRgbF(0, 0, 0, transparent));
+            vertical.setColorAt(0.70, QColor::fromRgbF(0, 0, 0, less_opaque));
+            vertical.setColorAt(0.75, QColor::fromRgbF(0, 0, 0, transparent));
         }
         QGraphicsRectItem *item = new QGraphicsRectItem(desktop);
         item->setPen(Qt::NoPen);
@@ -699,15 +692,8 @@ void View::SetPredeterminedBackground()
         //              -------
         int chs_index = Random(characterSets.size());
         //              -------
-        QUtfString characters = characterSets.get_characters(chs_index);
+        QList<QUtfString> characters = characterSets.get_characters(chs_index);
         QUtfString title = characterSets.get_title(chs_index);
-
-        const QVector<QPair<QUtfString, QUtfString>>            // workaround for alphabet members, not included in the unicode
-                replaceRule {{u8"ch", QUtfString(0x2460)}, {u8"Ch", QUtfString(0x2461)}, // 0x2460 - Enclosed Alphanumerics Block
-                             {u8"dź", QUtfString(0x2462)}, {u8"Dź", QUtfString(0x2463)}}; // for uniform randomize
-
-        for (auto &pair : replaceRule)
-            characters.replace(pair.first, pair.second);
 
         qDebug() << "unicode symbols ="  << characters.size();
         if (!title.isEmpty())
@@ -733,12 +719,6 @@ void View::SetPredeterminedBackground()
                 int charIndex = Random(characters.size());
                 QUtfString character = characters.at(charIndex);
 
-                for (auto &pair : replaceRule) {
-                    if (character == pair.second) {
-                        character = pair.first;
-                        break;
-                    }
-                }
                 item->setText(character);
                 item->setPos(pos_x - item->boundingRect().width() / 2, pos_y);
             }
@@ -757,12 +737,6 @@ void View::SetPredeterminedBackground()
                 int charIndex = Random(characters.size());
                 QUtfString character = characters.at(charIndex);
 
-                for (auto &pair : replaceRule) {
-                    if (character == pair.second) {
-                        character = pair.first;
-                        break;
-                    }
-                }
                 item->setText(character);
                 item->setPos(pos_x - item->boundingRect().width() / 2, pos_y);
             }
@@ -796,9 +770,7 @@ void View::SaveSceneToFile(QString dir_path)
     QPainter painter(&image);
     myscene->render(&painter);
     bool done = image.save(dir_path + QDir::separator() + QString("m%1-%2.png")
-                           .arg(methodName)
-                           .arg(QDateTime::currentDateTime().toString("yyyyMMdd-HHmmsszzz"))
-                           );
+                           .arg(methodName, QDateTime::currentDateTime().toString("yyyyMMdd-HHmmsszzz")));
     qDebug() << "SaveSceneToFile is" << done << "by" << timer.elapsed() << "ms.";
 }
 

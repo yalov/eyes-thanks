@@ -30,8 +30,8 @@ public:
     void Translate();
 
 private:
-    void showEvent(QShowEvent *e);
-    bool event(QEvent *event);
+    void showEvent(QShowEvent *e) override;
+    bool event(QEvent *event) override;
     void InitWidgets();
     void InitConnectWidgetsChanged();
 
@@ -54,51 +54,51 @@ signals:
 private:
     Setting setting;
 
-    QTabWidget * TabWidget;
-    QLabel *Label_Timer_Prefix;
-    QLabel *Label_Timer;
-    QPushButton *buttonSave;
-    QPushButton *buttonMinimizeToSystemTray;
+    QTabWidget * TabWidget{};
+    QLabel *Label_Timer_Prefix{};
+    QLabel *Label_Timer{};
+    QPushButton *buttonSave{};
+    QPushButton *buttonMinimizeToSystemTray{};
 
-    QGroupBox *GroupBox_Tab1;
-    QLabel *Label_UntilBreak     ;
-    QLabel *Label_BreakDuration;
+    QGroupBox *GroupBox_Tab1{};
+    QLabel *Label_UntilBreak{}     ;
+    QLabel *Label_BreakDuration{};
 
-    QGroupBox *GroupBox_SystemSetting;
-    QLabel *Label_TrayIconStyle;
-    QComboBox *Combobox_iconsMode;
-    QSpinBox *Spinbox_UntilBreak;
-    QSpinBox *Spinbox_BreakDuration;
+    QGroupBox *GroupBox_SystemSetting{};
+    QLabel *Label_TrayIconStyle{};
+    QComboBox *Combobox_iconsMode{};
+    QSpinBox *Spinbox_UntilBreak{};
+    QSpinBox *Spinbox_BreakDuration{};
 
-    QGroupBox *GroupBox_Background;
-    QGroupBox *GroupBox_PredeterminedBackground;
-    QGroupBox *GroupBox_Foreground;
+    QGroupBox *GroupBox_Background{};
+    QGroupBox *GroupBox_PredeterminedBackground{};
+    QGroupBox *GroupBox_Foreground{};
 
-    QLabel *Label_Path;
-    QLabel *label_Path_alt;
-    QLabel *Label_ImageAspectMode;
-    QLineEdit *LineEdit_Path;
-    QLineEdit *LineEdit_Path_alt;
-    QPlainTextEdit *TextEdit_Text;
+    QLabel *Label_Path{};
+    QLabel *label_Path_alt{};
+    QLabel *Label_ImageAspectMode{};
+    QLineEdit *LineEdit_Path{};
+    QLineEdit *LineEdit_Path_alt{};
+    QPlainTextEdit *TextEdit_Text{};
 
-    QCheckBox *CheckBox_Spectrum;
-    QCheckBox *CheckBox_Tiling;
-    QCheckBox *CheckBox_Random_circle;
-    QCheckBox *CheckBox_Random_circles;
-    QCheckBox *CheckBox_Neo;
-    QCheckBox *CheckBox_Stripes;
+    QCheckBox *CheckBox_Spectrum{};
+    QCheckBox *CheckBox_Tiling{};
+    QCheckBox *CheckBox_Random_circle{};
+    QCheckBox *CheckBox_Random_circles{};
+    QCheckBox *CheckBox_Neo{};
+    QCheckBox *CheckBox_Stripes{};
 
-    QComboBox *Combobox_imageAspectMode;
-    QCheckBox *CheckBox_Clock;
-    QCheckBox *CheckBox_Message;
-    QCheckBox *CheckBox_Logging;
-    QCheckBox *CheckBox_PrettyFont;
-    QCheckBox *CheckBox_Text;
-    QCheckBox *CheckBox_StartupLink;
-    QPushButton *ButtonGenerateText;
+    QComboBox *Combobox_imageAspectMode{};
+    QCheckBox *CheckBox_Clock{};
+    QCheckBox *CheckBox_Message{};
+    QCheckBox *CheckBox_Logging{};
+    QCheckBox *CheckBox_PrettyFont{};
+    QCheckBox *CheckBox_Text{};
+    QCheckBox *CheckBox_StartupLink{};
+    QPushButton *ButtonGenerateText{};
 
-    QWinTaskbarButton *TaskbarButton;
-    QWinTaskbarProgress *TaskbarProgress;
+    QWinTaskbarButton *TaskbarButton{};
+    QWinTaskbarProgress *TaskbarProgress{};
 };
 
 #endif // DIALOG_H

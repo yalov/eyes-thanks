@@ -98,7 +98,10 @@
     <set index="21" name="Belarusian Latin">
         <comment>Belarusian Latin Alphabet   (+ ǲ Dź ǅ Ch)</comment>
         <title>Biełaruskaja Łacinka</title>
-        <characters>AaBbCcĆćČčDdǳdźǆEeFfGgHhIiJjKkLlŁłMmNnŃńOoPpRrSsŚśŠšTtUuŬŭVvYyZzŹźŽžch</characters>
+        <characters>AaBbCcĆćČčDdǳǆEeFfGgHhIiJjKkLlŁłMmNnŃńOoPpRrSsŚśŠšTtUuŬŭVvYyZzŹźŽž</characters>
+        <character>dź</character>
+        <character>ch</character>
+
     </set>
     <set index="22" name="Polish">
         <title>Polski Alfabet</title>
@@ -106,12 +109,16 @@
     </set>
     <set index="23" name="Czech">
         <title>Česká Abeceda</title>
-        <characters>AÁBCČDĎEÉĚFGHIÍJKLMNŇOÓPQRŘSŠTŤUÚŮVWXYÝZŽaábcčdďeéěfghiíjklmnňoópqrřsštťuúůvwxyýzžChch</characters>
+        <characters>AÁBCČDĎEÉĚFGHIÍJKLMNŇOÓPQRŘSŠTŤUÚŮVWXYÝZŽaábcčdďeéěfghiíjklmnňoópqrřsštťuúůvwxyýzž</characters>
+        <character>Ch</character>
+        <character>ch</character>
     </set>
     <set index="24" name="Slovak">
         <comment>Slovak Alphabet is the longest European — 46 characters</comment>
         <title>Slovenská Abeceda Šestačtyřicet Písmená</title>
-        <characters>AaÁáÄäBbCcČčDdĎďǲǳǅǆEeÉéFfGgHhIiÍíJjKkLlĹĺĽľMmNnŇňOoÓóÔôPpQqRrŔŕSsŠšTtŤťUuÚúVvWwXxYyÝýZzŽžChch</characters>
+        <characters>AaÁáÄäBbCcČčDdĎďǲǳǅǆEeÉéFfGgHhIiÍíJjKkLlĹĺĽľMmNnŇňOoÓóÔôPpQqRrŔŕSsŠšTtŤťUuÚúVvWwXxYyÝýZzŽž</characters>
+        <character>Ch</character>
+        <character>ch</character>
     </set>
     <set index="25" name="Gaj's Latin">
         <comment>Gaj's Latin Alphabet (Bosnian, Croatian, Serbian, Montenegrin). Гаевица.</comment>

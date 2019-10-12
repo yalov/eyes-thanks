@@ -41,6 +41,8 @@ public:
 
         const QString Qt_CT = QString(QT_VERSION_STR);
         const QString Qt_RT = qVersion();
+        const int logoWidth = 128;
+        const int spacing = 25;
 
         //OpenSSL 1.0.2j  26 Sep 2016
         QRegularExpression re(R"(\d+\.\d+\.\S+)");
@@ -84,7 +86,7 @@ public:
 
             QHBoxLayout *lay1 = new QHBoxLayout(tab1);
             QLabel *pic = new QLabel();
-            pic->setPixmap(QPixmap(logo_path).scaledToWidth(128, Qt::SmoothTransformation));
+            pic->setPixmap(QPixmap(logo_path).scaledToWidth(logoWidth, Qt::SmoothTransformation));
             pic->setFixedSize(pic->sizeHint());
             pic->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
@@ -125,7 +127,7 @@ public:
             lb_aboutText->setTextInteractionFlags(Qt::TextBrowserInteraction);
             lb_aboutText->setOpenExternalLinks(true);
             lay1->addWidget(pic);
-            lay1->addSpacing(25);
+            lay1->addSpacing(spacing);
             lay1->addWidget(lb_aboutText);
         }
 

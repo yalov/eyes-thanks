@@ -7,13 +7,9 @@
 #ifndef TRAYICON_H
 #define TRAYICON_H
 
-#if defined _WIN32
-#define UPDATE_PERIOD_1 1000
-#else
-#define UPDATE_PERIOD_1 40
-#endif
 
-#define UPDATE_PERIOD_2 1000
+//#define UPDATE_PERIOD_1 1000
+//#define UPDATE_PERIOD_2 1000
 
 #include <QSystemTrayIcon>
 
@@ -29,7 +25,7 @@ class TrayIcon : public QSystemTrayIcon
 
 public:
     TrayIcon(QWidget *parent = nullptr);
-    ~TrayIcon();
+    //~TrayIcon();
 
 signals:
     void updateLabel(const QString &text, const qreal &ratio);
@@ -72,23 +68,26 @@ private:
     void createOrDeleteAppStartUpLink(bool create);
 
 private:
-    View *view;
-    Dialog *dialog;
+    const int UPDATE_PERIOD_1 = 1000;
+    const int UPDATE_PERIOD_2 = 1000;
 
-    Timer *ViewTimer;
-    Timer *DialogTimer;
+    View *view {};
+    Dialog *dialog  {};
+
+    Timer *ViewTimer ;
+    Timer *DialogTimer ;
 
     QTranslator *Translator;
 
-    QAction *TestAct;
-    QAction *ShowSettingAct;
-    QAction *QuitAct;
-    QAction *PauseAct;
-    QAction *SkipAct;
-    QAction *AboutAct;
-    QActionGroup *LangActGroup;
-    QMenu *SubMenuLanguages;
-    UpdateAction *UpdaterAct;
+    QAction *TestAct  {};
+    QAction *ShowSettingAct  {};
+    QAction *QuitAct  {};
+    QAction *PauseAct  {};
+    QAction *SkipAct  {};
+    QAction *AboutAct  {};
+    QActionGroup *LangActGroup  {};
+    QMenu *SubMenuLanguages  {};
+    UpdateAction *UpdaterAct  {};
 
     QIcon ipp, i00, i02, i04, i06, i08, i10, i12, i14, i15;
 
@@ -97,9 +96,9 @@ private:
     QString LangPath;
     QString LangCurrent;
 
-    bool TrayMessageShowed;
-    QString TimeRemains;
-    int CurrentIconIndex;
+    bool TrayMessageShowed = false;
+    QString TimeRemains = "";
+    int CurrentIconIndex = -1;
 };
 
 #endif // TRAYICON_H

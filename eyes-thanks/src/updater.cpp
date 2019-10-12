@@ -55,20 +55,21 @@ void UpdateAction::replyFinished(QNetworkReply *reply)
         QVector<int> newVersion = {0, 0, 0};
         QVector<int> currVersion = {0, 0, 0};
 
-        QRegularExpression re1("(\\d+)\\.(\\d+)\\.(\\d+)");
+        QRegularExpression re1(R"((\d+)\.(\d+)\.(\d+))");
         QRegularExpressionMatch match1 = re1.match(QString(APP_VERSION));
         for (int i = 0; i < match1.lastCapturedIndex(); ++i) // 0..2
             currVersion[i] = match1.captured(i+1).toInt();
 
-        QRegularExpression re2("tag_name.+?(\\d+)\\.(\\d+)\\.(\\d+)");
+        QRegularExpression re2(R"(tag_name.+?(\d+)\.(\d+)\.(\d+))");
         QRegularExpressionMatch match2 = re2.match(QString(reply->readAll()));
         for (int i = 0; i < match2.lastCapturedIndex(); ++i) // 0..2
             newVersion[i] = match2.captured(i+1).toInt();
-        qDebug() <<  currVersion << newVersion;
+        qDebug() <<  currVersion << " " << newVersion;
 
-        QString NewVersionString  = QString("%1.%2.%3").arg(newVersion[0]).arg(newVersion[1]).arg(newVersion[2]);
+        QString NewVersionString  = QString("%1.%2.%3")
+                                           .arg(newVersion[0]).arg(newVersion[1]).arg(newVersion[2]);
         QString NewVersionUrl = QString("https://github.com/yalov/eyes-thanks/releases/download/%1/EyesThanks_v%1%2.7z")
-                .arg(NewVersionString).arg(sizeof(void *) == 8?"_x64":"");
+                .arg(NewVersionString, sizeof(void *) == 8?"_x64":"");
 
 
         QString text;
@@ -78,11 +79,11 @@ void UpdateAction::replyFinished(QNetworkReply *reply)
             text = tr("A new version of <b>Eyes' Thanks</b> has been released! "
                       "Version <b>%1</b> is available at <a href=%2>%2</a>.<br><br>"
                       "You can download this version using the link:<br>"
-                      "<a href=%3>%3</a>").arg(NewVersionString).arg(REPO_URL).arg(NewVersionUrl);
+                      "<a href=%3>%3</a>").arg(NewVersionString,REPO_URL,NewVersionUrl);
         else
             text = tr("Fantastic! You have <b>Eyes' Thanks %1</b>, "
                       "but last available version is <b>%2</b>.<br><br>"
-                      "Please, upload new version to <a href=%3>%3</a>.").arg(APP_VERSION).arg(NewVersionString).arg(REPO_URL);
+                      "Please, upload new version to <a href=%3>%3</a>.").arg(APP_VERSION,NewVersionString,REPO_URL);
 
         mbx->setText(text);
     }

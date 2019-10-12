@@ -23,10 +23,14 @@ public:
     qint64 elapsed();
     qint64 remains();
     qreal ratio();
-    QString remains_str();
-    QString remains_str(bool isDeciSec);
+    QString remains_str(bool isDeciSec = false);
+    bool isActive();
+
+
+
+private:
     qint64 interval;
-    bool isActive;
+    bool _isActive;
 
 public slots:
     void  stop();

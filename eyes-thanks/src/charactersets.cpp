@@ -10,6 +10,11 @@ CharacterSets::CharacterSets(const QString& filepath):sets(new QList<Set>())
 //       qDebug()<< i << sets->at(i).title;
 }
 
+CharacterSets::~CharacterSets()
+{
+    delete sets;
+}
+
 void CharacterSets::read(const QString &filepath)
 {
     QFile file(filepath);
@@ -32,14 +37,21 @@ void CharacterSets::read(const QString &filepath)
                 {
                     if (xml.name() == "comment") c.comment = xml.readElementText();
                     if (xml.name() == "title") c.title = xml.readElementText();
-                    if (xml.name() == "characters") c.characters = xml.readElementText();
+                    if (xml.name() == "characters")
+                    {
+                        c.characters = xml.readElementText();
+                    }
+                    if (xml.name() == "character")
+                    {
+                        c.compositecharacters.append(xml.readElementText());
+                    }
                 }
 
-               sets->push_back(c);
+               sets->append(c);
             }
         }
         if (xml.hasError()) {
-            qDebug() << "do error handling";
+            qDebug() << "xml has some error";
         }
     }
 }
@@ -51,8 +63,18 @@ int CharacterSets::size() {
 QUtfString CharacterSets::get_title(int index){
     return sets->at(index).title;
 }
-QUtfString CharacterSets::get_characters(int index){
-    return sets->at(index).characters;
+QList<QUtfString> CharacterSets::get_characters(int index){
+    QList<QUtfString> chars;
+    for(auto ch : sets->at(index).characters)
+    {
+        chars.append(QString(ch));
+    }
+    for(auto ch : sets->at(index).compositecharacters)
+    {
+        chars.append(ch);
+    }
+
+    return chars;
 }
 
 void CharacterSets::write(const QString& filepath)
@@ -71,6 +93,8 @@ void CharacterSets::write(const QString& filepath)
             stream.writeTextElement("comment", sets->at(i).comment);
             stream.writeTextElement("title", sets->at(i).title);
             stream.writeTextElement("characters", sets->at(i).characters);
+            for (const auto& ch: sets->at(i).compositecharacters)
+                stream.writeTextElement("character", ch);
             stream.writeEndElement();
         }
         stream.writeEndElement();
@@ -78,3 +102,4 @@ void CharacterSets::write(const QString& filepath)
         file.close();
     }
 }
+

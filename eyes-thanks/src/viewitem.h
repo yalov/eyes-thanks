@@ -6,20 +6,20 @@
 class ViewItem : public QGraphicsRectItem
 {
 public:
-    ViewItem(bool progressbar, int text_size);
-    void setText(const QString &test);
+    ViewItem(bool is_progress_bar, int text_size=16);
+    void setText(const QString & text);
     void setSize(qreal _w = 0, qreal _h = 0);
-    void setProgress(const qreal ratio);
-    void setOpacity(const qreal opacity);
+    void setProgress(qreal ratio);
+    void setOpacity(qreal opacity);
 
 private:
-    QGraphicsSimpleTextItem *Text;
-    QGraphicsRectItem *Background;
-    QGraphicsRectItem *Foreground;
+    QGraphicsSimpleTextItem *Text{};
+    QGraphicsRectItem *Background{};
+    QGraphicsRectItem *Foreground{};
 
     bool IsProgressBar;
-    qreal width;
-    qreal height;
+    qreal width{};
+    qreal height{};
 };
 
 #endif // VIEWITEM_H

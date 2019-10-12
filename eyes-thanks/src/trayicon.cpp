@@ -10,10 +10,8 @@
 #include <QApplication>
 #include <QtGlobal>
 
-TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
-    dialog(nullptr), TrayMessageShowed(false), TimeRemains(""), CurrentIconIndex(-1)
+TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent)
 {
-    qsrand(uint(QTime::currentTime().msec()));
     LangPath = "languages";
     Translator = new QTranslator();
 
@@ -24,7 +22,7 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 
     readSettings();
 
-    for (auto f : QDir(":fonts").entryInfoList())
+    for (const auto& f : QDir(":fonts").entryInfoList())
         QFontDatabase::addApplicationFont(f.absoluteFilePath());
 
 
@@ -55,10 +53,9 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent),
 #endif
 }
 
-TrayIcon::~TrayIcon()
-{
 
-}
+//TrayIcon::~TrayIcon() = default;
+
 
 void TrayIcon::createLangActionGroup()
 {
@@ -71,7 +68,7 @@ void TrayIcon::createLangActionGroup()
 
     bool haveEnglish_qm = false;
 
-    for (auto fileName : fileNames) { // "lang_ru.qm"
+    for (const auto& fileName : fileNames) { // "lang_ru.qm"
         QTranslator translator;
         translator.load(fileName, LangPath);
 
@@ -356,7 +353,7 @@ void TrayIcon::About()
 
 void TrayIcon::Pause()
 {
-    if (DialogTimer->isActive) {
+    if (DialogTimer->isActive()) {
         setPauseAct(false);
         setPauseIcon();
 
@@ -592,12 +589,12 @@ void TrayIcon::ShowDialog()
 
 void TrayIcon::DialogUpdateTime()
 {
-    qint64 remains =  DialogTimer->remains();;
+    qint64 remains =  DialogTimer->remains();
     TimeRemains = DialogTimer->remains_str();
     qreal ratio = DialogTimer->ratio();
 
-    if (ViewTimer->isActive) {
-        if (DialogTimer->isActive)
+    if (ViewTimer->isActive()) {
+        if (DialogTimer->isActive())
             emit updateLabel(TimeRemains, ratio);
         else
             emit updateLabel(TimeRemains +  " (" + tr("Pause") + ")", -ratio);
