@@ -157,7 +157,12 @@ private:
         compiler_info += QString("%1.%2.%3").arg(__GNUC__).arg(__GNUC_MINOR__).arg(__GNUC_PATCHLEVEL__);
 #elif _MSC_VER
         compiler_info += "MSVC++ ";
-        if      (_MSC_VER >  1914) compiler_info += "14.14+";
+
+        if      (_MSC_VER >= 1924) compiler_info += "14.21+";
+        else if (_MSC_VER >= 1921) compiler_info += "14.21";    // VS 2019
+        else if (_MSC_VER == 1920) compiler_info += "14.20";    // VS 2019   v16.0.0
+        else if (_MSC_VER >= 1916) compiler_info += "14.16";    // VS 2017 v15.9 MSVC++14.16
+        else if (_MSC_VER == 1915) compiler_info += "14.15";    // VS 2017 v15.8 MSVC++14.15
         else if (_MSC_VER == 1914) compiler_info += "14.14";    // VS 2017 v15.7 MSVC++14.14
         else if (_MSC_VER == 1913) compiler_info += "14.13";    // VS 2017 v15.6 MSVC++14.13
         else if (_MSC_VER == 1912) compiler_info += "14.12";    // VS 2017 v15.5 MSVC++14.12

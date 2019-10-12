@@ -6,13 +6,11 @@
 
 include("functions.pri")
 include("../qutfstring/include.pri")
+message("")
 message("$$BUILD_TIME eyes-thanks.pro")
 
 LIBS += -ladvapi32
 LIBS += -lnetapi32
-
-
-# CONFIG  += DEPLOY
 
 
 APP_NAME  = "Eyes’ Thanks"
@@ -23,14 +21,22 @@ REPO_URL  = https://github.com/yalov/eyes-thanks
 win32-msvc*: TARGET    = "EyesThanks"
 win32-g++*: TARGET     = "Eyes\' Thanks"
 
+CONFIG  += DEPLOY
 
 CONFIG(release, debug|release) {
     win32-g++* {
-        message("mingw x86 build")
-        DESTDIR  =   $$PWD/../../EyesThanks
+        contains(QT_ARCH, i386) {
+            message("mingw x86 build")
+            DESTDIR  =   $$PWD/../../EyesThanksX86
+            SSLDLLDIR = $$PWD/../../../openssl-1.0.2p-i386-win32
+        } else {
+            message("mingw x86_64 build")
+            DESTDIR =   $$PWD/../../EyesThanksX86_64
+            SSLDLLDIR = $$PWD/../../../openssl-1.0.2p-x64_86-win64
+        }
     }
     win32-msvc* {
-        !contains(QMAKE_TARGET.arch, x86_64) {
+        contains(QT_ARCH, i386) {
             message("msvc x86 build")
             DESTDIR =   $$PWD/../../EyesThanksMSVC32
         } else {
@@ -38,7 +44,7 @@ CONFIG(release, debug|release) {
             DESTDIR =   $$PWD/../../EyesThanksMSVC64
         }
     }
-    SSLDLLDIR = $$PWD/../../../openssl-1.0.2j-i386-win32
+
 }
 
 # subfolders in debug and release folder
@@ -92,17 +98,20 @@ HEADERS  += src/aboutwindow.h \
             src/viewitem.h
 
 
-TRANSLATIONS += languages/lang_en.ts languages/lang_ru.ts languages/lang_it.ts
+TRANSLATIONS += languages/lang_en.ts languages/lang_ru.ts
 RESOURCES    += resource.qrc
 
 
-# windeployqt only for release and DEPLOY variable
+
 CONFIG(release, debug|release) {
     DEPLOY {
+        #message("$$BUILD_TIME deploy $$PWD/languages/*.qm $$DESTDIR/languages/")
         DEFINES += QT_NO_DEBUG_OUTPUT DEPLOY
 
+        createDir($$DESTDIR/languages/)  # need to be there, tested
         copyFilesToDir($$PWD/languages/*.qm, $$DESTDIR/languages/)
 
+        # windeployqt only for release and DEPLOY and MinGW (dynamic)
         win32-g++* {
             message("$$BUILD_TIME windeployqt")
 
@@ -117,3 +126,7 @@ CONFIG(release, debug|release) {
         }
     }
 }
+
+DISTFILES += \
+    ../ChangeLog.md \
+    ../README.md

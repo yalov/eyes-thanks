@@ -491,7 +491,7 @@ void Dialog::ButtonPath_alt_clicked()
 void Dialog::ButtonGenerateText_clicked()
 {
     QStringList proverbs = qApp->translate("App", "Proverbs.").split("\n\n");
-    TextEdit_Text->setPlainText(proverbs[qrand() % proverbs.size()]);
+    TextEdit_Text->setPlainText(proverbs[Random(proverbs.size())]);
 
 
 }

@@ -7,22 +7,15 @@
 #define GLOBAL_H
 
 #include <QFile>
+#include <QRandomGenerator>
 #include <QTextStream>
 
-enum IconsMode {
-    light,
-    dark,
-    white
-};
+enum IconsMode { light, dark, white };
 
-enum ImageAspectMode {
-    Auto,
-    Outside,
-    Inside
-};
+enum ImageAspectMode { Auto, Outside, Inside };
 
-
-struct Setting {
+struct Setting
+{
     int running_counter;
     int pauseInterval;
     int pauseDuration;
@@ -37,42 +30,30 @@ struct Setting {
     bool isPrettyFont;
     bool isStartupLink;
     QString text;
-    bool isSpectrum      ;
-    bool isTiling        ;
-    bool isStripes       ;
-    bool isCircle ;
+    bool isSpectrum;
+    bool isTiling;
+    bool isStripes;
+    bool isCircle;
     bool isCircles;
-    bool isNeo           ;
+    bool isNeo;
 };
 
 inline bool operator==(const Setting &lhs, const Setting &rhs)
 {
-    return
-        lhs.running_counter               == rhs.running_counter               &&
-        lhs.pauseInterval         == rhs.pauseInterval         &&
-        lhs.pauseDuration       == rhs.pauseDuration       &&
-        lhs.imagesPath            == rhs.imagesPath            &&
-        lhs.imagesPathAlternative == rhs.imagesPathAlternative &&
-        lhs.imageAspectMode       == rhs.imageAspectMode       &&
-        lhs.iconsMode             == rhs.iconsMode             &&
-        lhs.isLogging             == rhs.isLogging             &&
-        lhs.isText                == rhs.isText                &&
-        lhs.isClock               == rhs.isClock               &&
-        lhs.isMessage30sec        == rhs.isMessage30sec        &&
-        lhs.isPrettyFont          == rhs.isPrettyFont          &&
-        lhs.isStartupLink         == rhs.isStartupLink         &&
-        lhs.text                  == rhs.text                  &&
-        lhs.isSpectrum            == rhs.isSpectrum            &&
-        lhs.isTiling              == rhs.isTiling              &&
-        lhs.isStripes             == rhs.isStripes             &&
-        lhs.isCircle       == rhs.isCircle       &&
-        lhs.isCircles      == rhs.isCircles      &&
-        lhs.isNeo                 == rhs.isNeo
-            ;
+    return std::tie(lhs.running_counter, lhs.pauseInterval, lhs.pauseDuration, lhs.imagesPath,
+                    lhs.imagesPathAlternative, lhs.imageAspectMode, lhs.iconsMode, lhs.isLogging, lhs.isText,
+                    lhs.isClock, lhs.isMessage30sec, lhs.isPrettyFont, lhs.isStartupLink, lhs.text, lhs.isSpectrum,
+                    lhs.isTiling, lhs.isStripes, lhs.isCircle, lhs.isCircles, lhs.isNeo)
+            == std::tie(rhs.running_counter, rhs.pauseInterval, rhs.pauseDuration, rhs.imagesPath,
+                        rhs.imagesPathAlternative, rhs.imageAspectMode, rhs.iconsMode, rhs.isLogging, rhs.isText,
+                        rhs.isClock, rhs.isMessage30sec, rhs.isPrettyFont, rhs.isStartupLink, rhs.text, rhs.isSpectrum,
+                        rhs.isTiling, rhs.isStripes, rhs.isCircle, rhs.isCircles, rhs.isNeo);
 }
 
-inline bool operator!=(const Setting &lhs, const Setting &rhs) { return !operator==(lhs, rhs);}
-
+inline bool operator!=(const Setting &lhs, const Setting &rhs)
+{
+    return !operator==(lhs, rhs);
+}
 
 inline static void LogToFile(QString filepath, QString text, bool append = true)
 {
@@ -83,5 +64,11 @@ inline static void LogToFile(QString filepath, QString text, bool append = true)
         out << text << "\n";
         file.close();
     }
+}
+
+template<class T>
+inline static T Random(T highest_bound)
+{
+    return QRandomGenerator::global()->bounded(highest_bound);
 }
 #endif // GLOBAL_H

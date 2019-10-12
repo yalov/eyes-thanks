@@ -38,7 +38,7 @@ public:
         setPen(QPen(pen_color, pen_width));
 
         hue -= floor(hue);
-        qreal value = qrand() % 40 / 100.0 + 0.20;
+        qreal value = Random(0.4) + 0.20;
         setBrush(QColor::fromHsvF(hue, 1.0, value));
     }
 };

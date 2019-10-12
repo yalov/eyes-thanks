@@ -141,11 +141,12 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
 
     QList<QString> folders({setting.imagesPath, setting.imagesPathAlternative});
 
+
     for (auto folder : folders)
     {
         QStringList images_names = QDir(folder).entryList(QStringList() << "*.jpg" << "*.png");
         if (!images_names.isEmpty()) {
-            QString rand_pic_path = setting.imagesPath + "/" + images_names[qrand() % images_names.size()];
+            QString rand_pic_path = folder + QDir::separator() + images_names[Random(images_names.size())];
             QPixmap pic = QPixmap(rand_pic_path);
             if (!pic.isNull()) {
                 images.append(Image{pic, qreal(pic.width()) / pic.height(),
@@ -182,7 +183,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
     variants += MethodsEnabled.size();
 
     if (variants) {
-        int variant = qrand() % variants;
+        int variant = Random(variants);
         qDebug() << QString("variant: {1}/{2}").arg(variant,variants);
         if (variant < image.count)
             display_case = SetImageBackground(image.ratio, image.pic);
@@ -223,7 +224,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
 
         Logging_str +=     QString(" -   %3          %1  %2\n")
                 .arg(ratio_desk, 4, 'f', 2).arg(str_from(desktop.size()))
-                .arg(default_screen == desktop?"single screen":"full desktop ");;
+                .arg(default_screen == desktop?"single screen":"full desktop ");
 
         if (QApplication::desktop()->screenCount() > 1)
             for (int i = 0; i < QApplication::desktop()->screenCount(); i++) {
@@ -316,7 +317,7 @@ void View::SetPredeterminedBackground()
     // 0 0.5 grey    // 1 1 - color
     // 0 1 - white
 
-    qreal Hue_start = qrand() % 360 / 360.0;
+    qreal Hue_start = Random(1.0);
 
     QElapsedTimer timer;
     timer.start();
@@ -339,7 +340,7 @@ void View::SetPredeterminedBackground()
         //ButtonRectItem->setBrush(QBrush(rainbow));
 
         QLinearGradient vertical(desktop.topLeft(), desktop.bottomLeft());
-        int mode = qrand() % 3;
+        int mode = Random(3);
         if (mode == 0) {
             //vertical.setColorAt(0,    QColor::fromRgbF(0, 0, 0, 0.6));
             //vertical.setColorAt(0.25, QColor::fromRgbF(0, 0, 0, 1.0));
@@ -389,9 +390,9 @@ void View::SetPredeterminedBackground()
         break;
     }
     case TILING: {
-        switch (qrand() % 5) {
+        switch (Random(5)) {
         case 0: { // square
-            int h = qrand() % 20 + 9;
+            int h = Random(20)+9;
             int w = qRound(h * desktop.ratio());
             qreal cellw = desktop.widthF() / w;
             qreal cellh = desktop.heightF() / h;
@@ -404,7 +405,7 @@ void View::SetPredeterminedBackground()
                     squareItem->setRect(0, 0, cellw, cellh);
                     qreal hue = Hue_start + qreal(i) * 0.8 / w ;
                     hue -= floor(hue);
-                    qreal value = qrand() % 50 / 100.0 + 0.25 ;
+                    qreal value = Random(0.5) + 0.25;
                     squareItem->setBrush(QColor::fromHsvF(hue, 1.0, value));
                     myscene->addItem(squareItem);
                 }
@@ -412,7 +413,7 @@ void View::SetPredeterminedBackground()
             break;
         }
         case 1: { // square transform
-            int h =  qrand() % 20 + 7;
+            int h =  Random(20)+7;
             qreal w = qRound(h * desktop.ratio() * 2 * 2) / 2; // ok.
             qreal cellh = desktop.heightF() / h;
             qreal cellw = desktop.widthF() / (w / 2);
@@ -434,7 +435,7 @@ void View::SetPredeterminedBackground()
         }
         case 2: { // hexagon
             qreal k = 2 / qSqrt(3);
-            int h = qrand() % 30 + 7;
+            int h = Random(30)+7;
             qreal cellh = desktop.heightF() / h;
             qreal cellw = cellh * k;
             int x = qRound((2 * desktop.widthF() / cellw + 1) / 3);
@@ -461,7 +462,7 @@ void View::SetPredeterminedBackground()
         }
         case 3: { // triangle
             qreal k = 2 / qSqrt(3);
-            int h = 2 * (qrand() % 10 + 3); // even
+            int h = 2 * (Random(10) + 3); // even
             qreal cellh = desktop.heightF() / h;
             qreal cellw = cellh * k;
             int x = qRound(desktop.widthF() / cellw);
@@ -488,7 +489,7 @@ void View::SetPredeterminedBackground()
             break;
         }
         case 4: { // square+triangle
-            int h = 2 * qrand() % 10 + 5; // odd
+            int h = 2 * Random(10) + 5; // odd
             int w = qCeil(h * desktop.ratio());
             qreal alpha = M_PI / 3;
             qreal cell = desktop.heightF() / h;
@@ -562,7 +563,7 @@ void View::SetPredeterminedBackground()
         int stripe_segment = desktop.width() / int(stripes_count * k);
         int stripe_width = int(stripe_segment * 0.8);
 
-        bool stripes_gradient = qrand() % 2;
+        bool stripes_gradient = Random(2);
         if (stripes_gradient) {
             for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
                 QGraphicsRectItem *item = new QGraphicsRectItem(desktop.left() + i, 0, stripe_width, desktop.height());
@@ -594,11 +595,11 @@ void View::SetPredeterminedBackground()
 
         int diameter_dot = qMin(desktop.width(), desktop.height()) / 10;
         QRect r(desktop.topLeft() +
-                QPoint(qrand() % (desktop.width() - diameter_dot),
-                       qrand() % (desktop.height() - diameter_dot)), QSize(diameter_dot, diameter_dot));
+                QPoint(Random(desktop.width() - diameter_dot),
+                       Random(desktop.height() - diameter_dot)), QSize(diameter_dot, diameter_dot));
 
         Item->setRect(r);
-        Item->setBrush(QColor::fromHsvF(qrand() % 256 / 255.0, 1, 1, 0.5));
+        Item->setBrush(QColor::fromHsvF(Random(1.0), 1, 1, 0.5));
 
         break;
     }
@@ -608,10 +609,10 @@ void View::SetPredeterminedBackground()
 
         int count_item = qRound(desktop.height() * desktop.width() / (1920.0 * 1080.0) * 100);
         for (int i = 0; i < count_item; i++) {
-            int diameter_dot = qrand() % 100 + 50;
+            int diameter_dot = Random(100) + 50;
             QRect r(desktop.topLeft() +
-                    QPoint(qrand() % (desktop.width() - diameter_dot),
-                           qrand() % (desktop.height() - diameter_dot)), QSize(diameter_dot, diameter_dot));
+                    QPoint(Random(desktop.width() - diameter_dot),
+                           Random(desktop.height() - diameter_dot)), QSize(diameter_dot, diameter_dot));
 
             QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
             item->setBrush(QColor::fromHsvF(fmod(Hue_start + qreal(i) / count_item / 2, 1), 1, 1));
@@ -636,7 +637,7 @@ void View::SetPredeterminedBackground()
         if (textItem)
             myscene->removeItem(textItem);
 
-        if (qrand() % 5 == 0) { // chance to show a username
+        if (Random(5) == 0) { // chance to show a username
             QString name;
 
             if (name.isEmpty()){  // Trying to get Windows 10 Username
@@ -661,7 +662,7 @@ void View::SetPredeterminedBackground()
             if (name.isEmpty()) name = transliteraction(qgetenv("USER"));
             if (name.isEmpty()) name = transliteraction(qgetenv("USERNAME"));
 
-            if (name.isEmpty() || name == "User" || name.size() > 50 || (qrand() % 5 == 0))
+            if (name.isEmpty() || name == "User" || name.size() > 50 || (Random(5) == 0))
                 name = QString("Neo");
 
             QString title = QString("Wake up, %1...").arg(name);
@@ -696,7 +697,7 @@ void View::SetPredeterminedBackground()
 
         CharacterSets characterSets(":res/character_sets.xml");
         //              -------
-        int chs_index = qrand() % characterSets.size();
+        int chs_index = Random(characterSets.size());
         //              -------
         QUtfString characters = characterSets.get_characters(chs_index);
         QUtfString title = characterSets.get_title(chs_index);
@@ -721,7 +722,7 @@ void View::SetPredeterminedBackground()
             }
 
         for (int pos_x = default_screen.left()+ basic_width * (title.isEmpty() ? 1 : 4); pos_x < desktop.right(); pos_x += basic_width * 3) {
-            int max_pos_y = int(1.0 / 4.0 * desktop.height() + 3.0 / 4.0 * (qrand() % desktop.height()));
+            int max_pos_y = int(1.0 / 4.0 * desktop.height() + 3.0 / 4.0 * Random(desktop.height()));
             for (int pos_y = 0; pos_y < max_pos_y; pos_y += basic_height) {
                 QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
                 group->addToGroup(item);
@@ -729,7 +730,7 @@ void View::SetPredeterminedBackground()
                 item->setPen(Qt::NoPen);
                 item->setFont(font_background);
 
-                int charIndex = qrand() % characters.size();
+                int charIndex = Random(characters.size());
                 QUtfString character = characters.at(charIndex);
 
                 for (auto &pair : replaceRule) {
@@ -745,7 +746,7 @@ void View::SetPredeterminedBackground()
         }
 
         for (int pos_x = default_screen.left() -2 * basic_width; pos_x >  desktop.left(); pos_x -= basic_width * 3) {
-            int max_pos_y = int(1.0 / 4.0 * desktop.height() + 3.0 / 4.0 * (qrand() % desktop.height()));
+            int max_pos_y = int(1.0 / 4.0 * desktop.height() + 3.0 / 4.0 * Random( desktop.height()));
             for (int pos_y = 0; pos_y < max_pos_y; pos_y += basic_height) {
                 QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
                 group->addToGroup(item);
@@ -753,7 +754,7 @@ void View::SetPredeterminedBackground()
                 item->setPen(Qt::NoPen);
                 item->setFont(font_background);
 
-                int charIndex = qrand() % characters.size();
+                int charIndex = Random(characters.size());
                 QUtfString character = characters.at(charIndex);
 
                 for (auto &pair : replaceRule) {
