@@ -37,7 +37,7 @@ public:
         const QString license_path = ":/copying.html";
         const QString license_name = "GNU GPLv3";
         const QString logo_path = ":icons/logo.png";
-        const QString build_year = __DATE__ + 7;
+        const QString build_year = &__DATE__ [7];
 
         const QString Qt_CT = QString(QT_VERSION_STR);
         const QString Qt_RT = qVersion();

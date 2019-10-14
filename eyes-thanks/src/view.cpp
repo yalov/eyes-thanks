@@ -692,7 +692,7 @@ void View::SetPredeterminedBackground()
         //              -------
         int chs_index = Random(characterSets.size());
         //              -------
-        QList<QUtfString> characters = characterSets.get_characters(chs_index);
+        QUtfString characters = characterSets.get_characters(chs_index);
         QUtfString title = characterSets.get_title(chs_index);
 
         qDebug() << "unicode symbols ="  << characters.size();

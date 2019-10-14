@@ -1,19 +1,31 @@
 #include "charactersets.h"
+
 #include <QFile>
 #include <QXmlStreamWriter>
 #include <QDebug>
 
+
+struct CharacterSets::Set {
+    QString name{};
+    QString comment{};
+    QString title{};
+    QString characters{};
+    QList<QString> compositecharacters{};
+    int index = 0;
+};
+
+
 CharacterSets::CharacterSets(const QString& filepath):sets(new QList<Set>())
 {
    read(filepath);
-//   for (int i=0;i < sets->size(); i++)
-//       qDebug()<< i << sets->at(i).title;
 }
+
 
 CharacterSets::~CharacterSets()
 {
     delete sets;
 }
+
 
 void CharacterSets::read(const QString &filepath)
 {
@@ -46,7 +58,6 @@ void CharacterSets::read(const QString &filepath)
                         c.compositecharacters.append(xml.readElementText());
                     }
                 }
-
                sets->append(c);
             }
         }
@@ -56,19 +67,21 @@ void CharacterSets::read(const QString &filepath)
     }
 }
 
+
 int CharacterSets::size() {
     return sets->size();
 }
 
+
 QUtfString CharacterSets::get_title(int index){
     return sets->at(index).title;
 }
-QList<QUtfString> CharacterSets::get_characters(int index){
-    QList<QUtfString> chars;
-    for(auto ch : sets->at(index).characters)
-    {
-        chars.append(QString(ch));
-    }
+
+
+QUtfString CharacterSets::get_characters(int index){
+    QUtfString chars = "";
+    chars +=  sets->at(index).characters;
+
     for(auto ch : sets->at(index).compositecharacters)
     {
         chars.append(ch);
@@ -76,6 +89,7 @@ QList<QUtfString> CharacterSets::get_characters(int index){
 
     return chars;
 }
+
 
 void CharacterSets::write(const QString& filepath)
 {
@@ -102,4 +116,3 @@ void CharacterSets::write(const QString& filepath)
         file.close();
     }
 }
-

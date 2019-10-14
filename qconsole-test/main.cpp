@@ -85,26 +85,26 @@ void f1 () {
 }
 }
 
-//void f2 () {
-//    QString str = u8"ЩZҐ";
-//    QChar z = u'Z';
-//    QChar g = u'Ґ';
+void f2 () {
+    QString str = u8"ЩZҐ";
+    QChar z = u'Z';
+    QChar g = u'Ґ';
 
-//    if (g == "Ґ")  qDebug() <<"g ="<< g << "is \"Ґ\"";
-//    if (g == u'Ґ') qDebug() <<"g ="<< g << "is \'Ґ\'";
+    if (g == "Ґ")  qDebug() <<"g ="<< g << "is \"Ґ\"";
+    if (g == u'Ґ') qDebug() <<"g ="<< g << "is \'Ґ\'";
 
-//    if (z == "Z") qDebug()<<"z =" << z << "is \"Z\"";
-//    if (z == 'Z') qDebug()<<"z =" << z << "is \'Z\'";
+    if (z == "Z") qDebug()<<"z =" << z << "is \"Z\"";
+    if (z == 'Z') qDebug()<<"z =" << z << "is \'Z\'";
 
-//    for (QChar c:str)
-//    {
-//        if (c == "Ґ") qDebug()<<"c =" << c << "is \"Ґ\"";
-//        if (c == u'Ґ') qDebug()<<"c =" << c << "is \'Ґ\'";
+    for (QChar c:str)
+    {
+        if (c == "Ґ") qDebug()<<"c =" << c << "is \"Ґ\"";
+        if (c == u'Ґ') qDebug()<<"c =" << c << "is \'Ґ\'";
 
-//        if (c == "Z") qDebug()<<"c =" << c << "is \"Z\"";
-//        if (c == 'Z') qDebug()<<"c =" << c << "is \'Z\'";
-//    }
-//}
+        if (c == "Z") qDebug()<<"c =" << c << "is \"Z\"";
+        if (c == 'Z') qDebug()<<"c =" << c << "is \'Z\'";
+    }
+}
 
 void f3() {
     QString str = QString("'’") + QChar(0x02BC);
@@ -114,24 +114,34 @@ void f3() {
     }
 }
 
+QList<QString> f4()
+{
+    QList<QString> s;
+    QFile file("c:/Users/User/Repositories/eyes-thanks/test.xml");
+    if (file.open(QIODevice::ReadOnly)) {
+        QXmlStreamReader xml(file.readAll());
+        file.close();
 
+        while (!xml.atEnd()) {
+            xml.readNext();
+            if (xml.isStartElement() && xml.name() == "set")
+            {
+                while (xml.readNextStartElement())
+                {
+                    if (xml.name() == "title") s.append(xml.readElementText());
+                }
+            }
+        }
+    }
 
-//int main(int argc, char *argv[])
-//{
-//    QApplication  a(argc, argv);
-
-//}
-
-
-
-
-
-
-
+    return s;
+}
 
 int main(int argc, char * argv[])
 {
     QApplication  a(argc, argv);
+
+    qDebug() << f4();
 
     return 0;
 }

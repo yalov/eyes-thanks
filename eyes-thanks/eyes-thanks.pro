@@ -9,19 +9,20 @@ include("../qutfstring/include.pri")
 message("")
 message("$$BUILD_TIME eyes-thanks.pro")
 
+# For NetUserGetInfo()
 LIBS += -ladvapi32
 LIBS += -lnetapi32
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.5.1
+VERSION   = 1.5.2
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
 win32-msvc*: TARGET    = "EyesThanks"
 win32-g++*: TARGET     = "Eyes\' Thanks"
 
-CONFIG  += DEPLOY
+#CONFIG  += DEPLOY
 
 CONFIG(release, debug|release) {
     win32-g++* {
@@ -60,7 +61,7 @@ QT      += core gui network widgets winextras
 CONFIG -= debug_and_release
 CONFIG -= debug_and_release_target
 
-CONFIG += c++14
+CONFIG += c++17
 
 win32:RC_ICONS += icons/icon.ico
 

@@ -1,6 +1,6 @@
 
 Version 1.5.2 (Unrealeased)
- * trying to get rid of UtfString
+ * QUtfString
 
 Version 1.5.1 (Unrealeased)
  * Clang-format. refactor charsets.
