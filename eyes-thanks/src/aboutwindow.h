@@ -33,11 +33,14 @@ public:
         const QString dev_name = QString(DEV_NAME);
         const QString dev_email = QString(DEV_EMAIL);
         const QString repository_url = QString(REPO_URL);
+        const QString patreon_url = QString(PATREON_URL);
+        const QString patreon_string = "patreon.com/yalov";
+
+        const QString build_year = &__DATE__ [7];
         const QString license_url = "http://www.gnu.org/licenses/gpl-3.0.html";
         const QString license_path = ":/copying.html";
         const QString license_name = "GNU GPLv3";
         const QString logo_path = ":icons/logo.png";
-        const QString build_year = &__DATE__ [7];
 
         const QString Qt_CT = QString(QT_VERSION_STR);
         const QString Qt_RT = qVersion();
@@ -111,14 +114,18 @@ public:
 
                 QString(
                     "<p align = center>"
-                    "Repository"  ": <a href=\"%1\">%1</a>"
+                    "Repository"  ": <a href='%1'>%1</a>"
                     "</p>"
                     "<p align = center>"
-                    "Copyright © %2 License: <a href=\"%3\">%4</a>"  "<br>"
-                    "%5 <a href='mailto:%6'>%6</a>"
+                    "Copyright © %2 License: <a href='%3'>%4</a>"  "<br>"
+                    "%5 <a href='mailto:%6'>%6</a>"                "<br>"
+                    "Donation <a href='%7'>%8</a>"
                     "</p>"
                     "</font>"
-                ).arg(repository_url, build_year, license_url, license_name, dev_name, dev_email);
+                ).arg(repository_url,
+                      build_year, license_url, license_name,
+                      dev_name, dev_email,
+                      patreon_url, patreon_string);
 
 
             QLabel *lb_aboutText = new QLabel(aboutText);

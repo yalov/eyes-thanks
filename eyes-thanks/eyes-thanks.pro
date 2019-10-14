@@ -15,10 +15,12 @@ LIBS += -lnetapi32
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.5.3
+VERSION   = 1.4.10
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
+PATREON_URL  = https://patreon.com/yalov
+
 win32-msvc*: TARGET    = "EyesThanks"
 win32-g++*: TARGET     = "Eyes\' Thanks"
 
@@ -68,11 +70,12 @@ win32:RC_ICONS += icons/icon.ico
 QMAKE_TARGET_DESCRIPTION = $$TARGET
 QMAKE_TARGET_COPYRIGHT   = $$DEV_NAME
 
-DEFINES +=    REPO_URL='"\\\"$$REPO_URL\\\""'
-DEFINES += APP_VERSION='"\\\"$$VERSION\\\""'
-#DEFINES +=    APP_NAME='"\\\"$$APP_NAME\\\""'
-DEFINES +=    DEV_NAME='"\\\"$$DEV_NAME\\\""'
-DEFINES +=   DEV_EMAIL='"\\\"$$DEV_EMAIL\\\""'
+DEFINES +=  REPO_URL='"\\\"$$REPO_URL\\\""'
+DEFINES +=  APP_VERSION='"\\\"$$VERSION\\\""'
+#DEFINES +=  APP_NAME='"\\\"$$APP_NAME\\\""'
+DEFINES +=  DEV_NAME='"\\\"$$DEV_NAME\\\""'
+DEFINES +=  DEV_EMAIL='"\\\"$$DEV_EMAIL\\\""'
+DEFINES +=  PATREON_URL='"\\\"$$PATREON_URL\\\""'
 
 # '+' will automatically be performed as the QStringBuilder '%' everywhere.
 DEFINES *= QT_USE_QSTRINGBUILDER
