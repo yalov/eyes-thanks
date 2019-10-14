@@ -15,25 +15,25 @@ LIBS += -lnetapi32
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.5.2
+VERSION   = 1.5.3
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
 win32-msvc*: TARGET    = "EyesThanks"
 win32-g++*: TARGET     = "Eyes\' Thanks"
 
-#CONFIG  += DEPLOY
+CONFIG  += DEPLOY
 
 CONFIG(release, debug|release) {
     win32-g++* {
         contains(QT_ARCH, i386) {
             message("mingw x86 build")
             DESTDIR  =   $$PWD/../../EyesThanksX86
-            SSLDLLDIR = $$PWD/../../../openssl-1.0.2p-i386-win32
+            SSLDLLDIR = $$PWD/../../../openssl-1.1.1d-win32-mingw
         } else {
             message("mingw x86_64 build")
             DESTDIR =   $$PWD/../../EyesThanksX86_64
-            SSLDLLDIR = $$PWD/../../../openssl-1.0.2p-x64_86-win64
+            SSLDLLDIR = $$PWD/../../../openssl-1.1.1d-win64-mingw
         }
     }
     win32-msvc* {
