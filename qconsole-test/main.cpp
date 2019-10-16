@@ -7,6 +7,7 @@
 #include <QTextStream>
 #include <QRect>
 
+
 #include <QtWidgets/QApplication>
 
 #include "transliteration-iso9a.h"
@@ -20,61 +21,65 @@
 #define UNICODE
 #endif
 
-#pragma comment(lib, "Ole32.lib")
-#pragma comment(lib, "advapi32.lib")
-#pragma comment(lib, "netapi32.lib")
+//#pragma comment(lib, "Ole32.lib")
+//#pragma comment(lib, "advapi32.lib")
+//#pragma comment(lib, "netapi32.lib")
 
 #include <windows.h>
 #include <stdio.h>
 #include <assert.h>
 #include <lm.h>
 #include <sddl.h>
+
+
 /* for ConvertSidToStringSid function */
-
-
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QString>
 
 void f1 () {
     QVector<QString> list = {
-        QString(u8"Афанасий Ефре'мов")                 ,
-        QString(u8"Вячеслав Коновалов")               ,
-        QString(u8"Максим Назаров")                   ,
-        QString(u8"Филипп Ґалубёў")                   ,
-        QString(u8"Толстой Кирилл Эдуардович")        ,
-        QString(u8"Караев Мстислав Евгениевич")       ,
-        QString(u8"Шепкин Марк Касьянович")           ,
-        QString(u8"Щеголяев Адриан Матвеевич")        ,
-        QString(u8"Давыдов Тимур Святославович")      ,
-        QString(u8"Разуваев Платон Елизарович")       ,
-        QString(u8"Буркин Ипатий Венедиктович")       ,
-        QString(u8"Грибков Яков Левович")             ,
-        QString(u8"Остальцев Руслан Федосиевич")      ,
-        QString(u8"Кортнев Иннокентий Викентиевич")   ,
-        QString(u8"Хоботилов Сергей Олегович")        ,
-        QString(u8"Горюшин Евгений Игнатиевич")       ,
-        QString(u8"Александров Пимен Ильевич")        ,
-        QString(u8"Кобзев Данила Елисеевич")          ,
-        QString(u8"Мозговой Осип Пахомович")          ,
-        QString(u8"Кошкин Измаил Платонович")         ,
-        QString(u8"Гадолин Виссарион Кондратович")    ,
-        QString(u8"Шостенко Ким Куприянович")         ,
-        QString(u8"Другов Эммануил Мечиславович")     ,
-        QString(u8"Бенедиктов Владимир Даниилович")   ,
-        QString(u8"Коротаев Дмитрий Тарасович")       ,
-        QString(u8"Онегин Никон Филимонович")         ,
-        QString(u8"Верясов Рюрик Казимирович")        ,
-        QString(u8"Явленский Вячеслав Никонович")     ,
-        QString(u8"Сиясинов Прохор Тихонович")        ,
-        QString(u8"Агапов Касьян Ипатиевич")          ,
-        QString(u8"Житков Леондий Валериевич")        ,
-        QString(u8"Яхин Григорий Давидович")          ,
-        QString(u8"Пушкарёв Александр Мирославович")  ,
-        QString(u8"Эссен Валентин Измаилович")        ,
-        QString(u8"Щетинин Радион Трофимович")        ,
-        QString(u8"Лясковец Данил Брониславович")     ,
-        QString(u8"Земляков Аким Ермолаевич")         ,
-        QString(u8"Милютин Даниил Сидорович")         ,
-        QString(u8"Гершкович Антип Моисеевич")        ,
-        QString(u8"Содовский Кузьма Михеевич")};
+        QString("Афанасий Ефре'мов")                 ,
+        QString("Вячеслав Коновалов")               ,
+        QString("Максим Назаров")                   ,
+        QString("Филипп Ґалубёў")                   ,
+        QString("Толстой Кирилл Эдуардович")        ,
+        QString("Караев Мстислав Евгениевич")       ,
+        QString("Шепкин Марк Касьянович")           ,
+        QString("Щеголяев Адриан Матвеевич")        ,
+        QString("Давыдов Тимур Святославович")      ,
+        QString("Разуваев Платон Елизарович")       ,
+        QString("Буркин Ипатий Венедиктович")       ,
+        QString("Грибков Яков Левович")             ,
+        QString("Остальцев Руслан Федосиевич")      ,
+        QString("Кортнев Иннокентий Викентиевич")   ,
+        QString("Хоботилов Сергей Олегович")        ,
+        QString("Горюшин Евгений Игнатиевич")       ,
+        QString("Александров Пимен Ильевич")        ,
+        QString("Кобзев Данила Елисеевич")          ,
+        QString("Мозговой Осип Пахомович")          ,
+        QString("Кошкин Измаил Платонович")         ,
+        QString("Гадолин Виссарион Кондратович")    ,
+        QString("Шостенко Ким Куприянович")         ,
+        QString("Другов Эммануил Мечиславович")     ,
+        QString("Бенедиктов Владимир Даниилович")   ,
+        QString("Коротаев Дмитрий Тарасович")       ,
+        QString("Онегин Никон Филимонович")         ,
+        QString("Верясов Рюрик Казимирович")        ,
+        QString("Явленский Вячеслав Никонович")     ,
+        QString("Сиясинов Прохор Тихонович")        ,
+        QString("Агапов Касьян Ипатиевич")          ,
+        QString("Житков Леондий Валериевич")        ,
+        QString("Яхин Григорий Давидович")          ,
+        QString("Пушкарёв Александр Мирославович")  ,
+        QString("Эссен Валентин Измаилович")        ,
+        QString("Щетинин Радион Трофимович")        ,
+        QString("Лясковец Данил Брониславович")     ,
+        QString("Земляков Аким Ермолаевич")         ,
+        QString("Милютин Даниил Сидорович")         ,
+        QString("Гершкович Антип Моисеевич")        ,
+        QString("Содовский Кузьма Михеевич")};
 
     for (auto name: list) {
         qDebug() << list.indexOf(name);
@@ -86,7 +91,7 @@ void f1 () {
 }
 
 void f2 () {
-    QString str = u8"ЩZҐ";
+    QString str = "ЩZҐ";//u8"ЩZҐ";
     QChar z = u'Z';
     QChar g = u'Ґ';
 
@@ -137,11 +142,74 @@ QList<QString> f4()
     return s;
 }
 
-int main(int argc, char * argv[])
+struct Asset
 {
-    QApplication  a(argc, argv);
+    QString version{};
+    QList<QString> links{};
+    QString toString(){
+        return version +", "+ links.join(", ");
+    }
+};
 
-    qDebug() << f4();
+Asset json_test(const QByteArray & json_text)
+{
+    Asset asset;
+    QJsonDocument jsonDocument(QJsonDocument::fromJson(json_text));
 
-    return 0;
+    if (jsonDocument.isNull() || jsonDocument.isEmpty() || !jsonDocument.isArray())
+    {
+        qDebug() << "JSON failed";
+        return asset;
+    }
+
+    const QJsonArray &json = jsonDocument.array();
+
+    for (auto json_value: json)
+    {
+        if (!json_value.isObject()) continue;
+
+        auto json_ver = json_value.toObject();
+        if (json_ver.contains("assets"))
+        {
+            auto json_assets_obj = json_ver["assets"];
+            if (!json_assets_obj.isArray()) continue;
+            auto json_assets = json_assets_obj.toArray();
+            for (auto asset_vref: json_assets){
+                if (!asset_vref.isObject()) continue;
+                auto a = asset_vref.toObject();
+                if (!a.contains("browser_download_url")) continue;
+
+                asset.links.append(a["browser_download_url"].toString());
+
+            }
+
+            if (!asset.links.empty())
+            {
+                if (json_ver.contains("tag_name"))
+                    asset.version = json_ver["tag_name"].toString();
+
+                return asset;
+            }
+        }
+
+    }
+
+    return asset;
+}
+
+
+int main()
+{
+    QFile loadFile(QStringLiteral("d:/Downloads/releases.json"));
+
+    if (!loadFile.open(QIODevice::ReadOnly)) {
+        qWarning("Couldn't open save file.");
+        return -1;
+    }
+
+    QByteArray saveData = loadFile.readAll();
+
+    Asset a = json_test(saveData);
+    qDebug() << a.toString();
+
 }

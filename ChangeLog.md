@@ -1,17 +1,14 @@
 
-Version 1.5.2 (Unrealeased)
- * QUtfString
-
-Version 1.5.1 (Unrealeased)
- * Clang-format. refactor charsets.
-
 ## Version 1.5.0 (Unrealeased)
- * fixed Clang Code Model warnings
  * fixed alternative folder doesn't loaded
+ * updated to Qt 5.12.5 LTS and OpenSSL 1.1.1d
  * reverted Dynamic builds
  * stopped support of x86
- * patreon?
- * remove replacement of char?
+ * fixed Clang Code Model warnings
+ * added donation link
+ * updated ligatures for NEO
+ * Clang-format: refactored charsets
+ * get all link for last release in the updater
 
 Version 1.4.4
  * Static build for x86 and x64

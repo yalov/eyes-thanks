@@ -15,7 +15,7 @@ LIBS += -lnetapi32
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.4.10
+VERSION   = 1.4.11
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
@@ -29,21 +29,21 @@ CONFIG  += DEPLOY
 CONFIG(release, debug|release) {
     win32-g++* {
         contains(QT_ARCH, i386) {
-            message("mingw x86 build")
+            message("$$BUILD_TIME mingw x86 build")
             DESTDIR  =   $$PWD/../../EyesThanksX86
             SSLDLLDIR = $$PWD/../../../openssl-1.1.1d-win32-mingw
         } else {
-            message("mingw x86_64 build")
+            message("$$BUILD_TIME mingw x86_64 build")
             DESTDIR =   $$PWD/../../EyesThanksX86_64
             SSLDLLDIR = $$PWD/../../../openssl-1.1.1d-win64-mingw
         }
     }
     win32-msvc* {
         contains(QT_ARCH, i386) {
-            message("msvc x86 build")
+            message("$$BUILD_TIME msvc x86 build")
             DESTDIR =   $$PWD/../../EyesThanksMSVC32
         } else {
-            message("msvc x86_64 build")
+            message("$$BUILD_TIME msvc x86_64 build")
             DESTDIR =   $$PWD/../../EyesThanksMSVC64
         }
     }
@@ -109,7 +109,7 @@ RESOURCES    += resource.qrc
 
 CONFIG(release, debug|release) {
     DEPLOY {
-        #message("$$BUILD_TIME deploy $$PWD/languages/*.qm $$DESTDIR/languages/")
+        message("$$BUILD_TIME deploy")
         DEFINES += QT_NO_DEBUG_OUTPUT DEPLOY
 
         createDir($$DESTDIR/languages/)  # need to be there, tested
