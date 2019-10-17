@@ -225,7 +225,7 @@ bool TrayIcon::CheckStartupLink(){
 
         if (is_link)
         {
-            mb->setText(tr("Shortcut is founded in the Startup Folder.").arg("<br><nobr>" + link_trg+"</nobr>"));
+            mb->setText(tr("Shortcut is founded in the Startup Folder to %1").arg("<br><nobr>" + link_trg+"</nobr>"));
             mb->setInformativeText("<nobr>" + tr("Replace?") + "</nobr>" );
 
             Accept = mb->addButton(tr("Accept"), QMessageBox::AcceptRole);
