@@ -15,7 +15,7 @@ LIBS += -lnetapi32
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.4.11
+VERSION   = 1.5.0
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
@@ -127,6 +127,7 @@ CONFIG(release, debug|release) {
             removeFilesInDir($$DESTDIR/imageformats/, $$FILENAMES)
 
             copyFilesToDir($${SSLDLLDIR}/*.dll, $$DESTDIR)
+            copyFilesToDir($$PWD/../ChangeLog.md, $$DESTDIR)
         }
     }
 }
