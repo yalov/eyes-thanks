@@ -204,7 +204,7 @@ public: /*functions*/
 	/**
 	 * Returns information about the joining properties of this character (needed for certain languages such as Arabic).
 	 */
-	QChar::Joining joining() const;
+    QChar::JoiningType joiningType() const;
 
 	/**
 	 * Returns the mirrored character if this character has a mirrored character; otherwise returns this character itself.

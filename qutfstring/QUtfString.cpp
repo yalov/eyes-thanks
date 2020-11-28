@@ -1183,7 +1183,7 @@ int QUtfString::sizeCodeUnits() const
 	return s.size();
 }
 
-QUtfStringList QUtfString::split(const QUtfString &sep, int maxSplitCount, QString::SplitBehavior behavior, Qt::CaseSensitivity cs) const
+QUtfStringList QUtfString::split(const QUtfString &sep, int maxSplitCount, Qt::SplitBehavior behavior, Qt::CaseSensitivity cs) const
 {
 	if (maxSplitCount == 0)
 		return QUtfStringList();
@@ -1223,7 +1223,7 @@ QUtfStringList QUtfString::split(const QUtfString &sep, int maxSplitCount, QStri
 	return returnList;
 }
 
-QUtfStringList QUtfString::split(const QUtfChar &sep, int maxSplitCount, QString::SplitBehavior behavior, Qt::CaseSensitivity cs) const
+QUtfStringList QUtfString::split(const QUtfChar &sep, int maxSplitCount, Qt::SplitBehavior behavior, Qt::CaseSensitivity cs) const
 {
 	if (maxSplitCount == 0)
 		return QUtfStringList();
@@ -1262,7 +1262,7 @@ QUtfStringList QUtfString::split(const QUtfChar &sep, int maxSplitCount, QString
 	return returnList;
 }
 
-QUtfStringList QUtfString::split(const QUtfRegExp &rx, int maxSplitCount, QString::SplitBehavior behavior) const
+QUtfStringList QUtfString::split(const QUtfRegExp &rx, int maxSplitCount, Qt::SplitBehavior behavior) const
 {
 	if (maxSplitCount == 0)
 		return QUtfStringList();

@@ -241,9 +241,9 @@ bool QUtfChar::isUpper() const
 	return category() == QChar::Letter_Uppercase;
 }
 
-QChar::Joining QUtfChar::joining() const
+QChar::JoiningType QUtfChar::joiningType() const
 {
-	return QChar::joining(ucs4);
+    return QChar::joiningType(ucs4);
 }
 
 QUtfChar QUtfChar::mirroredChar() const

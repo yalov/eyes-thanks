@@ -6,7 +6,7 @@
 #include <QTextStream>
 #include <QVector>
 
-inline static bool check_rus_compatibility(const QString& input)
+inline bool check_rus_compatibility(const QString& input)
 {
     bool compatibility = true;
     for (auto letter : input) {
@@ -29,7 +29,7 @@ inline static bool check_rus_compatibility(const QString& input)
     return compatibility;
 }
 
-inline static QString transliteraction(QString input)
+inline QString transliteraction(const QString& input)
 {
     if (!check_rus_compatibility(input)) return input;
 

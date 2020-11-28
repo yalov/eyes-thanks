@@ -82,7 +82,7 @@ QUtfString CharacterSets::get_characters(int index){
     QUtfString chars = "";
     chars +=  sets->at(index).characters;
 
-    for(auto ch : sets->at(index).compositecharacters)
+    for(const auto & ch : sets->at(index).compositecharacters)
     {
         chars.append(ch);
     }

@@ -685,17 +685,17 @@ public: /*functions*/
 	 * this string is returned. @a maxSplitCount defines the maximum amount of substrings which are returned. @a cs specifies whether @a sep should be matched case sensitively or case insensitively.
 	 * If @a behavior is QString::SkipEmptyParts, empty entries don't appear in the result. By default, empty entries are kept.
 	 */
-	QUtfStringList split(const QUtfString &sep, int maxSplitCount = -1, QString::SplitBehavior behavior = QString::KeepEmptyParts, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+    QUtfStringList split(const QUtfString &sep, int maxSplitCount = -1, Qt::SplitBehavior behavior = Qt::KeepEmptyParts, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
 
 	/**
 	 * This function overloads split().
 	 */
-	QUtfStringList split(const QUtfChar &sep, int maxSplitCount = -1, QString::SplitBehavior behavior = QString::KeepEmptyParts, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+    QUtfStringList split(const QUtfChar &sep, int maxSplitCount = -1, Qt::SplitBehavior behavior = Qt::KeepEmptyParts, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
 
 	/**
 	 * This function overloads split().
 	 */
-	QUtfStringList split(const QUtfRegExp &rx, int maxSplitCount = -1, QString::SplitBehavior behavior = QString::KeepEmptyParts) const;
+    QUtfStringList split(const QUtfRegExp &rx, int maxSplitCount = -1, Qt::SplitBehavior behavior = Qt::KeepEmptyParts) const;
 
 	/**
 	 * Releases any memory not required to store the character data.

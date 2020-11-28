@@ -15,7 +15,7 @@ LIBS += -lnetapi32
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.5.0
+VERSION   = 1.5.1
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
@@ -26,16 +26,18 @@ win32-g++*: TARGET     = "Eyes\' Thanks"
 
 CONFIG  += DEPLOY
 
+# Maintain Qt tool - Qt/Developer and designer tools/OpenSSL Toolkit/binaries
+
 CONFIG(release, debug|release) {
     win32-g++* {
         contains(QT_ARCH, i386) {
             message("$$BUILD_TIME mingw x86 build")
             DESTDIR  =   $$PWD/../../EyesThanksX86
-            SSLDLLDIR = $$PWD/../../../openssl-1.1.1d-win32-mingw
+            SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL/Win_x86/bin
         } else {
             message("$$BUILD_TIME mingw x86_64 build")
             DESTDIR =   $$PWD/../../EyesThanksX86_64
-            SSLDLLDIR = $$PWD/../../../openssl-1.1.1d-win64-mingw
+            SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL//Win_x64/bin
         }
     }
     win32-msvc* {

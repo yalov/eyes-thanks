@@ -41,7 +41,7 @@ inline static void CreateBlurredBackgroundForItem(const QGraphicsItem *item, QGr
 
 
 View::View(QWidget *parent): QGraphicsView(parent),
-    default_screen(QApplication::desktop()->screenGeometry(-1)),
+    default_screen(QGuiApplication::primaryScreen()->geometry()),
     desktop(QApplication::desktop()->geometry())
 {
     setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -142,7 +142,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
     QString display_case;
     int variants = 0;
 
-    QList<QString> folders({setting.imagesPath, setting.imagesPathAlternative});
+    const QList<QString> folders({setting.imagesPath, setting.imagesPathAlternative});
 
 
     for (const auto& folder : folders)
@@ -229,13 +229,13 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
                 .arg(ratio_desk, 4, 'f', 2).arg(str_from(desktop.size()))
                 .arg(default_screen == desktop?"single screen":"full desktop ");
 
-        if (QApplication::desktop()->screenCount() > 1)
-            for (int i = 0; i < QApplication::desktop()->screenCount(); i++) {
-                QRect scr_i = QApplication::desktop()->screenGeometry(i);
+        if (QGuiApplication::screens().count() > 1)
+            for (int i = 0; i < QGuiApplication::screens().count(); i++) {
+                QRect scr_i = QGuiApplication::screens()[i]->geometry();
                 Logging_str += QString(" - - %4 screen #%1      %2  %3\n").arg(i)
                         .arg(qreal(scr_i.width()) / scr_i.height(), 4, 'f', 2)
                         .arg(str_from(scr_i))
-                        .arg(QApplication::desktop()->primaryScreen() == i?"default":"       ");
+                        .arg(QGuiApplication::primaryScreen() == QGuiApplication::screens()[i]?"default":"       ");
             }
 
 
@@ -661,8 +661,8 @@ void View::SetPredeterminedBackground()
             QString title = QString("Wake up, %1...").arg(name);
 
             QFontMetrics tfm(font_foreground);
-            qDebug() <<"tfm.width(name)"<< tfm.width(title) << default_screen.width();
-            while (tfm.width(title) > default_screen.width() * 0.6)
+            qDebug() <<"tfm.horizontalAdvance(name)"<< tfm.horizontalAdvance(title) << default_screen.width();
+            while (tfm.horizontalAdvance(title) > default_screen.width() * 0.6)
             {
                 font_foreground.setPointSizeF(font_foreground.pointSizeF()/1.2);
                 tfm = QFontMetrics(font_foreground);
