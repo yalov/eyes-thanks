@@ -1,4 +1,9 @@
 
+
+## Version 1.5.1
+ * updated to Qt 5.15.2 LTS
+ * added a setting option "Skip break when running fullscreen apps" (@Enna1)
+
 ## Version 1.5.0
  * fixed alternative folder doesn't loaded
  * updated to Qt 5.12.5 LTS and OpenSSL 1.1.1d
