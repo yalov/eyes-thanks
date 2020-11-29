@@ -26,7 +26,8 @@ win32-g++*: TARGET     = "Eyes\' Thanks"
 
 CONFIG  += DEPLOY
 
-# Maintain Qt tool - Qt/Developer and designer tools/OpenSSL Toolkit/binaries
+# OpenSSL binary provided by the Qt Maintenance Tool
+# Qt/Developer and designer tools/OpenSSL Toolkit/binaries
 
 CONFIG(release, debug|release) {
     win32-g++* {

@@ -788,9 +788,18 @@ bool View::CheckIsForegroundFullScreen()
         switch (pquns) {
         case QUNS_BUSY:
         case QUNS_RUNNING_D3D_FULL_SCREEN:
-        case QUNS_PRESENTATION_MODE:
+        case QUNS_PRESENTATION_MODE: {
+            if (setting.isLogging) {
+                QString Logging_str = "FullScreen activity is detected. The break is aborted.";
+                LogToFile("LoggingDisplay.txt", Logging_str);
+            }
             return true;
+        }
         default:
+            // QUNS_NOT_PRESENT,
+            // QUNS_ACCEPTS_NOTIFICATIONS,
+            // QUNS_QUIET_TIME,
+            // QUNS_APP
             return false;
         }
     }
