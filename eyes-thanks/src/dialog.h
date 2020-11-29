@@ -91,6 +91,7 @@ private:
     QComboBox *Combobox_imageAspectMode{};
     QCheckBox *CheckBox_Clock{};
     QCheckBox *CheckBox_Message{};
+    QCheckBox *CheckBox_FullScreen {};
     QCheckBox *CheckBox_Logging{};
     QCheckBox *CheckBox_PrettyFont{};
     QCheckBox *CheckBox_Text{};

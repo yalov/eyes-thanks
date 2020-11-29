@@ -27,6 +27,7 @@ struct Setting
     bool isText{};
     bool isClock{};
     bool isMessage30sec{};
+    bool isSkipWhenFullScreen{};
     bool isPrettyFont{};
     bool isStartupLink{};
     QString text{};
@@ -42,12 +43,12 @@ inline bool operator==(const Setting &lhs, const Setting &rhs)
 {
     return std::tie(lhs.running_counter, lhs.pauseInterval, lhs.pauseDuration, lhs.imagesPath,
                     lhs.imagesPathAlternative, lhs.imageAspectMode, lhs.iconsMode, lhs.isLogging, lhs.isText,
-                    lhs.isClock, lhs.isMessage30sec, lhs.isPrettyFont, lhs.isStartupLink, lhs.text, lhs.isSpectrum,
-                    lhs.isTiling, lhs.isStripes, lhs.isCircle, lhs.isCircles, lhs.isNeo)
+                    lhs.isClock, lhs.isMessage30sec, lhs.isSkipWhenFullScreen, lhs.isPrettyFont, lhs.isStartupLink,
+                    lhs.text, lhs.isSpectrum, lhs.isTiling, lhs.isStripes, lhs.isCircle, lhs.isCircles, lhs.isNeo)
             == std::tie(rhs.running_counter, rhs.pauseInterval, rhs.pauseDuration, rhs.imagesPath,
                         rhs.imagesPathAlternative, rhs.imageAspectMode, rhs.iconsMode, rhs.isLogging, rhs.isText,
-                        rhs.isClock, rhs.isMessage30sec, rhs.isPrettyFont, rhs.isStartupLink, rhs.text, rhs.isSpectrum,
-                        rhs.isTiling, rhs.isStripes, rhs.isCircle, rhs.isCircles, rhs.isNeo);
+                        rhs.isClock, rhs.isMessage30sec, rhs.isSkipWhenFullScreen, rhs.isPrettyFont, rhs.isStartupLink,
+                        rhs.text, rhs.isSpectrum, rhs.isTiling, rhs.isStripes, rhs.isCircle, rhs.isCircles, rhs.isNeo);
 }
 
 inline bool operator!=(const Setting &lhs, const Setting &rhs)

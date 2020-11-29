@@ -75,6 +75,7 @@ void Dialog::InitWidgets()
 
     CheckBox_Clock       = new QCheckBox();
     CheckBox_Message     = new QCheckBox();
+    CheckBox_FullScreen  = new QCheckBox();
     CheckBox_Logging     = new QCheckBox();
     CheckBox_PrettyFont  = new QCheckBox();
     CheckBox_Text        = new QCheckBox();
@@ -110,6 +111,7 @@ void Dialog::InitWidgets()
     layoutGrid_Tab1->addWidget(Label_BreakDuration,         2, 0);
     layoutGrid_Tab1->addWidget(Spinbox_BreakDuration, 2, 1);
     layoutGrid_Tab1->addWidget(CheckBox_Message,        3, 0, 1, 2);
+    layoutGrid_Tab1->addWidget(CheckBox_FullScreen,     4, 0, 1, 2);
 
     layoutGrid_Tab1->setColumnStretch(0, 2);
     layoutGrid_Tab1->setColumnStretch(1, 1);
@@ -269,6 +271,7 @@ void Dialog::InitConnectWidgetsChanged()
 
     connect(CheckBox_Clock,       SIGNAL(clicked()), this, SLOT(SaveButton_status()));
     connect(CheckBox_Message,     SIGNAL(clicked()), this, SLOT(SaveButton_status()));
+    connect(CheckBox_FullScreen,  SIGNAL(clicked()), this, SLOT(SaveButton_status()));
     connect(CheckBox_Logging,     SIGNAL(clicked()), this, SLOT(SaveButton_status()));
     connect(CheckBox_PrettyFont,  SIGNAL(clicked()), this, SLOT(SaveButton_status()));
     connect(CheckBox_Text,        SIGNAL(clicked()), this, SLOT(SaveButton_status()));
@@ -303,6 +306,7 @@ void Dialog::SaveButton_status()
         CheckBox_Text->isChecked(),
         CheckBox_Clock->isChecked(),
         CheckBox_Message->isChecked(),
+        CheckBox_FullScreen->isChecked(),
         CheckBox_PrettyFont->isChecked(),
         CheckBox_StartupLink->isChecked(),
         TextEdit_Text->toPlainText(),
@@ -347,6 +351,7 @@ void Dialog::Translate()
     Combobox_iconsMode->setItemText(2, tr("White"));
 
     CheckBox_Message->setText(tr("30-sec message"));
+    CheckBox_FullScreen->setText(tr("Skip break when running fullscreen apps"));
     CheckBox_Logging->setText(tr("Logging to .txt"));
     CheckBox_StartupLink->setText(tr("Run on Windows startup"));
 
@@ -429,6 +434,7 @@ void Dialog::SetValues(const Setting &setting)
     CheckBox_Text->setChecked(setting.isText);
     CheckBox_Clock->setChecked(setting.isClock);
     CheckBox_Message->setChecked(setting.isMessage30sec);
+    CheckBox_FullScreen->setChecked(setting.isSkipWhenFullScreen);
     CheckBox_PrettyFont->setChecked(setting.isPrettyFont);
     CheckBox_StartupLink->setChecked(setting.isStartupLink);
     TextEdit_Text->setEnabled(setting.isText);
@@ -513,6 +519,7 @@ void Dialog::SaveValues()
         CheckBox_Text->isChecked(),
         CheckBox_Clock->isChecked(),
         CheckBox_Message->isChecked(),
+        CheckBox_FullScreen->isChecked(),
         CheckBox_PrettyFont->isChecked(),
         CheckBox_StartupLink->isChecked(),
         TextEdit_Text->toPlainText(),
