@@ -179,6 +179,7 @@ void TrayIcon::readSettings()
 
     setting.isClock         = settings.value("clock_enabled", true).toBool();
     setting.isMessage30sec  = settings.value("message_enabled", true).toBool();
+    setting.isSkipWhenFullScreen = settings.value("skipWhenFullScreen_enabled", true).toBool();
     setting.isLogging       = settings.value("logging_enabled", false).toBool();
     setting.isText          = settings.value("text_enabled", false).toBool();
     setting.isPrettyFont    = settings.value("prettyFont_enabled", true).toBool();
@@ -278,6 +279,7 @@ void TrayIcon::writeSettings()
 
     qsettings.setValue("clock_enabled",          setting.isClock);
     qsettings.setValue("message_enabled",        setting.isMessage30sec);
+    qsettings.setValue("skipWhenFullScreen_enabled", setting.isSkipWhenFullScreen);
     qsettings.setValue("logging_enabled",        setting.isLogging);
     qsettings.setValue("prettyFont_enabled",     setting.isPrettyFont);
     qsettings.setValue("startupLink_enabled",    setting.isStartupLink);

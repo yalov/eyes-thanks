@@ -13,6 +13,7 @@
 
 #include <QGraphicsBlurEffect>
 #include <lm.h>
+#include <shellapi.h>
 
 
 inline QString str_from(QRect r)
@@ -79,6 +80,11 @@ struct Image{
 void View::ShowRefreshment(const QString &clock, const QString &text, const  Setting &_setting, Timer *viewtimer)
 {
     setting = _setting;
+
+    // Skip break when running fullscreen apps
+    if (setting.isSkipWhenFullScreen && CheckIsForegroundFullScreen())
+        return;
+
     QElapsedTimer timer; timer.start();
     myscene->setSceneRect(desktop);
     const qreal ratio_desk = desktop.ratio();
@@ -772,6 +778,23 @@ void View::SaveSceneToFile(QString dir_path)
     bool done = image.save(dir_path + QDir::separator() + QString("m%1-%2.png")
                            .arg(methodName, QDateTime::currentDateTime().toString("yyyyMMdd-HHmmsszzz")));
     qDebug() << "SaveSceneToFile is" << done << "by" << timer.elapsed() << "ms.";
+}
+
+bool View::CheckIsForegroundFullScreen()
+{
+    QUERY_USER_NOTIFICATION_STATE pquns;
+    HRESULT err = SHQueryUserNotificationState(&pquns);
+    if (!err) {
+        switch (pquns) {
+        case QUNS_BUSY:
+        case QUNS_RUNNING_D3D_FULL_SCREEN:
+        case QUNS_PRESENTATION_MODE:
+            return true;
+        default:
+            return false;
+        }
+    }
+    return false;
 }
 
 void View::UpdateValues(const QString &remains_str, const qreal &ratio)

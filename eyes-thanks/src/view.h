@@ -80,6 +80,8 @@ private:
     void SetPredeterminedBackground();
     QString SetImageBackground(qreal ratio_pic, QPixmap pic);
     void SaveSceneToFile(QString dir_path);
+    bool CheckIsForegroundFullScreen();
+
 
     const Rect default_screen;
     const Rect desktop;
