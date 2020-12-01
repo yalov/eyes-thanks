@@ -61,7 +61,7 @@ void Timer::qtimer_timeout()
             if (file.open(QIODevice::Append)) {
                 QTextStream out(&file);
                 out << QString("%1, start view, elapsed = %2, elapsed_summand = %3\n")
-                    .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss")).arg(elapsed()).arg(elapsed_summand);
+                    .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")).arg(elapsed()).arg(elapsed_summand);
                 file.close();
             }
         }

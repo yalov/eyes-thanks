@@ -217,7 +217,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
         }
 
         Logging_str += QString("%1 Display case = %2, %3 ms., items = %4\n")
-                .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
+                .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"))
                 .arg(display_case).arg(timer.elapsed()).arg(myscene->items().size());
 
         for (int i = 0; i < images.size(); i++) {
@@ -787,10 +787,23 @@ bool View::CheckIsForegroundFullScreen()
     if (!err) {
         switch (pquns) {
         case QUNS_BUSY:
+            if (setting.isLogging) {
+                QString Logging_str = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") +
+                        " FullScreen QUNS_BUSY activity is detected. The break is aborted.";
+                LogToFile("LoggingDisplay.txt", Logging_str);
+            }
+            return true;
         case QUNS_RUNNING_D3D_FULL_SCREEN:
+            if (setting.isLogging) {
+                QString Logging_str = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") +
+                        " FullScreen QUNS_RUNNING_D3D_FULL_SCREEN activity is detected. The break is aborted.";
+                LogToFile("LoggingDisplay.txt", Logging_str);
+            }
+            return true;
         case QUNS_PRESENTATION_MODE: {
             if (setting.isLogging) {
-                QString Logging_str = "FullScreen activity is detected. The break is aborted.";
+                QString Logging_str = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") +
+                        " FullScreen QUNS_PRESENTATION_MODE activity is detected. The break is aborted.";
                 LogToFile("LoggingDisplay.txt", Logging_str);
             }
             return true;

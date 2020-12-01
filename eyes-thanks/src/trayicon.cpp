@@ -610,7 +610,7 @@ void TrayIcon::DialogUpdateTime()
     if (setting.isMessage30sec && remains < 30000 && !TrayMessageShowed) {
         if (setting.isLogging) {
             QString message = QString("%1, 30sec'message. remains = %2;")
-                              .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"))
+                              .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"))
                               .arg(remains);
 
             LogToFile("LoggingTimer.txt", message);
