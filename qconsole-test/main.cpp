@@ -1,5 +1,5 @@
 #include <QApplication>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
 #include <QDebug>
 #include <QString>
 #include <QXmlStreamWriter>
@@ -11,6 +11,7 @@
 #include <QtWidgets/QApplication>
 
 #include "transliteration-iso9a.h"
+#include "charactersets.h"
 #include "global.h"
 
 #include <stdio.h>
@@ -37,6 +38,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QString>
+#include <QTextBoundaryFinder>
 
 void f1 () {
     QVector<QString> list = {
@@ -83,13 +85,14 @@ void f1 () {
 
     for (auto name: list) {
         qDebug() << list.indexOf(name);
-        LogToFile("names.txt", QString("%1; %2; %3")
+        LogToFile("names.txt", QString("%1; %2")
                   .arg(name,40)
                   .arg(transliteraction(name),40)
                   );
 }
 }
 
+#ifdef false
 void f2 () {
     QString str = "ЩZҐ";//u8"ЩZҐ";
     QChar z = u'Z';
@@ -110,6 +113,7 @@ void f2 () {
         if (c == 'Z') qDebug()<<"c =" << c << "is \'Z\'";
     }
 }
+
 
 void f3() {
     QString str = QString("'’") + QChar(0x02BC);
@@ -141,6 +145,8 @@ QList<QString> f4()
 
     return s;
 }
+
+#endif
 
 struct Asset
 {
@@ -197,19 +203,50 @@ Asset json_test(const QByteArray & json_text)
     return asset;
 }
 
-
-int main()
+void f5()
 {
     QFile loadFile(QStringLiteral("d:/Downloads/releases.json"));
 
     if (!loadFile.open(QIODevice::ReadOnly)) {
         qWarning("Couldn't open save file.");
-        return -1;
+        return;
     }
 
     QByteArray saveData = loadFile.readAll();
 
     Asset a = json_test(saveData);
     qDebug() << a.toString();
+}
 
+
+void GraphemeCounter(QString s)
+{
+    qDebug()  << "String: " << s;
+    qDebug()  << "Code unit count       : " << s.length();
+
+    QTextBoundaryFinder tbf(QTextBoundaryFinder::Grapheme, s);
+    int count=0;
+    while(tbf.toNextBoundary()!=-1) ++count;
+
+    qDebug() << "QTextBoundaryFinder::Grapheme count: " << count;
+
+    qDebug() << "toUcs4 count: " << s.toUcs4().size();
+
+    QDebug deb = qDebug();
+    foreach (auto c, s.toUcs4())
+        deb << QChar::fromUcs4(c);
+
+}
+
+int main()
+{
+    QString test = "a" + QString::fromUtf16(u"\U0001D161") + "a";
+    GraphemeCounter(test);
+
+    QString  a = QString::fromUtf16(u"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟");
+    GraphemeCounter(a);
+
+
+    const QString s=QString::fromUtf8(u8"abc\U00010139def\U00010102g");
+    GraphemeCounter(s);
 }

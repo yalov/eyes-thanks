@@ -15,7 +15,6 @@
 #include <QPushButton>
 #include <QGraphicsTextItem>
 #include <QApplication>
-#include <QDesktopWidget>
 
 #include "global.h"
 #include "timer.h"
@@ -24,6 +23,7 @@
 
 class Rect : public QRect {
 public:
+    Rect(): QRect(){}
     Rect(const QRect r): QRect(r) {}
     inline qreal  widthF() const { return qreal(width()); }
     inline qreal heightF() const { return qreal(height()); }
@@ -48,7 +48,7 @@ class View : public QGraphicsView {
     Q_OBJECT
 
 public:
-    explicit View(QWidget *parent = nullptr);
+    View(QWidget *parent = nullptr);
 
     enum Methods {
         SPECTRUM,
@@ -83,8 +83,8 @@ private:
     bool CheckIsForegroundFullScreen();
 
 
-    const Rect default_screen;
-    const Rect desktop;
+    Rect default_screen;
+    Rect desktop;
 
     QString picture_path;
 

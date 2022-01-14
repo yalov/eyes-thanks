@@ -4,8 +4,6 @@
 //      GNU General Public License 3                                                //
 //----------------------------------------------------------------------------------//
 
-#include "../qutfstring/QUtfString.h"
-#include "../qutfstring/QUtfStringList.h"
 #include "view.h"
 
 #include "transliteration-iso9a.h"
@@ -15,6 +13,9 @@
 #include <lm.h>
 #include <shellapi.h>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QDesktopWidget>
+#endif
 
 inline QString str_from(QRect r)
 {
@@ -41,10 +42,31 @@ inline static void CreateBlurredBackgroundForItem(const QGraphicsItem *item, QGr
 }
 
 
-View::View(QWidget *parent): QGraphicsView(parent),
-    default_screen(QGuiApplication::primaryScreen()->geometry()),
-    desktop(QApplication::desktop()->geometry())
+View::View(QWidget *parent): QGraphicsView(parent)
+
 {
+    /*
+    int x=0,y=0,w=0,h=0;
+    for (auto s : QGuiApplication::screens())
+    {
+         if (x< s->geometry().x())                           x = s->geometry().x();
+         if (y< s->geometry().y())                           y = s->geometry().y();
+         if (w< s->geometry().x() + s->geometry().width())   w = s->geometry().x() + s->geometry().width();
+         if (h< s->geometry().y() + s->geometry().height())  h = s->geometry().y() + s->geometry().height();
+    }
+    desktop = Rect(QRect(x,y,w,h));
+    */
+
+    //desktop = QRect(0,0,1920,1080);
+    //desktop =QGuiApplication::screens().first()->virtualGeometry();
+
+    default_screen = QGuiApplication::primaryScreen()->geometry();
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    desktop = QApplication::desktop()->geometry();
+#endif
+    //LogToFile("LoggingTest.txt", str_from(desktop));
+
     setWindowFlags(Qt::WindowStaysOnTopHint);
 
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
@@ -74,7 +96,7 @@ struct Image{
     QPixmap pic;
     qreal ratio {};
     QString path;
-    int count {};       // Count of image in the same folder;
+    qsizetype count {};       // Count of image in the same folder;
 };
 
 void View::ShowRefreshment(const QString &clock, const QString &text, const  Setting &_setting, Timer *viewtimer)
@@ -193,7 +215,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
 
     if (variants) {
         int variant = Random(variants);
-        qDebug() << QString("variant: {1}/{2}").arg(variant,variants);
+        qDebug() << QString("variant: %1th of %2").arg(variant).arg(variants);
         if (variant < image.count)
             display_case = SetImageBackground(image.ratio, image.pic);
         else{
@@ -696,12 +718,12 @@ void View::SetPredeterminedBackground()
 
         CharacterSets characterSets(":res/character_sets.xml");
         //              -------
-        int chs_index = Random(characterSets.size());
+        characterSets.ChooseRandomCurrentSet();
         //              -------
-        QUtfString characters = characterSets.get_characters(chs_index);
-        QUtfString title = characterSets.get_title(chs_index);
+        auto characters = characterSets.currentCharacters;
+        auto title = characterSets.currentTitle;
 
-        qDebug() << "unicode symbols ="  << characters.size();
+        //qDebug() << "unicode symbols ="  << characters.size();
         if (!title.isEmpty())
             for (int index = 0, max = title.size(); index < max; index++) {
                 QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
@@ -709,7 +731,7 @@ void View::SetPredeterminedBackground()
                 item->setBrush(Qt::darkGreen);
                 item->setPen(Qt::NoPen);
                 item->setFont(font_background);
-                item->setText(QUtfString(title.at(index)));
+                item->setText(QString(title.at(index)));
                 item->setPos(default_screen.topLeft() + QPointF(basic_width - item->boundingRect().width() / 2, index * basic_height));
             }
 
@@ -723,7 +745,7 @@ void View::SetPredeterminedBackground()
                 item->setFont(font_background);
 
                 int charIndex = Random(characters.size());
-                QUtfString character = characters.at(charIndex);
+                QString character = characters.at(charIndex);
 
                 item->setText(character);
                 item->setPos(pos_x - item->boundingRect().width() / 2, pos_y);
@@ -741,7 +763,7 @@ void View::SetPredeterminedBackground()
                 item->setFont(font_background);
 
                 int charIndex = Random(characters.size());
-                QUtfString character = characters.at(charIndex);
+                QString character = characters.at(charIndex);
 
                 item->setText(character);
                 item->setPos(pos_x - item->boundingRect().width() / 2, pos_y);

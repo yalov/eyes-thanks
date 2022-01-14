@@ -15,8 +15,11 @@
 #include <QPlainTextEdit>
 #include <QSpinBox>
 #include <QGroupBox>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QWinTaskbarButton>
 #include <QWinTaskbarProgress>
+#endif
 
 #include "global.h"
 
@@ -98,8 +101,11 @@ private:
     QCheckBox *CheckBox_StartupLink{};
     QPushButton *ButtonGenerateText{};
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QWinTaskbarButton *TaskbarButton{};
     QWinTaskbarProgress *TaskbarProgress{};
+#endif
+
 };
 
 #endif // DIALOG_H

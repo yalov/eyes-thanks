@@ -5,8 +5,8 @@
 #----------------------------------------------------------------------------------#
 
 include("functions.pri")
-include("../qutfstring/include.pri")
-message("")
+#include("../qutfstring/include.pri")
+message(" ")
 message("$$BUILD_TIME eyes-thanks.pro")
 
 # For NetUserGetInfo()
@@ -15,7 +15,7 @@ LIBS += -lnetapi32
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.5.1
+VERSION   = 1.5.2
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
@@ -24,43 +24,58 @@ PATREON_URL  = https://patreon.com/yalov
 win32-msvc*: TARGET    = "EyesThanks"
 win32-g++*: TARGET     = "Eyes\' Thanks"
 
-CONFIG  += DEPLOY
+#CONFIG  += DEPLOY
 
 # OpenSSL binary provided by the Qt Maintenance Tool
 # Qt/Developer and designer tools/OpenSSL Toolkit/binaries
 
-CONFIG(release, debug|release) {
-    win32-g++* {
-        contains(QT_ARCH, i386) {
-            message("$$BUILD_TIME mingw x86 build")
-            DESTDIR  =   $$PWD/../../EyesThanksX86
-            SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL/Win_x86/bin
-        } else {
-            message("$$BUILD_TIME mingw x86_64 build")
-            DESTDIR =   $$PWD/../../EyesThanksX86_64
-            SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL//Win_x64/bin
-        }
-    }
-    win32-msvc* {
-        contains(QT_ARCH, i386) {
-            message("$$BUILD_TIME msvc x86 build")
-            DESTDIR =   $$PWD/../../EyesThanksMSVC32
-        } else {
-            message("$$BUILD_TIME msvc x86_64 build")
-            DESTDIR =   $$PWD/../../EyesThanksMSVC64
-        }
-    }
 
+
+TEMPLATE = app
+
+QT      += core gui network widgets
+
+lessThan(QT_MAJOR_VERSION, 6){
+    QT += winextras
+
+    CONFIG(release, debug|release) {
+        win32-g++* {
+            contains(QT_ARCH, i386) {
+                message("$$BUILD_TIME mingw x86 build")
+                DESTDIR  =   $$PWD/../../EyesThanksX86
+                SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL/Win_x86/bin
+            } else {
+                message("$$BUILD_TIME mingw x86_64 build")
+                DESTDIR =   $$PWD/../../EyesThanksX64
+                SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL/Win_x64/bin
+            }
+        }
+        win32-msvc* {
+            contains(QT_ARCH, i386) {
+                message("$$BUILD_TIME msvc x86 build")
+                DESTDIR =   $$PWD/../../EyesThanksMSVC32
+            } else {
+                message("$$BUILD_TIME msvc x86_64 build")
+                DESTDIR =   $$PWD/../../EyesThanksMSVC64
+            }
+        }
+
+    }
 }
+
+greaterThan(QT_MAJOR_VERSION, 5){
+message("$$BUILD_TIME qt6")
+DESTDIR =   $$PWD/../../EyesThanksQt6
+SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL/Win_x64/bin
+}
+
+
 
 # subfolders in debug and release folder
 OBJECTS_DIR = $$OUT_PWD/.obj
 MOC_DIR     = $$OUT_PWD/.moc
 RCC_DIR     = $$OUT_PWD/.qrc
 UI_DIR      = $$OUT_PWD/.ui
-
-TEMPLATE = app
-QT      += core gui network widgets winextras
 
 # no debug and release subfolder in debug and release folder
 CONFIG -= debug_and_release

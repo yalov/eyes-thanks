@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QVector>
 
+
 inline bool check_rus_compatibility(const QString& input)
 {
     bool compatibility = true;
@@ -38,7 +39,10 @@ inline QString transliteraction(const QString& input)
 
     if(file.open(QIODevice::ReadOnly)) {
         QTextStream in(&file);
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         in.setCodec("UTF-8");
+#endif
         while(!in.atEnd())
             table.append(in.readLine().split(" "));
         file.close();

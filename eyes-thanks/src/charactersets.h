@@ -2,11 +2,9 @@
 #define XML_H
 
 #include <QList>
-#include "QUtfString.h"
 
 class CharacterSets
 {
-
     public:
         CharacterSets(const QString& filepath);
         ~CharacterSets();
@@ -14,13 +12,17 @@ class CharacterSets
         void read(const QString& filepath);
 
         int size();
-        QUtfString get_title(int index);
-        QUtfString get_characters(int index);
+        QString get_title(int index);
+        QString get_characters(int index);
+        int ChooseRandomCurrentSet();
+        QList<QString> currentCharacters;
+        QList<QString> currentTitle;
 
     private:
         struct Set;
         QList<Set> * sets{};
-        int randomSet {-1};
+
+        int randomSetIndex {-1};
 };
 
 #endif // XML_H

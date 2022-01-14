@@ -1,4 +1,5 @@
 #include "charactersets.h"
+#include "global.h"
 
 #include <QFile>
 #include <QXmlStreamWriter>
@@ -36,7 +37,7 @@ void CharacterSets::read(const QString &filepath)
 
         while (!xml.atEnd()) {
             xml.readNext();
-            if (xml.isStartElement() && xml.name() == "set")
+            if (xml.isStartElement() && xml.name() == QLatin1String("set"))
             {
                 Set c;
                 for(auto &attr: xml.attributes()) {
@@ -47,13 +48,13 @@ void CharacterSets::read(const QString &filepath)
                 }
                 while (xml.readNextStartElement())
                 {
-                    if (xml.name() == "comment") c.comment = xml.readElementText();
-                    if (xml.name() == "title") c.title = xml.readElementText();
-                    if (xml.name() == "characters")
+                    if (xml.name() == QLatin1String("comment")) c.comment = xml.readElementText();
+                    if (xml.name() == QLatin1String("title")) c.title = xml.readElementText();
+                    if (xml.name() == QLatin1String("characters"))
                     {
                         c.characters = xml.readElementText();
                     }
-                    if (xml.name() == "character")
+                    if (xml.name() == QLatin1String("character"))
                     {
                         c.compositecharacters.append(xml.readElementText());
                     }
@@ -73,13 +74,13 @@ int CharacterSets::size() {
 }
 
 
-QUtfString CharacterSets::get_title(int index){
+QString CharacterSets::get_title(int index){
     return sets->at(index).title;
 }
 
 
-QUtfString CharacterSets::get_characters(int index){
-    QUtfString chars = "";
+QString CharacterSets::get_characters(int index){
+    QString chars = "";
     chars +=  sets->at(index).characters;
 
     for(const auto & ch : sets->at(index).compositecharacters)
@@ -88,6 +89,47 @@ QUtfString CharacterSets::get_characters(int index){
     }
 
     return chars;
+}
+
+int CharacterSets::ChooseRandomCurrentSet()
+{
+    randomSetIndex = Random(size());
+    //randomSetIndex = 5; // Gothic Alphabet (surrogate pair)
+
+    currentCharacters = {};
+    currentTitle = {};
+
+    for(const auto & ucs4 : sets->at(randomSetIndex).characters.toUcs4())
+    {
+
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+        auto ch = QChar::fromUcs4(ucs4);
+        QString s; s += ch;
+#else
+        auto s = QString::fromUcs4(&ucs4,1);
+#endif
+
+        currentCharacters.append(s);
+    }
+
+    for(const auto & ch : sets->at(randomSetIndex).compositecharacters)
+    {
+        currentCharacters.append(ch);
+    }
+
+    for(const auto & ucs4 : sets->at(randomSetIndex).title.toUcs4())
+    {
+
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+        auto ch = QChar::fromUcs4(ucs4);
+        QString s; s += ch;
+#else
+        auto s = QString::fromUcs4(&ucs4,1);
+#endif
+        currentTitle.append(s);
+    }
+
+    return randomSetIndex;
 }
 
 

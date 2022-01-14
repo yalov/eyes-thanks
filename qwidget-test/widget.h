@@ -18,6 +18,7 @@ public slots:
 private:
    QPushButton * bp;
    QTextEdit * edit;
+   QLabel * label;
 
 
 };

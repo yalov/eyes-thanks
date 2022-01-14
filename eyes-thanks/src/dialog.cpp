@@ -232,11 +232,13 @@ void Dialog::InitWidgets()
     TopLayout->addLayout(layout_buttons);
 
 #ifdef Q_OS_WIN32
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 
     TaskbarButton = new QWinTaskbarButton(this);
     TaskbarProgress = TaskbarButton->progress();
     TaskbarProgress->setVisible(true);
 
+#endif
 #endif
 
     connect(ButtonPath, SIGNAL(clicked()), this, SLOT(ButtonPath_clicked()));
@@ -401,7 +403,9 @@ void Dialog::Translate()
 void Dialog::showEvent(QShowEvent *e)
 {
 #ifdef Q_OS_WIN32
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     TaskbarButton->setWindow(windowHandle());
+#endif
 #endif
 
     e->accept();
@@ -448,14 +452,16 @@ void Dialog::SetValues(const Setting &setting)
 void Dialog::UpdateLabel(const QString &time, const qreal &ratio)
 {
     Label_Timer->setText(time);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     TaskbarProgress->setValue(qRound(ratio * 100));
+#endif
 }
 
 
 void Dialog::UpdateLabelPause(const QString &time, const qreal &ratio)
 {
     Label_Timer->setText(time);
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if (ratio >= 0) {
         TaskbarProgress->resume();
         TaskbarProgress->setValue(qRound(ratio * 100));
@@ -464,6 +470,7 @@ void Dialog::UpdateLabelPause(const QString &time, const qreal &ratio)
         TaskbarProgress->pause();
         TaskbarProgress->setValue(qRound(-ratio * 100));
     }
+#endif
 }
 
 bool Dialog::event(QEvent *event)

@@ -162,8 +162,9 @@ void TrayIcon::createContextMenu()
 void TrayIcon::readSettings()
 {
     QSettings settings("settings.ini", QSettings::IniFormat);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     settings.setIniCodec("utf8");
-
+#endif
     settings.beginGroup("Settings");
     loadLanguage(settings.value("lang", QLocale::system().name().split('_').front()).toString());
     setting.running_counter         = settings.value("counter", 0).toInt();
@@ -263,8 +264,9 @@ bool TrayIcon::CheckStartupLink(){
 void TrayIcon::writeSettings()
 {
     QSettings qsettings("settings.ini", QSettings::IniFormat);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     qsettings.setIniCodec("utf8");
-
+#endif
     qsettings.beginGroup("Settings");
     qsettings.setValue("lang",                   LangCurrent);
     qsettings.setValue("counter",                setting.running_counter);

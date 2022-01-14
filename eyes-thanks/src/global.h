@@ -61,7 +61,11 @@ inline static void LogToFile(const QString& filepath, const QString& text, bool 
     QFile file(filepath);
     if (file.open(append ? QIODevice::Append : QIODevice::WriteOnly)) {
         QTextStream out(&file);
+
+        #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         out.setCodec("UTF-8");
+        #endif
+
         out << text << "\n";
         file.close();
     }
