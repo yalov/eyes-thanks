@@ -70,19 +70,22 @@ void TrayIcon::createLangActionGroup()
 
     for (const auto& fileName : fileNames) { // "lang_ru.qm"
         QTranslator translator;
-        translator.load(fileName, LangPath);
+        bool success = translator.load(fileName, LangPath);
 
-        auto locale = fileName.split('.').first().split('_').last();  // en, ru
+        if (success)
+        {
+            auto locale = fileName.split('.').first().split('_').last();  // en, ru
 
-        if (locale == "en") haveEnglish_qm = true;
+            if (locale == "en") haveEnglish_qm = true;
 
-        QString lang = translator.translate("App", "Language_name");
+            QString lang = translator.translate("App", "Language_name");
 
-        QAction *action = new QAction(lang, this);
-        action->setCheckable(true);
-        action->setData(locale);
+            QAction *action = new QAction(lang, this);
+            action->setCheckable(true);
+            action->setData(locale);
 
-        LangActGroup->addAction(action);
+            LangActGroup->addAction(action);
+        }
     }
 
     if (!haveEnglish_qm) {

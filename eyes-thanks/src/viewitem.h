@@ -20,6 +20,7 @@ private:
     bool IsProgressBar;
     qreal width{};
     qreal height{};
+    QRectF boundingRect() const;
 };
 
 #endif // VIEWITEM_H

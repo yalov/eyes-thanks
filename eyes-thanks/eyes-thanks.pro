@@ -15,16 +15,16 @@ LIBS += -lnetapi32
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.5.2
+VERSION   = 1.6.0
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
 PATREON_URL  = https://patreon.com/yalov
 
 win32-msvc*: TARGET    = "EyesThanks"
-win32-g++*: TARGET     = "Eyes\' Thanks"
+win32-g++*: TARGET     = "EyesThanks"
 
-#CONFIG  += DEPLOY
+CONFIG  += DEPLOY
 
 # OpenSSL binary provided by the Qt Maintenance Tool
 # Qt/Developer and designer tools/OpenSSL Toolkit/binaries
@@ -46,7 +46,7 @@ lessThan(QT_MAJOR_VERSION, 6){
                 SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL/Win_x86/bin
             } else {
                 message("$$BUILD_TIME mingw x86_64 build")
-                DESTDIR =   $$PWD/../../EyesThanksX64
+                DESTDIR =   $$PWD/../../EyesThanksX86_64
                 SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL/Win_x64/bin
             }
         }
@@ -64,9 +64,9 @@ lessThan(QT_MAJOR_VERSION, 6){
 }
 
 greaterThan(QT_MAJOR_VERSION, 5){
-message("$$BUILD_TIME qt6")
-DESTDIR =   $$PWD/../../EyesThanksQt6
-SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL/Win_x64/bin
+    message("$$BUILD_TIME qt6")
+    DESTDIR =   $$PWD/../../EyesThanksQt6
+    SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL/Win_x64/bin
 }
 
 
@@ -105,7 +105,8 @@ SOURCES  += src/dialog.cpp \
             src/updater.cpp \
             src/timer.cpp \
             src/charactersets.cpp \
-            src/viewitem.cpp
+            src/viewitem.cpp \
+            src/viewrandompolygon.cpp
 
 
 HEADERS  += src/aboutwindow.h \
@@ -117,7 +118,8 @@ HEADERS  += src/aboutwindow.h \
             src/global.h \
             src/transliteration-iso9a.h \
             src/charactersets.h \
-            src/viewitem.h
+            src/viewitem.h \
+            src/viewrandompolygon.h
 
 
 TRANSLATIONS += languages/lang_en.ts languages/lang_ru.ts
@@ -137,7 +139,8 @@ CONFIG(release, debug|release) {
         win32-g++* {
             message("$$BUILD_TIME windeployqt")
 
-            windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)
+            windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw)
+            # windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)
 
             removeDirRecursive($$DESTDIR/bearer)
 
@@ -146,6 +149,7 @@ CONFIG(release, debug|release) {
 
             copyFilesToDir($${SSLDLLDIR}/*.dll, $$DESTDIR)
             copyFilesToDir($$PWD/../ChangeLog.md, $$DESTDIR)
+            message("$$DESTDIR")
         }
     }
 }

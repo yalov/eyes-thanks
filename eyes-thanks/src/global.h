@@ -76,4 +76,11 @@ inline static T Random(T highest_bound)
 {
     return QRandomGenerator::global()->bounded(highest_bound);
 }
+
+
+template<class T>
+inline static T Random(T lowest_bound, T highest_bound)
+{
+    return QRandomGenerator::global()->bounded(lowest_bound, highest_bound);
+}
 #endif // GLOBAL_H

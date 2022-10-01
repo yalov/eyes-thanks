@@ -13,6 +13,7 @@
 #include <lm.h>
 #include <shellapi.h>
 
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QDesktopWidget>
 #endif
@@ -41,37 +42,30 @@ inline static void CreateBlurredBackgroundForItem(const QGraphicsItem *item, QGr
     scene->addItem(rect);
 }
 
-
 View::View(QWidget *parent): QGraphicsView(parent)
 
 {
-    /*
-    int x=0,y=0,w=0,h=0;
-    for (auto s : QGuiApplication::screens())
-    {
-         if (x< s->geometry().x())                           x = s->geometry().x();
-         if (y< s->geometry().y())                           y = s->geometry().y();
-         if (w< s->geometry().x() + s->geometry().width())   w = s->geometry().x() + s->geometry().width();
-         if (h< s->geometry().y() + s->geometry().height())  h = s->geometry().y() + s->geometry().height();
-    }
-    desktop = Rect(QRect(x,y,w,h));
-    */
-
-    //desktop = QRect(0,0,1920,1080);
-    //desktop =QGuiApplication::screens().first()->virtualGeometry();
-
     default_screen = QGuiApplication::primaryScreen()->geometry();
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     desktop = QApplication::desktop()->geometry();
+#else
+    QRegion virtualGeometry;
+    for (auto screen : QGuiApplication::screens())
+    {
+      virtualGeometry += screen->geometry();
+    }
+    desktop = virtualGeometry.boundingRect();
 #endif
-    //LogToFile("LoggingTest.txt", str_from(desktop));
+    LogToFile("LoggingTest.txt", str_from(desktop));
 
     setWindowFlags(Qt::WindowStaysOnTopHint);
 
     setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     setAttribute(Qt::WA_DeleteOnClose);
     setRenderHint(QPainter::Antialiasing);
+    //setRenderHints(QPainter::SmoothPixmapTransform);
+
     setFocusPolicy(Qt::StrongFocus);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -124,7 +118,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
                                 default_screen.height() - ProgressBarItem->rect().height() - 25);
 
         ButtonItem->setSize(BUTTON_WIDTH, ProgressBarItem->rect().height());
-        ButtonItem->setPos(ProgressBarItem->sceneBoundingRect().topRight() + QPointF(25,0));
+        ButtonItem->setPos(ProgressBarItem->sceneTransform().map(ProgressBarItem->rect().topRight()) + QPointF(25,0));
     }
 
     // ClockItem and TextItem
@@ -348,6 +342,8 @@ void View::SetPredeterminedBackground()
     // 0 0.5 grey    // 1 1 - color
     // 0 1 - white
 
+    myscene->setBackgroundBrush(Qt::black);
+
     qreal Hue_start = Random(1.0);
 
     QElapsedTimer timer;
@@ -361,8 +357,9 @@ void View::SetPredeterminedBackground()
     case SPECTRUM: {
         QLinearGradient rainbow(desktop.topLeft(), desktop.topRight());
 
-        for (qreal hue = 0; hue <= 1.0; hue += 1. / 25) {
-            QColor c = QColor::fromHsvF(fmod(0 + hue * 0.8, 1), 1, 1);
+        for (int hue_int = 0; hue_int <= 25; hue_int ++) {
+            qreal hue = hue_int/25.0;
+            QColor c = QColor::fromHsvF(hue*0.8, 1, 1);
             rainbow.setColorAt(hue, c);
         }
         myscene->setBackgroundBrush(QBrush(rainbow));
@@ -569,11 +566,12 @@ void View::SetPredeterminedBackground()
     case STRIPES: {
         QLinearGradient rainbow(desktop.topLeft(), desktop.topRight());
 
-        for (qreal ratio = 0, hue = 0; ratio <= 1.0; ratio += 1. / 25) {
+        for (int hue_int = 0; hue_int <= 25; hue_int ++) {
+            qreal hue = hue_int/25.0;
             QColor c = QColor::fromHsvF(fmod(Hue_start + hue * 0.8, 1), 1, 0.9);
-            rainbow.setColorAt(1 - ratio, c);
-            hue += 1. / 25;
+            rainbow.setColorAt(hue, c);
         }
+
         myscene->setBackgroundBrush(QBrush(rainbow));
 
         qreal ratio = desktop.ratio();
@@ -584,45 +582,28 @@ void View::SetPredeterminedBackground()
         int stripe_segment = desktop.width() / int(stripes_count * k);
         int stripe_width = int(stripe_segment * 0.8);
 
-        bool stripes_gradient = Random(2);
-        if (stripes_gradient) {
-            for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
-                QGraphicsRectItem *item = new QGraphicsRectItem(desktop.left() + i, 0, stripe_width, desktop.height());
-                QLinearGradient grad(item->rect().topLeft(), item->rect().topRight());
-                grad.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0));
-                grad.setColorAt(0.5, QColor::fromRgbF(0, 0, 0, 0.9));
-                grad.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
-                item->setPen(Qt::NoPen);
-                item->setBrush(grad);
-                myscene->addItem(item);
-            }
+        for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
+            QGraphicsRectItem *item = new QGraphicsRectItem(desktop.left() + i, 0, stripe_width, desktop.height());
+            QLinearGradient grad(item->rect().topLeft(), item->rect().topRight());
+            grad.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0));
+            grad.setColorAt(0.5, QColor::fromRgbF(0, 0, 0, 0.9));
+            grad.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
+            item->setPen(Qt::NoPen);
+            item->setBrush(grad);
+            myscene->addItem(item);
         }
-        else {
-            stripe_width = int(stripe_segment * 0.4);
-            for (int i = -stripe_width / 2; i < desktop.width(); i = i + stripe_segment) {
-                QGraphicsLineItem *item = new QGraphicsLineItem(desktop.left() + i + stripe_width / 2, 0, desktop.left() + i + stripe_width / 2, desktop.height());
-                item->setPen(QPen(QColor(Qt::black), stripe_width));
-                item->setOpacity(0.7);
-                myscene->addItem(item);
-            }
-        }
+
         break;
     }
     case RANDOM_CIRCLE: {
         if (Item == nullptr) {
-            Item = new QGraphicsEllipseItem();
+            Item = new ViewRandomPolygon(desktop);
             myscene->addItem(Item);
         }
-
-        int diameter_dot = qMin(desktop.width(), desktop.height()) / 10;
-        QRect r(desktop.topLeft() +
-                QPoint(Random(desktop.width() - diameter_dot),
-                       Random(desktop.height() - diameter_dot)), QSize(diameter_dot, diameter_dot));
-
-        Item->setRect(r);
-        Item->setBrush(QColor::fromHsvF(Random(1.0), 1, 1, 0.5));
-
+        Item->setRandomPos(desktop);
+        Item->setRamdomColor();
         break;
+
     }
     case RANDOM_CIRCLES: {
         QGraphicsItemGroup *group =  new QGraphicsItemGroup();
@@ -850,7 +831,11 @@ void View::UpdateValues(const QString &remains_str, const qreal &ratio)
         clockItem->setText(QTime::currentTime().toString("hh:mm"));
 
     if (picture_path.isEmpty() && IsBackgroundUpdate)
+    {
+
         SetPredeterminedBackground();
+    }
+
 }
 
 void View::keyPressEvent(QKeyEvent *event)

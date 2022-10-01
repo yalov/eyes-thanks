@@ -19,6 +19,7 @@
 #include "global.h"
 #include "timer.h"
 #include "viewitem.h"
+#include "viewrandompolygon.h"
 
 
 class Rect : public QRect {
@@ -96,7 +97,7 @@ private:
 
     Setting setting{};
 
-    QGraphicsEllipseItem *Item{};
+    ViewRandomPolygon *Item{};
     int MethodIndex{-1};
     QList<int> MethodsEnabled;
     bool IsBackgroundUpdate{false};
