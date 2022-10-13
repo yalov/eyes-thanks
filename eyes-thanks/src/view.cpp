@@ -57,7 +57,7 @@ View::View(QWidget *parent): QGraphicsView(parent)
     }
     desktop = virtualGeometry.boundingRect();
 #endif
-    LogToFile("LoggingTest.txt", str_from(desktop));
+    //LogToFile("LoggingTest.txt", str_from(desktop));
 
     setWindowFlags(Qt::WindowStaysOnTopHint);
 
@@ -717,11 +717,14 @@ void View::SetPredeterminedBackground()
             }
 
         for (int pos_x = default_screen.left()+ basic_width * (title.isEmpty() ? 1 : 4); pos_x < desktop.right(); pos_x += basic_width * 3) {
-            int max_pos_y = int(1.0 / 4.0 * desktop.height() + 3.0 / 4.0 * Random(desktop.height()));
+            int max_pos_y = int(1.0 / 5.0 * desktop.height() + 3.5 / 5.0 * Random(desktop.height()));
             for (int pos_y = 0; pos_y < max_pos_y; pos_y += basic_height) {
                 QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
                 group->addToGroup(item);
-                item->setBrush(Qt::darkGreen);
+                if (abs(pos_y - max_pos_y) <= basic_height)
+                    item->setBrush(Qt::white);
+                else
+                    item->setBrush(Qt::darkGreen);
                 item->setPen(Qt::NoPen);
                 item->setFont(font_background);
 
@@ -739,7 +742,10 @@ void View::SetPredeterminedBackground()
             for (int pos_y = 0; pos_y < max_pos_y; pos_y += basic_height) {
                 QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
                 group->addToGroup(item);
-                item->setBrush(Qt::darkGreen);
+                if (abs(pos_y - max_pos_y) <= basic_height)
+                    item->setBrush(Qt::white);
+                else
+                    item->setBrush(Qt::darkGreen);
                 item->setPen(Qt::NoPen);
                 item->setFont(font_background);
 
