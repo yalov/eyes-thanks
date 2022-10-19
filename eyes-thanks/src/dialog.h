@@ -39,8 +39,8 @@ private:
     void InitConnectWidgetsChanged();
 
 public slots:
-    void UpdateLabel(const QString &time, const qreal &ratio);
-    void UpdateLabelPause(const QString &time, const qreal &ratio);
+    void UpdateLabel(const QString &time);
+    void UpdateLabelPause(const QString &time);
 
 private slots:
     void SaveValues();
@@ -100,11 +100,6 @@ private:
     QCheckBox *CheckBox_Text{};
     QCheckBox *CheckBox_StartupLink{};
     QPushButton *ButtonGenerateText{};
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QWinTaskbarButton *TaskbarButton{};
-    QWinTaskbarProgress *TaskbarProgress{};
-#endif
 
 };
 

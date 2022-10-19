@@ -48,13 +48,10 @@ public:
         const int spacing = 25;
 
         //OpenSSL 1.0.2j  26 Sep 2016
-        QRegularExpression re(R"(\d+\.\d+\.\S+)");
+        QString ssl_CT = QSslSocket::sslLibraryBuildVersionString();
+        QString ssl_RT = QSslSocket::sslLibraryVersionString();
 
-        QString OpenSSL_inQT_RT = re.match(QSslSocket::sslLibraryBuildVersionString()).captured();
-        QString OpenSSL_RT = re.match(QSslSocket::sslLibraryVersionString()).captured();
-
-        if (OpenSSL_RT == "")
-            OpenSSL_RT = "missing dlls";
+        ssl_CT.remove(QRegularExpression(R"(\s*\d+ \S{3} \d+\s*)"));
 
 #ifdef _WIN32
         QIcon aboutIcon     = QIcon(":icons/help-about.png");
@@ -104,12 +101,12 @@ public:
                 QString(
                     "<p align = center>"
                     "%1<br>"
-                    "Qt %2 %3<br>"
-                    "OpenSSL %4 %5"
+                    "Qt %2<br>"
+                    "%4"
                     "</p>"
                 ).arg(CompilerInfo(),
-                      "<nobr>" + Qt_CT + "</nobr>", Qt_CT != Qt_RT?" / <nobr>" + Qt_RT + "</nobr>":QString(),
-                      "<nobr>" +  OpenSSL_inQT_RT + "</nobr>", OpenSSL_inQT_RT != OpenSSL_RT?" / <nobr>" + OpenSSL_RT + "</nobr>":QString()
+                      "<nobr>" + Qt_CT + "</nobr>",
+                      "<nobr>" +  ssl_CT + "</nobr>"
                      ) +
 
                 QString(
