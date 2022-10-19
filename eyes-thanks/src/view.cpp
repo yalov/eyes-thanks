@@ -6,12 +6,14 @@
 
 #include "view.h"
 
-#include "transliteration-iso9a.h"
-#include "charactersets.h"
 
+#include "charactersets.h"
+#include "transliteration-iso9a.h"
 #include <QGraphicsBlurEffect>
 #include <lm.h>
-#include <shellapi.h>
+//#include <shellapi.h>
+//#include <lmerr.h>
+//#include <lmapibuf.h>
 
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -143,7 +145,7 @@ void View::ShowRefreshment(const QString &clock, const QString &text, const  Set
             myscene->addItem(clockItem);
         }
 
-        if (setting.isText && MethodIndex != NEO) {
+        if (setting.isText || MethodIndex == NEO) {
             textItem = new QGraphicsSimpleTextItem();
             textItem->setText(text);
             textItem->setFont(font);
@@ -606,28 +608,69 @@ void View::SetPredeterminedBackground()
 
     }
     case RANDOM_CIRCLES: {
-        QGraphicsItemGroup *group =  new QGraphicsItemGroup();
-        myscene->addItem(group);
-
         int count_item = qRound(desktop.height() * desktop.width() / (1920.0 * 1080.0) * 100);
         for (int i = 0; i < count_item; i++) {
             int diameter_dot = Random(100) + 50;
             QRect r(desktop.topLeft() +
-                    QPoint(Random(desktop.width() - diameter_dot),
-                           Random(desktop.height() - diameter_dot)), QSize(diameter_dot, diameter_dot));
+                    QPoint(Random(desktop.width() - diameter_dot), Random(desktop.height() - diameter_dot)),
+                    QSize(diameter_dot, diameter_dot));
 
             QGraphicsEllipseItem *item = new QGraphicsEllipseItem(r);
             item->setBrush(QColor::fromHsvF(fmod(Hue_start + qreal(i) / count_item / 2, 1), 1, 1));
             item->setPen(Qt::NoPen);
             item->setOpacity(qreal(i) / count_item / 2);
-            group->addToGroup(item);
+            myscene->addItem(item);
         }
 
         break;
     }
     case NEO: {
-        QFont font_background("FreeSerif Mod", 17);
-        QFont font_foreground("FreeSerif Mod", 100);
+
+        // chance to show a username
+        if (Random(5) == 0) {
+            QString name;
+
+            // Trying to get "Windows 10 Username"
+            // or, presicely, name in the Computer Management->Local Users and Groups->Users->Properties
+            if (name.isEmpty()) {
+                WCHAR userName[UNLEN+1];
+                DWORD userNameCount = UNLEN+1;
+                LPUSER_INFO_2 pBuf = nullptr;
+
+                GetUserNameW( userName, &userNameCount );
+                name = QString::fromWCharArray(userName); // local username
+
+                if (NetUserGetInfo(nullptr, userName, 2, reinterpret_cast<LPBYTE*>(&pBuf)) == NERR_Success && pBuf != nullptr){
+                    QStringList full_name = QString::fromWCharArray( pBuf->usri2_full_name ).split(" ");
+                    // take the longest from user names: James T.K. -> James
+                    if (!full_name.isEmpty())
+                        name = *std::max_element(full_name.begin(), full_name.end(),[](QString& a, QString& b) { return a.size() < b.size(); } );
+
+                    NetApiBufferFree(pBuf);
+                }
+            }
+
+            // in the case was some problems
+            // with getting full name
+            if (name.isEmpty()) name = qEnvironmentVariable("USER");
+            if (name.isEmpty()) name = qEnvironmentVariable("USERNAME");
+
+            name = transliteraction(name);
+
+            QString title = QString("Wake up, %1...").arg(name);
+
+            if (textItem)
+            {
+                textItem->setBrush(QColor(0, 128, 0));
+                textItem->setPen(Qt::NoPen);
+                textItem->setFont(QFont("FreeSerif Mod", textItem->font().pointSize()));
+                textItem->setOpacity(1);
+                textItem->setText(title);
+                CreateBlurredBackgroundForItem(textItem, myscene);
+            }
+        } else {
+            if (textItem)    myscene->removeItem(textItem);
+        }
 
         if (clockItem) {
             clockItem->setBrush(QColor(0, 128, 0));
@@ -636,60 +679,9 @@ void View::SetPredeterminedBackground()
             clockItem->setOpacity(1);
             CreateBlurredBackgroundForItem(clockItem, myscene);
         }
-        if (textItem)
-            myscene->removeItem(textItem);
 
-        if (Random(5) == 0) { // chance to show a username
-            QString name;
 
-            if (name.isEmpty()){  // Trying to get Windows 10 Username
-                TCHAR  infoBuf[32767];
-                DWORD  bufCharCount = 32767;
-
-                GetUserName( infoBuf, &bufCharCount );
-                LPUSER_INFO_0 pBuf = nullptr;
-                NetUserGetInfo(nullptr,infoBuf,2, reinterpret_cast<LPBYTE*>(&pBuf));   // infoBuf - username
-                if (pBuf != nullptr)
-                {
-                    LPUSER_INFO_2 pBuf2 = LPUSER_INFO_2(pBuf);
-                    QStringList full_name = QString::fromWCharArray( pBuf2->usri2_full_name ).split(" ");
-                    // take the largest from user names: James T.K. -> James
-                    std::sort(full_name.begin(), full_name.end(),[](QString& a, QString& b) { return a.size() < b.size(); } );
-                    name = transliteraction(full_name.last());
-                    qDebug() << "full_name" << full_name;
-                }
-            }
-
-            // trying to get at least username
-            if (name.isEmpty()) name = transliteraction(qgetenv("USER"));
-            if (name.isEmpty()) name = transliteraction(qgetenv("USERNAME"));
-
-            if (name.isEmpty() || name == "User" || name.size() > 50 || (Random(5) == 0))
-                name = QString("Neo");
-
-            QString title = QString("Wake up, %1...").arg(name);
-
-            QFontMetrics tfm(font_foreground);
-            qDebug() <<"tfm.horizontalAdvance(name)"<< tfm.horizontalAdvance(title) << default_screen.width();
-            while (tfm.horizontalAdvance(title) > default_screen.width() * 0.6)
-            {
-                font_foreground.setPointSizeF(font_foreground.pointSizeF()/1.2);
-                tfm = QFontMetrics(font_foreground);
-                qDebug() <<font_foreground.pointSizeF();
-            }
-
-            QGraphicsSimpleTextItem *centerTextItem = new QGraphicsSimpleTextItem();
-            myscene->addItem(centerTextItem);
-            centerTextItem->setText(title);
-            centerTextItem->setBrush(QColor(0, 48, 0));
-            centerTextItem->setPen(QPen(QColor(0, 255, 0), 2));
-            centerTextItem->setFont(font_foreground);
-            centerTextItem->setZValue(3);
-            qDebug()<< centerTextItem->boundingRect().center();
-            centerTextItem->setPos(default_screen.center() - centerTextItem->boundingRect().center());
-
-        }
-
+        QFont font_background("FreeSerif Mod", 17);
         QFontMetrics fm(font_background);
         int basic_height =  fm.boundingRect("А").height();
         int basic_width =  fm.boundingRect("А").width();
@@ -706,7 +698,7 @@ void View::SetPredeterminedBackground()
 
         //qDebug() << "unicode symbols ="  << characters.size();
         if (!title.isEmpty())
-            for (int index = 0, max = title.size(); index < max; index++) {
+            for (int index = 0; index < title.size(); index++) {
                 QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
                 group->addToGroup(item);
                 item->setBrush(Qt::darkGreen);
@@ -718,13 +710,15 @@ void View::SetPredeterminedBackground()
 
         for (int pos_x = default_screen.left()+ basic_width * (title.isEmpty() ? 1 : 4); pos_x < desktop.right(); pos_x += basic_width * 3) {
             int max_pos_y = int(1.0 / 5.0 * desktop.height() + 3.5 / 5.0 * Random(desktop.height()));
-            for (int pos_y = 0; pos_y < max_pos_y; pos_y += basic_height) {
+            int min_pos_y = int(max_pos_y - desktop.height()/2.0);  // could be < 0
+            for (int pos_y = qMax(0,min_pos_y); pos_y < max_pos_y; pos_y += basic_height) {
+                qreal rel_pos =  qreal(pos_y-min_pos_y)/(max_pos_y-min_pos_y);
                 QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
                 group->addToGroup(item);
                 if (abs(pos_y - max_pos_y) <= basic_height)
-                    item->setBrush(Qt::white);
+                    item->setBrush(QColor(128,255,128));
                 else
-                    item->setBrush(Qt::darkGreen);
+                    item->setBrush(QColor(0,rel_pos*255,0));
                 item->setPen(Qt::NoPen);
                 item->setFont(font_background);
 
@@ -738,14 +732,16 @@ void View::SetPredeterminedBackground()
         }
 
         for (int pos_x = default_screen.left() -2 * basic_width; pos_x >  desktop.left(); pos_x -= basic_width * 3) {
-            int max_pos_y = int(1.0 / 4.0 * desktop.height() + 3.0 / 4.0 * Random( desktop.height()));
-            for (int pos_y = 0; pos_y < max_pos_y; pos_y += basic_height) {
+            int max_pos_y = int(1.0 / 5.0 * desktop.height() + 3.5 / 5.0 * Random(desktop.height()));
+            int min_pos_y = int(max_pos_y - desktop.height()/2.0);  // could be < 0
+            for (int pos_y = qMax(0,min_pos_y); pos_y < max_pos_y; pos_y += basic_height) {
+                qreal rel_pos =  qreal(pos_y-min_pos_y)/(max_pos_y-min_pos_y);
                 QGraphicsSimpleTextItem *item = new  QGraphicsSimpleTextItem();
                 group->addToGroup(item);
                 if (abs(pos_y - max_pos_y) <= basic_height)
-                    item->setBrush(Qt::white);
+                    item->setBrush(QColor(128,255,128));
                 else
-                    item->setBrush(Qt::darkGreen);
+                    item->setBrush(QColor(0,rel_pos*255,0));
                 item->setPen(Qt::NoPen);
                 item->setFont(font_background);
 
