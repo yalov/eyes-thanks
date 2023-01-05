@@ -15,14 +15,14 @@ LIBS += -lnetapi32
 
 
 APP_NAME  = "Eyes’ Thanks"
-VERSION   = 1.6.1
+VERSION   = 1.5.3
 DEV_NAME  = Alexander Yalov
 DEV_EMAIL = alexander.yalov@gmail.com
 REPO_URL  = https://github.com/yalov/eyes-thanks
 PATREON_URL  = https://patreon.com/yalov
 
 win32-msvc*: TARGET    = "EyesThanks"
-win32-g++*: TARGET     = "EyesThanks"
+win32-g++*: TARGET     = "Eyes' Thanks"
 
 CONFIG  += DEPLOY
 
@@ -36,7 +36,7 @@ TEMPLATE = app
 QT      += core gui network widgets
 
 lessThan(QT_MAJOR_VERSION, 6){
-    QT += winextras
+    #QT += winextras
 
     CONFIG(release, debug|release) {
         win32-g++* {
@@ -139,8 +139,8 @@ CONFIG(release, debug|release) {
         win32-g++* {
             message("$$BUILD_TIME windeployqt")
 
-            windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw)
-            # windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)
+            greaterThan(QT_MAJOR_VERSION, 5):windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw)
+            lessThan(QT_MAJOR_VERSION, 6):windeployqtInDESTDIR(--compiler-runtime --no-svg --no-system-d3d-compiler --no-translations --no-opengl-sw --no-angle)
 
             removeDirRecursive($$DESTDIR/bearer)
 

@@ -16,11 +16,6 @@
 #include <QSpinBox>
 #include <QGroupBox>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QWinTaskbarButton>
-#include <QWinTaskbarProgress>
-#endif
-
 #include "global.h"
 
 

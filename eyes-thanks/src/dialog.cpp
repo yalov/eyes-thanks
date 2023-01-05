@@ -316,7 +316,6 @@ void Dialog::SaveButton_status()
         buttonSave->setEnabled(false);
 }
 
-
 void Dialog::Translate()
 {
     // mutual

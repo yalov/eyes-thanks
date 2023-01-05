@@ -1,6 +1,6 @@
 #include "viewrandompolygon.h"
 #include "global.h"
-
+#include <QtMath>
 #include <QBrush>
 
 
