@@ -1,5 +1,13 @@
 #include "widget.h"
 
+
+#include <iostream>
+#include <lmaccess.h>
+#include <lmerr.h>
+
+#include <tchar.h>
+
+
 QString XmlReader()
 {
     QString s = "";
@@ -17,7 +25,7 @@ QString XmlReader()
                 qDebug() << "text: " << s;
                 qDebug() << "name: " << xml.name();
                 qDebug() << "text: "<< xml.readElementText();
-                qDebug() << "count: " << xml.readElementText().count();
+                qDebug() << "count: " << xml.readElementText().size();
 
             }
         }
@@ -75,8 +83,44 @@ Widget::Widget(QWidget *parent)
 
 void Widget::Button_click(bool)
 {
-    QString s = edit->toPlainText();
-    label->setText(GraphemeCounter(s));
+    //QString s = edit->toPlainText();
+    //label->setText(GraphemeCounter(s));
+
+
+    QString name;
+    TCHAR  infoBuf[32767];
+    DWORD  bufCharCount = 32767;
+
+    GetUserName( infoBuf, &bufCharCount );
+    qDebug() << "infoBuf " << infoBuf;
+
+    LPUSER_INFO_0 pBuf = nullptr;
+    NetUserGetInfo(nullptr,infoBuf,2, reinterpret_cast<LPBYTE*>(&pBuf));   // infoBuf - username
+    if (pBuf != nullptr)
+    {
+        LPUSER_INFO_2 pBuf2 = LPUSER_INFO_2(pBuf);
+        name = QString::fromWCharArray( pBuf2->usri2_full_name );
+    }
+
+    qDebug() << "name :" << name;
+
+    label->setText("|" + name + "|");
+
+
+//    if(NetUserGetInfo(NULL, infoBuf, 24, (LPBYTE*)&pBuf) == NERR_Success)
+//    {
+//        LPUSER_INFO_24 pBuf24 = LPUSER_INFO_24(pBuf);
+//        wchar_t * sPrincipalName = pBuf24->usri24_internet_principal_name;
+
+//        QString s = QString::fromWCharArray(sPrincipalName);
+
+//        label->setText(s);
+
+//        qDebug() << "s: " << *sPrincipalName;
+//        std::wcout << sPrincipalName;
+//        _tprintf( TEXT("\nUser name:          %s"), sPrincipalName );
+
+//    }
 
     //label->setText(label->text() + s);
 

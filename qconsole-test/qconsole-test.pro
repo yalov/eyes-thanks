@@ -3,14 +3,23 @@ TARGET = ConsoleAppTest
 
 INCLUDEPATH += $$PWD/../eyes-thanks/src
 
+# For NetUserGetInfo()
+LIBS += -ladvapi32
+LIBS += -lnetapi32
+
 QT -= gui
 QT += widgets
 
-CONFIG += c++14
+CONFIG += c++17
 CONFIG += console
 CONFIG -= app_bundle
 
-SOURCES += main.cpp
+CONFIG += municode
+
+SOURCES += \
+    main.cpp \
+    main2.cpp \
+    main3.cpp
 
 # subfolders in debug and release folder
 OBJECTS_DIR = $$OUT_PWD/.obj
