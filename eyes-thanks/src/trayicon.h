@@ -28,8 +28,8 @@ public:
     //~TrayIcon();
 
 signals:
-    void updateLabel(const QString &text, const qreal &ratio);
-    void updateLabelPause(const QString &text, const qreal &ratio);
+    void updateLabel(const QString &text);
+    void updateLabelPause(const QString &text);
     void show_refreshment(QString, QString, Setting, Timer*);
 
 private slots:

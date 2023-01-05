@@ -368,7 +368,7 @@ void TrayIcon::Pause()
 
         auto pause_str = QString(" (%1)").arg(tr("Pause"));
         setToolTip(qApp->translate("App", "Until break") + ": " + TimeRemains + pause_str);
-        emit updateLabelPause(DialogTimer->remains_str() + pause_str, -DialogTimer->ratio());
+        emit updateLabelPause(DialogTimer->remains_str() + pause_str);
     }
     else {
         setPauseAct(true);
@@ -376,7 +376,7 @@ void TrayIcon::Pause()
 
         setCurrentIconbyCurrentIconRatio();
 
-        emit updateLabelPause(DialogTimer->remains_str(), DialogTimer->ratio());
+        emit updateLabelPause(DialogTimer->remains_str());
     }
 }
 
@@ -579,8 +579,8 @@ void TrayIcon::ShowDialog()
 
     connect(dialog, SIGNAL(TimerStatusRequest()), this, SLOT(DialogUpdateTime()));
 
-    connect(this, SIGNAL(updateLabel(QString, qreal)), dialog, SLOT(UpdateLabel(QString, qreal)));
-    connect(this, SIGNAL(updateLabelPause(QString, qreal)), dialog, SLOT(UpdateLabelPause(QString, qreal)));
+    connect(this, SIGNAL(updateLabel(QString)), dialog, SLOT(UpdateLabel(QString)));
+    connect(this, SIGNAL(updateLabelPause(QString)), dialog, SLOT(UpdateLabelPause(QString)));
 
     ShowSettingAct->setEnabled(false);
 
@@ -602,12 +602,12 @@ void TrayIcon::DialogUpdateTime()
 
     if (ViewTimer->isActive()) {
         if (DialogTimer->isActive())
-            emit updateLabel(TimeRemains, ratio);
+            emit updateLabel(TimeRemains);
         else
-            emit updateLabel(TimeRemains +  " (" + tr("Pause") + ")", -ratio);
+            emit updateLabel(TimeRemains +  " (" + tr("Pause") + ")");
     }
     else{
-            emit updateLabelPause(TimeRemains, ratio);
+            emit updateLabelPause(TimeRemains);
     }
 
     setToolTip(qApp->translate("App", "Until break") + ": " + TimeRemains);

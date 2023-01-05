@@ -16,6 +16,7 @@
 
 #include <QDir>
 
+
 struct UpdateAction::Asset
 {
     QString version{};
@@ -144,7 +145,7 @@ void UpdateAction::replyFinished(QNetworkReply *reply)
         else
             text = tr("Fantastic! You have <b>Eyes' Thanks %1</b>, "
                       "but last available version is <b>%2</b>.<br><br>"
-                      "Please, upload new version to <a href=%3>%3</a>.").arg(APP_VERSION,asset.version,REPO_URL);
+                      "Please, upload new version to <a href=%3>%3</a>.").arg(APP_VERSION).arg(asset.version).arg(REPO_URL);
 
         mbx->setText(text);
     }
