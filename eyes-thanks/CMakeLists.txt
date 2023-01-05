@@ -5,15 +5,24 @@ message(STATUS "project: " ${PROJECT_NAME})
 file(GLOB source_files src/*.c src/*.cpp)
 file(GLOB header_files src/*.h src/*.hpp)
 
-find_package(Qt6 COMPONENTS Widgets LinguistTools
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools
 REQUIRED)
 
 qt_create_translation(QM_FILES
  ${CMAKE_SOURCE_DIR} languages/lang_en.ts languages/lang_ru.ts)
 
+if (Qt6_FOUND)
 qt_add_executable(${PROJECT_NAME}
     ${source_files} ${header_files} ${QM_FILES}
 )
+endif()
+
+if (NOT Qt6_FOUND)
+add_executable(${PROJECT_NAME}
+    ${source_files} ${header_files} ${QM_FILES}
+)
+endif()
+
 
 #target_compile_definitions(eyes-thanks PRIVATE
 #    #QT_USE_QSTRINGBUILDER
@@ -111,9 +120,13 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
+if (Qt6_FOUND)
 qt_generate_deploy_app_script(
     TARGET ${PROJECT_NAME}
     FILENAME_VARIABLE deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR
 )
 install(SCRIPT ${deploy_script})
+endif()
+
+

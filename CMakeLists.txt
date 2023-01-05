@@ -8,10 +8,23 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
+message(STATUS "QT_VERSION_MAJOR: " ${QT_VERSION_MAJOR})
+
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Network Widgets)
 #find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS WinExtras)
 
+if (Qt6_FOUND)
+message(STATUS "Qt6_FOUND")
 qt_standard_project_setup()
+endif()
+
+if (NOT Qt6_FOUND)
+message(STATUS "NOT Qt6_FOUND")
+    set(CMAKE_AUTOMOC ON)
+    set(CMAKE_AUTORCC ON)
+    set(CMAKE_AUTOUIC ON)
+endif()
+
 
 
 add_subdirectory(eyes-thanks)
