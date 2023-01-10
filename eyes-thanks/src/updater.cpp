@@ -141,7 +141,7 @@ void UpdateAction::replyFinished(QNetworkReply *reply)
             text = tr("A new version of <b>Eyes' Thanks</b> has been released! "
                       "Version <b>%1</b> is available at <a href=%2>%2</a>.<br><br>"
                       "Download:<br>"
-                      "%3").arg(asset.version,REPO_URL,asset.links.join("<br>"));
+                      "%3").arg(asset.version).arg(REPO_URL).arg(asset.links.join("<br>"));
         else
             text = tr("Fantastic! You have <b>Eyes' Thanks %1</b>, "
                       "but last available version is <b>%2</b>.<br><br>"

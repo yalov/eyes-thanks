@@ -319,7 +319,7 @@ void Dialog::SaveButton_status()
 void Dialog::Translate()
 {
     // mutual
-    setWindowTitle(qApp->translate("App", "Eyes' Thanks") + " v"+ APP_VERSION);
+    setWindowTitle(qApp->translate("App", "Eyes' Thanks") + " v"+ QString(APP_VERSION));
     Label_Timer_Prefix->setText(qApp->translate("App", "Until break") + ":");
     buttonSave->setText(tr("Save"));
     buttonMinimizeToSystemTray->setText(tr("Close to notification area"));
