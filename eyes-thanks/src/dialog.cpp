@@ -67,8 +67,8 @@ void Dialog::InitWidgets()
 
     CheckBox_Spectrum        = new QCheckBox();
     CheckBox_Tiling         = new QCheckBox();
-    CheckBox_Random_circle  = new QCheckBox();
-    CheckBox_Random_circles = new QCheckBox();
+    CheckBox_JumpingFigure  = new QCheckBox();
+    CheckBox_Circles = new QCheckBox();
     CheckBox_Neo            = new QCheckBox();
     CheckBox_Stripes        = new QCheckBox();
 
@@ -172,8 +172,8 @@ void Dialog::InitWidgets()
     layout_PredeterminedBackground->addWidget(CheckBox_Spectrum       ,3,0);
     layout_PredeterminedBackground->addWidget(CheckBox_Tiling         ,4,0);
     layout_PredeterminedBackground->addWidget(CheckBox_Stripes        ,5,0);
-    layout_PredeterminedBackground->addWidget(CheckBox_Random_circle  ,3,1);
-    layout_PredeterminedBackground->addWidget(CheckBox_Random_circles ,4,1);
+    layout_PredeterminedBackground->addWidget(CheckBox_JumpingFigure  ,3,1);
+    layout_PredeterminedBackground->addWidget(CheckBox_Circles ,4,1);
     layout_PredeterminedBackground->addWidget(CheckBox_Neo            ,5,1);
 
     GroupBox_Foreground = new QGroupBox();
@@ -272,8 +272,8 @@ void Dialog::InitConnectWidgetsChanged()
     connect(CheckBox_Spectrum      , SIGNAL(clicked()), this, SLOT(SaveButton_status()));
     connect(CheckBox_Tiling        , SIGNAL(clicked()), this, SLOT(SaveButton_status()));
     connect(CheckBox_Stripes       , SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_Random_circle , SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_Random_circles, SIGNAL(clicked()), this, SLOT(SaveButton_status()));
+    connect(CheckBox_JumpingFigure , SIGNAL(clicked()), this, SLOT(SaveButton_status()));
+    connect(CheckBox_Circles, SIGNAL(clicked()), this, SLOT(SaveButton_status()));
     connect(CheckBox_Neo           , SIGNAL(clicked()), this, SLOT(SaveButton_status()));
 }
 
@@ -305,8 +305,8 @@ void Dialog::SaveButton_status()
         CheckBox_Spectrum->isChecked(),
         CheckBox_Tiling->isChecked(),
         CheckBox_Stripes       ->isChecked(),
-        CheckBox_Random_circle ->isChecked(),
-        CheckBox_Random_circles->isChecked(),
+        CheckBox_JumpingFigure ->isChecked(),
+        CheckBox_Circles->isChecked(),
         CheckBox_Neo           ->isChecked()
     };
 
@@ -364,8 +364,8 @@ void Dialog::Translate()
     CheckBox_Spectrum       ->setText(tr("Spectrum"));
     CheckBox_Tiling         ->setText(tr("Tiling"));
     CheckBox_Stripes        ->setText(tr("Stripes"));
-    CheckBox_Random_circle  ->setText(tr("Circle"));
-    CheckBox_Random_circles ->setText(tr("Circles"));
+    CheckBox_JumpingFigure  ->setText(tr("Figure"));
+    CheckBox_Circles ->setText(tr("Circles"));
     CheckBox_Neo            ->setText(tr("Neo"));
 
 
@@ -413,8 +413,8 @@ void Dialog::SetValues(const Setting &setting)
     CheckBox_Spectrum      ->setChecked(setting.isSpectrum      );
     CheckBox_Tiling        ->setChecked(setting.isTiling        );
     CheckBox_Stripes       ->setChecked(setting.isStripes       );
-    CheckBox_Random_circle ->setChecked(setting.isCircle );
-    CheckBox_Random_circles->setChecked(setting.isCircles);
+    CheckBox_JumpingFigure ->setChecked(setting.isCircle );
+    CheckBox_Circles->setChecked(setting.isCircles);
     CheckBox_Neo           ->setChecked(setting.isNeo           );
 
     CheckBox_Logging->setChecked(setting.isLogging);
@@ -503,8 +503,8 @@ void Dialog::SaveValues()
         CheckBox_Spectrum      ->isChecked(),
         CheckBox_Tiling        ->isChecked(),
         CheckBox_Stripes       ->isChecked(),
-        CheckBox_Random_circle ->isChecked(),
-        CheckBox_Random_circles->isChecked(),
+        CheckBox_JumpingFigure ->isChecked(),
+        CheckBox_Circles->isChecked(),
         CheckBox_Neo           ->isChecked()
     };
 

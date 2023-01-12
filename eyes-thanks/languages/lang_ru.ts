@@ -234,6 +234,11 @@ but in investing it.</translation>
         <translation>Сгенерированный фон</translation>
     </message>
     <message>
+        <location filename="../src/dialog.cpp" line="367"/>
+        <source>Figure</source>
+        <translation>Танцующий многоугольник</translation>
+    </message>
+    <message>
         <location filename="../src/dialog.cpp" line="373"/>
         <source>Clock</source>
         <translation>Показывать часы</translation>
@@ -326,9 +331,8 @@ So, connect laptop to monitor — app use 2FHD folder, laptop by itself — app 
         <translation>Радужные полосы</translation>
     </message>
     <message>
-        <location filename="../src/dialog.cpp" line="367"/>
         <source>Circle</source>
-        <translation>Интересный круг</translation>
+        <translation type="vanished">Интересный круг</translation>
     </message>
     <message>
         <location filename="../src/dialog.cpp" line="368"/>

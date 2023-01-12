@@ -42,21 +42,21 @@ lessThan(QT_MAJOR_VERSION, 6){
         win32-g++* {
             contains(QT_ARCH, i386) {
                 message("$$BUILD_TIME mingw x86 build")
-                DESTDIR  =   $$PWD/../../EyesThanksX86
+                DESTDIR  =   $$PWD/../../EyesThanks-gcc-x32
                 SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL/Win_x86/bin
             } else {
                 message("$$BUILD_TIME mingw x86_64 build")
-                DESTDIR =   $$PWD/../../EyesThanksX86_64
+                DESTDIR =   $$PWD/../../EyesThanks-gcc-x64
                 SSLDLLDIR = $$[QT_INSTALL_PREFIX]/../../Tools/OpenSSL/Win_x64/bin
             }
         }
         win32-msvc* {
             contains(QT_ARCH, i386) {
                 message("$$BUILD_TIME msvc x86 build")
-                DESTDIR =   $$PWD/../../EyesThanksMSVC32
+                DESTDIR =   $$PWD/../../EyesThanks-msvc-x32
             } else {
                 message("$$BUILD_TIME msvc x86_64 build")
-                DESTDIR =   $$PWD/../../EyesThanksMSVC64
+                DESTDIR =   $$PWD/../../EyesThanks-msvc-x64
             }
         }
 
@@ -129,7 +129,7 @@ RESOURCES    += resource.qrc
 
 CONFIG(release, debug|release) {
     DEPLOY {
-        message("$$BUILD_TIME deploy")
+        message("$$BUILD_TIME deploy $$QMAKE_CXXFLAGS_RELEASE")
         DEFINES += QT_NO_DEBUG_OUTPUT DEPLOY
 
         createDir($$DESTDIR/languages/)  # need to be there, tested

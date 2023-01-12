@@ -1,9 +1,9 @@
-## Version 1.6.0
- * updated to Qt 6.4 and OpenSSL 1.1.1j
- * update "Intresting Circle"
-
-## Version 1.5.2
+## Version 1.5.3
  * remove qutfstring dependency
+ * update "Intresting Circle"
+ * update NEO
+ * update about window
+ * remove Taskbar Progress feature
 
 ## Version 1.5.1
  * updated to Qt 5.15.2 LTS

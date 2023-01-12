@@ -81,8 +81,8 @@ private:
 
     QCheckBox *CheckBox_Spectrum{};
     QCheckBox *CheckBox_Tiling{};
-    QCheckBox *CheckBox_Random_circle{};
-    QCheckBox *CheckBox_Random_circles{};
+    QCheckBox *CheckBox_JumpingFigure{};
+    QCheckBox *CheckBox_Circles{};
     QCheckBox *CheckBox_Neo{};
     QCheckBox *CheckBox_Stripes{};
 
