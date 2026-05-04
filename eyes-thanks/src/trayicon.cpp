@@ -34,16 +34,14 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent)
     DialogTimer = new Timer(UPDATE_PERIOD_2, setting.pauseInterval, setting.isLogging);
     DialogTimer->start();
 
-    connect(ViewTimer, SIGNAL(update()), this, SLOT(ViewUpdateTime()));
-    connect(DialogTimer, SIGNAL(update()), this, SLOT(DialogUpdateTime()));
-    connect(DialogTimer, SIGNAL(finished()), this, SLOT(RefreshmentStart()));
-    connect(ViewTimer, SIGNAL(finished()), ViewTimer, SLOT(stop()));
+    connect(ViewTimer, &Timer::update, this, &TrayIcon::ViewUpdateTime);
+    connect(DialogTimer, &Timer::update, this, &TrayIcon::DialogUpdateTime);
+    connect(DialogTimer, &Timer::finished, this, &TrayIcon::RefreshmentStart);
+    connect(ViewTimer, &Timer::finished, ViewTimer, &Timer::stop);
 
-    connect(DialogTimer, SIGNAL(finished()), DialogTimer, SLOT(stop()));
+    connect(DialogTimer, &Timer::finished, DialogTimer, &Timer::stop);
 
-
-    connect(this, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-            this, SLOT(Activated(QSystemTrayIcon::ActivationReason)));
+    connect(this, &QSystemTrayIcon::activated, this, &TrayIcon::Activated);
 
 
     if (setting.running_counter == 1) ShowDialog();
@@ -61,7 +59,7 @@ void TrayIcon::createLangActionGroup()
 {
     LangActGroup = new QActionGroup(this);
     LangActGroup->setExclusive(true); // Mutually exclusive checking
-    connect(LangActGroup, SIGNAL(triggered(QAction *)), this, SLOT(LanguageChanged(QAction *)));
+    connect(LangActGroup, &QActionGroup::triggered, this, &TrayIcon::LanguageChanged);
 
     QDir dir(LangPath);
     QStringList fileNames = dir.entryList(QStringList("lang_*.qm"));
@@ -122,25 +120,25 @@ void TrayIcon::createActions()
 #endif
 
     TestAct        = new QAction(testIcon, "", this);
-    connect(TestAct, SIGNAL(triggered()), this, SLOT(RefreshmentStart()));
+    connect(TestAct, &QAction::triggered, this, &TrayIcon::RefreshmentStart);
 
     ShowSettingAct = new QAction(settingIcon, "", this);
-    connect(ShowSettingAct, SIGNAL(triggered()), this, SLOT(ShowDialog()));
+    connect(ShowSettingAct, &QAction::triggered, this, &TrayIcon::ShowDialog);
 
     PauseAct       = new QAction(pauseIcon, "", this);
-    connect(PauseAct, SIGNAL(triggered()), this, SLOT(Pause()));
+    connect(PauseAct, &QAction::triggered, this, &TrayIcon::Pause);
 
     SkipAct       = new QAction(skipIcon, "", this);
-    connect(SkipAct, SIGNAL(triggered()), this, SLOT(Restart()));
+    connect(SkipAct, &QAction::triggered, this, &TrayIcon::Restart);
 
 
     UpdaterAct       = new UpdateAction(updateIcon, "", this);
 
     AboutAct       = new QAction(aboutIcon, "", this);
-    connect(AboutAct, SIGNAL(triggered()), this, SLOT(About()));
+    connect(AboutAct, &QAction::triggered, this, &TrayIcon::About);
 
     QuitAct        = new QAction(quitIcon, "", this);
-    connect(QuitAct, SIGNAL(triggered()), this, SLOT(Quit()));
+    connect(QuitAct, &QAction::triggered, this, &TrayIcon::Quit);
 }
 
 void TrayIcon::createContextMenu()
@@ -532,55 +530,31 @@ void TrayIcon::setCurrentIcon(qreal ratio)
 
 void TrayIcon::initIcons()
 {
-    if (setting.iconsMode == IconsMode::light) {
-        ipp = QIcon(":icons/light/pp.png");
-        i00 = QIcon(":icons/light/00.png");
-        i02 = QIcon(":icons/light/12.png");
-        i04 = QIcon(":icons/light/25.png");
-        i06 = QIcon(":icons/light/37.png");
-        i08 = QIcon(":icons/light/50.png");
-        i10 = QIcon(":icons/light/62.png");
-        i12 = QIcon(":icons/light/75.png");
-        i14 = QIcon(":icons/light/87.png");
-        i15 = QIcon(":icons/light/95.png");
-
-    }
-    else if (setting.iconsMode == IconsMode::dark) {
-        ipp = QIcon(":icons/dark/pp.png");
-        i00 = QIcon(":icons/dark/00.png");
-        i02 = QIcon(":icons/dark/12.png");
-        i04 = QIcon(":icons/dark/25.png");
-        i06 = QIcon(":icons/dark/37.png");
-        i08 = QIcon(":icons/dark/50.png");
-        i10 = QIcon(":icons/dark/62.png");
-        i12 = QIcon(":icons/dark/75.png");
-        i14 = QIcon(":icons/dark/87.png");
-        i15 = QIcon(":icons/dark/95.png");
-    }
-    else { // setting.iconsMode == IconsMode::white
-        ipp = QIcon(":icons/white/pp.png");
-        i00 = QIcon(":icons/white/00.png");
-        i02 = QIcon(":icons/white/12.png");
-        i04 = QIcon(":icons/white/25.png");
-        i06 = QIcon(":icons/white/37.png");
-        i08 = QIcon(":icons/white/50.png");
-        i10 = QIcon(":icons/white/62.png");
-        i12 = QIcon(":icons/white/75.png");
-        i14 = QIcon(":icons/white/87.png");
-        i15 = QIcon(":icons/white/95.png");
-    }
+    const QString mode = setting.iconsMode == IconsMode::light ? "light" :
+                         setting.iconsMode == IconsMode::dark  ? "dark"  : "white";
+    auto icon = [&mode](const QString &name) {
+        return QIcon(":icons/" + mode + "/" + name + ".png");
+    };
+    ipp = icon("pp");
+    i00 = icon("00");
+    i02 = icon("12");
+    i04 = icon("25");
+    i06 = icon("37");
+    i08 = icon("50");
+    i10 = icon("62");
+    i12 = icon("75");
+    i14 = icon("87");
+    i15 = icon("95");
 }
 
 void TrayIcon::ShowDialog()
 {
     dialog = new Dialog();
-    connect(dialog, SIGNAL(closedialog()), this, SLOT(CloseDialog()));
-    connect(dialog, SIGNAL(save(Setting)), this, SLOT(Save(Setting)));
-
-    connect(dialog, SIGNAL(TimerStatusRequest()), this, SLOT(DialogUpdateTime()));
-
-    connect(this, SIGNAL(updateLabel(QString)), dialog, SLOT(UpdateLabel(QString)));
-    connect(this, SIGNAL(updateLabelPause(QString)), dialog, SLOT(UpdateLabelPause(QString)));
+    connect(dialog, &Dialog::closedialog,        this,   &TrayIcon::CloseDialog);
+    connect(dialog, &Dialog::save,               this,   &TrayIcon::Save);
+    connect(dialog, &Dialog::TimerStatusRequest, this,   &TrayIcon::DialogUpdateTime);
+    connect(this,   &TrayIcon::updateLabel,      dialog, &Dialog::UpdateLabel);
+    connect(this,   &TrayIcon::updateLabelPause, dialog, &Dialog::UpdateLabelPause);
 
     ShowSettingAct->setEnabled(false);
 
@@ -645,12 +619,10 @@ void TrayIcon::ShowView()
     qDebug().noquote()  << "TrayIcon::ShowView(), start";
 
     view = new View();
-    connect(this, SIGNAL(show_refreshment(QString, QString, Setting, Timer*)),
-            view, SLOT(ShowRefreshment(QString, QString, Setting, Timer*)));
-    connect(ViewTimer, SIGNAL(finished()),   view,        SLOT(close())); // close() run view->closeEvent()
-    //connect(view,      SIGNAL(view_close()), view,        SLOT(close()));
-    connect(view,      SIGNAL(view_close()), DialogTimer, SLOT(start()));
-    connect(view,      SIGNAL(view_close()), ViewTimer,   SLOT(stop()));
+    connect(this,      &TrayIcon::show_refreshment, view,        &View::ShowRefreshment);
+    connect(ViewTimer, &Timer::finished,             view,        &QWidget::close);
+    connect(view,      &View::view_close,            DialogTimer, &Timer::start);
+    connect(view,      &View::view_close,            ViewTimer,   &Timer::stop);
 
     qDebug().noquote()  << "TrayIcon::ShowView(), view constuctor in" << timer.elapsed() << "ms." ;
 

@@ -44,12 +44,14 @@ private slots:
     void ButtonGenerateText_clicked();
     void SaveButton_status();
     void CheckBoxPrettyFont_Enable();
+
 signals:
     void closedialog();
     void save(const Setting &setting);
     void TimerStatusRequest();
 
 private:
+    Setting settingFromUI() const;
     Setting setting;
 
     QTabWidget * TabWidget{};

@@ -76,8 +76,8 @@ UpdateAction::Asset UpdateAction::getAsset(const QByteArray & json_text)
 UpdateAction::UpdateAction(const QIcon &icon, const QString &text, QObject *parent) :
     QAction(icon, text, parent)
 {
-    connect(this, SIGNAL(triggered()), this, SLOT(showmessagebox()));
-    connect(this, SIGNAL(triggered()), this, SLOT(update()));
+    connect(this, &UpdateAction::triggered, this, &UpdateAction::showmessagebox);
+    connect(this, &UpdateAction::triggered, this, &UpdateAction::update);
 }
 
 void UpdateAction::showmessagebox()
@@ -100,8 +100,7 @@ void UpdateAction::update()
 {
     manager = new QNetworkAccessManager(this);
 
-    connect(manager, SIGNAL(finished(QNetworkReply *)),
-            this, SLOT(replyFinished(QNetworkReply *)));
+    connect(manager, &QNetworkAccessManager::finished, this, &UpdateAction::replyFinished);
 
     manager->get(QNetworkRequest(QUrl("https://api.github.com/repos/yalov/eyes-thanks/releases")));
 }

@@ -231,62 +231,59 @@ void Dialog::InitWidgets()
 
     TopLayout->addLayout(layout_buttons);
 
-    connect(ButtonPath, SIGNAL(clicked()), this, SLOT(ButtonPath_clicked()));
-    connect(ButtonPath_alt, SIGNAL(clicked()), this, SLOT(ButtonPath_alt_clicked()));
-    connect(ButtonGenerateText, SIGNAL(clicked()), this, SLOT(ButtonGenerateText_clicked()));
+    connect(ButtonPath, &QPushButton::clicked, this, &Dialog::ButtonPath_clicked);
+    connect(ButtonPath_alt, &QPushButton::clicked, this, &Dialog::ButtonPath_alt_clicked);
+    connect(ButtonGenerateText, &QPushButton::clicked, this, &Dialog::ButtonGenerateText_clicked);
 
-    connect(CheckBox_Text, SIGNAL(toggled(bool)), TextEdit_Text, SLOT(setEnabled(bool)));
-    connect(CheckBox_Text, SIGNAL(toggled(bool)), ButtonGenerateText, SLOT(setEnabled(bool)));
+    connect(CheckBox_Text, &QCheckBox::toggled, TextEdit_Text, &QWidget::setEnabled);
+    connect(CheckBox_Text, &QCheckBox::toggled, ButtonGenerateText, &QWidget::setEnabled);
 
-    connect(buttonSave, SIGNAL(clicked()), this, SLOT(SaveValues()));
-    connect(buttonMinimizeToSystemTray, SIGNAL(clicked()), this, SLOT(close()));
+    connect(buttonSave, &QPushButton::clicked, this, &Dialog::SaveValues);
+    connect(buttonMinimizeToSystemTray, &QPushButton::clicked, this, &QWidget::close);
 
-    connect(CheckBox_Text, SIGNAL(toggled(bool)), this, SLOT(CheckBoxPrettyFont_Enable()));
-    connect(CheckBox_Clock, SIGNAL(toggled(bool)), this, SLOT(CheckBoxPrettyFont_Enable()));
+    connect(CheckBox_Text, &QCheckBox::toggled, this, &Dialog::CheckBoxPrettyFont_Enable);
+    connect(CheckBox_Clock, &QCheckBox::toggled, this, &Dialog::CheckBoxPrettyFont_Enable);
 
 }
 
 void Dialog::InitConnectWidgetsChanged()
 {
     // after ::SetValues
-    connect(buttonSave, SIGNAL(clicked(bool)), buttonSave, SLOT(setEnabled(bool)));
+    connect(buttonSave, &QPushButton::clicked, buttonSave, &QAbstractButton::setEnabled);
 
-    connect(LineEdit_Path,     SIGNAL(textChanged(QString)), this, SLOT(SaveButton_status()));
-    connect(LineEdit_Path_alt, SIGNAL(textChanged(QString)), this, SLOT(SaveButton_status()));
-    connect(TextEdit_Text,     SIGNAL(textChanged()), this, SLOT(SaveButton_status()));
+    connect(LineEdit_Path,     &QLineEdit::textChanged,       this, &Dialog::SaveButton_status);
+    connect(LineEdit_Path_alt, &QLineEdit::textChanged,       this, &Dialog::SaveButton_status);
+    connect(TextEdit_Text,     &QPlainTextEdit::textChanged,  this, &Dialog::SaveButton_status);
 
-    connect(Combobox_imageAspectMode, SIGNAL(currentIndexChanged(int)), this, SLOT(SaveButton_status()));
-    connect(Combobox_iconsMode,       SIGNAL(currentIndexChanged(int)), this, SLOT(SaveButton_status()));
+    connect(Combobox_imageAspectMode, qOverload<int>(&QComboBox::currentIndexChanged), this, &Dialog::SaveButton_status);
+    connect(Combobox_iconsMode,       qOverload<int>(&QComboBox::currentIndexChanged), this, &Dialog::SaveButton_status);
 
-    connect(Spinbox_UntilBreak,   SIGNAL(valueChanged(int)), this, SLOT(SaveButton_status()));
-    connect(Spinbox_BreakDuration, SIGNAL(valueChanged(int)), this, SLOT(SaveButton_status()));
+    connect(Spinbox_UntilBreak,    qOverload<int>(&QSpinBox::valueChanged), this, &Dialog::SaveButton_status);
+    connect(Spinbox_BreakDuration, qOverload<int>(&QSpinBox::valueChanged), this, &Dialog::SaveButton_status);
 
-    connect(CheckBox_Clock,       SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_Message,     SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_FullScreen,  SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_Logging,     SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_PrettyFont,  SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_Text,        SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_StartupLink, SIGNAL(clicked()), this, SLOT(SaveButton_status()));
+    connect(CheckBox_Clock,       &QCheckBox::clicked, this, &Dialog::SaveButton_status);
+    connect(CheckBox_Message,     &QCheckBox::clicked, this, &Dialog::SaveButton_status);
+    connect(CheckBox_FullScreen,  &QCheckBox::clicked, this, &Dialog::SaveButton_status);
+    connect(CheckBox_Logging,     &QCheckBox::clicked, this, &Dialog::SaveButton_status);
+    connect(CheckBox_PrettyFont,  &QCheckBox::clicked, this, &Dialog::SaveButton_status);
+    connect(CheckBox_Text,        &QCheckBox::clicked, this, &Dialog::SaveButton_status);
+    connect(CheckBox_StartupLink, &QCheckBox::clicked, this, &Dialog::SaveButton_status);
 
-    connect(CheckBox_Spectrum      , SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_Tiling        , SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_Stripes       , SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_JumpingFigure , SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_Circles, SIGNAL(clicked()), this, SLOT(SaveButton_status()));
-    connect(CheckBox_Neo           , SIGNAL(clicked()), this, SLOT(SaveButton_status()));
+    connect(CheckBox_Spectrum,      &QCheckBox::clicked, this, &Dialog::SaveButton_status);
+    connect(CheckBox_Tiling,        &QCheckBox::clicked, this, &Dialog::SaveButton_status);
+    connect(CheckBox_Stripes,       &QCheckBox::clicked, this, &Dialog::SaveButton_status);
+    connect(CheckBox_JumpingFigure, &QCheckBox::clicked, this, &Dialog::SaveButton_status);
+    connect(CheckBox_Circles,       &QCheckBox::clicked, this, &Dialog::SaveButton_status);
+    connect(CheckBox_Neo,           &QCheckBox::clicked, this, &Dialog::SaveButton_status);
 }
 
 void Dialog::CheckBoxPrettyFont_Enable(){
-    if (!CheckBox_Text->isChecked() && !CheckBox_Clock->isChecked())
-        CheckBox_PrettyFont->setEnabled(false);
-    else
-        CheckBox_PrettyFont->setEnabled(true);
-
+    CheckBox_PrettyFont->setEnabled(CheckBox_Text->isChecked() || CheckBox_Clock->isChecked());
 }
-void Dialog::SaveButton_status()
+
+Setting Dialog::settingFromUI() const
 {
-    Setting s = {
+    return Setting{
         setting.running_counter,
         Spinbox_UntilBreak->value() * 60 * 1000,
         Spinbox_BreakDuration->value() * 1000,
@@ -304,16 +301,16 @@ void Dialog::SaveButton_status()
         TextEdit_Text->toPlainText(),
         CheckBox_Spectrum->isChecked(),
         CheckBox_Tiling->isChecked(),
-        CheckBox_Stripes       ->isChecked(),
-        CheckBox_JumpingFigure ->isChecked(),
+        CheckBox_Stripes->isChecked(),
+        CheckBox_JumpingFigure->isChecked(),
         CheckBox_Circles->isChecked(),
-        CheckBox_Neo           ->isChecked()
+        CheckBox_Neo->isChecked()
     };
+}
 
-    if (setting != s)
-        buttonSave->setEnabled(true);
-    else
-        buttonSave->setEnabled(false);
+void Dialog::SaveButton_status()
+{
+    buttonSave->setEnabled(setting != settingFromUI());
 }
 
 void Dialog::Translate()
@@ -484,29 +481,6 @@ void Dialog::ButtonGenerateText_clicked()
 
 void Dialog::SaveValues()
 {
-    setting = Setting{
-        setting.running_counter,
-        Spinbox_UntilBreak->value() * 60 * 1000,
-        Spinbox_BreakDuration->value() * 1000,
-        LineEdit_Path->text(),
-        LineEdit_Path_alt->text(),
-        static_cast<ImageAspectMode>(Combobox_imageAspectMode->currentIndex()),
-        static_cast<IconsMode>(Combobox_iconsMode->currentIndex()),
-        CheckBox_Logging->isChecked(),
-        CheckBox_Text->isChecked(),
-        CheckBox_Clock->isChecked(),
-        CheckBox_Message->isChecked(),
-        CheckBox_FullScreen->isChecked(),
-        CheckBox_PrettyFont->isChecked(),
-        CheckBox_StartupLink->isChecked(),
-        TextEdit_Text->toPlainText(),
-        CheckBox_Spectrum      ->isChecked(),
-        CheckBox_Tiling        ->isChecked(),
-        CheckBox_Stripes       ->isChecked(),
-        CheckBox_JumpingFigure ->isChecked(),
-        CheckBox_Circles->isChecked(),
-        CheckBox_Neo           ->isChecked()
-    };
-
+    setting = settingFromUI();
     emit save(setting);
 }

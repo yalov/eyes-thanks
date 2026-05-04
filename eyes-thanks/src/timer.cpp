@@ -16,7 +16,7 @@ Timer::Timer(int updateinterval, int finishedinterval, bool logging):
     init(updateinterval, finishedinterval);
     Logging = logging;
 
-    connect(&qtimer, SIGNAL(timeout()), this, SLOT(qtimer_timeout()));
+    connect(&qtimer, &QTimer::timeout, this, &Timer::qtimer_timeout);
     //connect(&qtimer, SIGNAL(timeout()), this, SIGNAL(update()));
 }
 
